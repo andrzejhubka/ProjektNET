@@ -1,4 +1,3 @@
-// Models/ApplicationUser.cs
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
@@ -26,7 +25,7 @@ namespace ProjektZaliczeniowyNET.Models
         [StringLength(500)]
         public string? Notes { get; set; }
 
-        // Navigation properties - relacje z innymi encjami
+        // Właściwości nawigacyjne - relacje z innymi encjami
         public virtual ICollection<ServiceOrder> AssignedOrders { get; set; } = new List<ServiceOrder>();
         public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 

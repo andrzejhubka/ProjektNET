@@ -4,10 +4,10 @@ using ProjektZaliczeniowyNET.DTOs.User;
 
 namespace ProjektZaliczeniowyNET.Mappers
 {
-    public static class UserMapper
+    public class UserMapper : IUserMapper
     {
         // Mapowanie z User do UserDto
-        public static UserDto ToUserDto(User user, IList<string>? roles = null)
+        public UserDto ToUserDto(User user, IList<string>? roles = null)
         {
             return new UserDto
             {
@@ -27,7 +27,7 @@ namespace ProjektZaliczeniowyNET.Mappers
         }
 
         // Mapowanie z User do UserListDto
-        public static UserListDto ToUserListDto(User user, IList<string>? roles = null)
+        public UserListDto ToUserListDto(User user, IList<string>? roles = null)
         {
             return new UserListDto
             {
@@ -41,7 +41,7 @@ namespace ProjektZaliczeniowyNET.Mappers
         }
 
         // Mapowanie z UserCreateDto do User
-        public static User ToUser(UserCreateDto dto)
+        public User ToUser(UserCreateDto dto)
         {
             return new User
             {
@@ -58,7 +58,7 @@ namespace ProjektZaliczeniowyNET.Mappers
         }
 
         // Aktualizacja User z UserUpdateDto
-        public static void UpdateUserFromDto(UserUpdateDto dto, User user)
+        public void UpdateUserFromDto(UserUpdateDto dto, User user)
         {
             user.FirstName = dto.FirstName;
             user.LastName = dto.LastName;
@@ -71,19 +71,19 @@ namespace ProjektZaliczeniowyNET.Mappers
         }
 
         // Mapowanie listy User do listy UserDto
-        public static List<UserDto> ToUserDtoList(IEnumerable<User> users, Func<User, IList<string>>? getRoles = null)
+        public List<UserDto> ToUserDtoList(IEnumerable<User> users, Func<User, IList<string>>? getRoles = null)
         {
             return users.Select(user => ToUserDto(user, getRoles?.Invoke(user))).ToList();
         }
 
         // Mapowanie listy User do listy UserListDto
-        public static List<UserListDto> ToUserListDtoList(IEnumerable<User> users, Func<User, IList<string>>? getRoles = null)
+        public List<UserListDto> ToUserListDtoList(IEnumerable<User> users, Func<User, IList<string>>? getRoles = null)
         {
             return users.Select(user => ToUserListDto(user, getRoles?.Invoke(user))).ToList();
         }
 
         // Mapowanie z UserDto do UserUpdateDto (dla formularzy edycji)
-        public static UserUpdateDto ToUserUpdateDto(UserDto userDto)
+        public UserUpdateDto ToUserUpdateDto(UserDto userDto)
         {
             return new UserUpdateDto
             {
@@ -99,7 +99,7 @@ namespace ProjektZaliczeniowyNET.Mappers
         }
 
         // Pomocnicza metoda do tworzenia User z pełną konfiguracją
-        public static User CreateUser(UserCreateDto dto, string? passwordHash = null)
+        public User CreateUser(UserCreateDto dto, string? passwordHash = null)
         {
             var user = ToUser(dto);
             if (!string.IsNullOrEmpty(passwordHash))

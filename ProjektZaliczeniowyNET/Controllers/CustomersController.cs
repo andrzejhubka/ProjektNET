@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ProjektZaliczeniowyNET.DTOs.Customer;
+using ProjektZaliczeniowyNET.DTOs.Vehicle;
 using ProjektZaliczeniowyNET.Services;
 
 namespace ProjektZaliczeniowyNET.Controllers
@@ -15,11 +16,11 @@ namespace ProjektZaliczeniowyNET.Controllers
             _customerService = customerService;
         }
 
-        // GET: api/customers
+        // GET: api/customers?search=abc
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CustomerListDto>>> GetAll()
+        public async Task<ActionResult<IEnumerable<CustomerListDto>>> GetAll([FromQuery] string? search)
         {
-            var customers = await _customerService.GetAllCustomersAsync();
+            var customers = await _customerService.GetAllCustomersAsync(search);
             return Ok(customers);
         }
 
@@ -42,11 +43,21 @@ namespace ProjektZaliczeniowyNET.Controllers
             return Ok(customer);
         }
 
+        // GET: api/customers/5/vehicles
+        [HttpGet("{id:int}/vehicles")]
+        public async Task<ActionResult<IEnumerable<VehicleDto>>> GetVehicles(int id)
+        {
+            var vehicles = await _customerService.GetVehiclesForCustomerAsync(id);
+            if (vehicles == null)
+                return NotFound();
+
+            return Ok(vehicles);
+        }
+
         // POST: api/customers
         [HttpPost]
         public async Task<ActionResult<CustomerDto>> Create(CustomerCreateDto createDto)
         {
-            // Można dodatkowo zweryfikować unikalność emaila
             var isUnique = await _customerService.IsEmailUniqueAsync(createDto.Email);
             if (!isUnique)
             {
@@ -55,7 +66,6 @@ namespace ProjektZaliczeniowyNET.Controllers
             }
 
             var createdCustomer = await _customerService.CreateCustomerAsync(createDto);
-
             return CreatedAtAction(nameof(GetById), new { id = createdCustomer.Id }, createdCustomer);
         }
 
@@ -63,7 +73,6 @@ namespace ProjektZaliczeniowyNET.Controllers
         [HttpPut("{id:int}")]
         public async Task<ActionResult<CustomerDto>> Update(int id, CustomerUpdateDto updateDto)
         {
-            // Sprawdzenie czy email jest unikalny z wykluczeniem aktualnego klienta
             var isUnique = await _customerService.IsEmailUniqueAsync(updateDto.Email, id);
             if (!isUnique)
             {

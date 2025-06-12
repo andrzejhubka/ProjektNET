@@ -10,16 +10,16 @@ namespace ProjektZaliczeniowyNET.Mappers
             return new UserDto
             {
                 Id = user.Id,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                FullName = $"{user.FirstName} {user.LastName}",
-                Email = user.Email,
-                PhoneNumber = user.PhoneNumber,
+                FirstName = user.FirstName ?? string.Empty,
+                LastName = user.LastName ?? string.Empty,
+                FullName = $"{user.FirstName ?? string.Empty} {user.LastName ?? string.Empty}".Trim(),
+                Email = user.Email ?? string.Empty,
+                PhoneNumber = user.PhoneNumber ?? string.Empty,
                 EmployeeNumber = user.EmployeeNumber,
                 IsActive = user.IsActive,
                 CreatedAt = user.CreatedAt,
                 LastLoginAt = user.LastLoginAt,
-                Notes = user.Notes,
+                Notes = user.Notes ?? string.Empty,
                 Roles = new List<string>() // Role są dodawane później w serwisie
             };
         }

@@ -7,19 +7,19 @@ namespace ProjektZaliczeniowyNET.DTOs.Vehicle
         [Required(ErrorMessage = "VIN jest wymagany")]
         [StringLength(17, MinimumLength = 17, ErrorMessage = "VIN musi mieć dokładnie 17 znaków")]
         [RegularExpression(@"^[A-HJ-NPR-Z0-9]{17}$", ErrorMessage = "VIN zawiera nieprawidłowe znaki")]
-        public string VIN { get; set; }
+        public string VIN { get; set; } = null!;
 
         [Required(ErrorMessage = "Numer rejestracyjny jest wymagany")]
         [StringLength(15, ErrorMessage = "Numer rejestracyjny nie może być dłuższy niż 15 znaków")]
-        public string LicensePlate { get; set; }
+        public string LicensePlate { get; set; } = null!;
 
         [Required(ErrorMessage = "Marka jest wymagana")]
         [StringLength(50, ErrorMessage = "Marka nie może być dłuższa niż 50 znaków")]
-        public string Make { get; set; }
+        public string Make { get; set; } = null!;
 
         [Required(ErrorMessage = "Model jest wymagany")]
         [StringLength(50, ErrorMessage = "Model nie może być dłuższy niż 50 znaków")]
-        public string Model { get; set; }
+        public string Model { get; set; } = null!;
 
         [Required(ErrorMessage = "Rok produkcji jest wymagany")]
         [Range(1900, 2030, ErrorMessage = "Rok produkcji musi być między 1900 a 2030")]

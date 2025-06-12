@@ -9,19 +9,19 @@ namespace ProjektZaliczeniowyNET.Models
 
         [Required]
         [StringLength(17, MinimumLength = 17)]
-        public string VIN { get; set; }
+        public string VIN { get; set; } = null!;
 
         [Required]
         [StringLength(15)]
-        public string LicensePlate { get; set; }
+        public string LicensePlate { get; set; } = null!;
 
         [Required]
         [StringLength(50)]
-        public string Make { get; set; } // marka
+        public string Make { get; set; } = null!; // marka
 
         [Required]
         [StringLength(50)]
-        public string Model { get; set; }
+        public string Model { get; set; } = null!;
 
         public int Year { get; set; }
 
@@ -51,7 +51,7 @@ namespace ProjektZaliczeniowyNET.Models
 
         // Właściwości nawigacyjne
         [ForeignKey("CustomerId")]
-        public virtual Customer Customer { get; set; }
+        public virtual Customer Customer { get; set; } = null!;
         public virtual ICollection<ServiceOrder> ServiceOrders { get; set; } = new List<ServiceOrder>();
 
         // Właściwość obliczana

@@ -7,7 +7,7 @@ namespace ProjektZaliczeniowyNET.DTOs.Comment
     {
         [Required(ErrorMessage = "Treść komentarza jest wymagana")]
         [StringLength(2000, ErrorMessage = "Treść komentarza nie może być dłuższa niż 2000 znaków")]
-        public string Content { get; set; }
+        public string Content { get; set; } = null!;
 
         [Required(ErrorMessage = "Typ komentarza jest wymagany")]
         public CommentType Type { get; set; }

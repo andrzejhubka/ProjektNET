@@ -9,7 +9,7 @@ namespace ProjektZaliczeniowyNET.Models
 
         [Required]
         [StringLength(200)]
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
 
         [StringLength(1000)]
         public string? DetailedDescription { get; set; }
@@ -35,7 +35,7 @@ namespace ProjektZaliczeniowyNET.Models
 
         // Właściwości nawigacyjne
         [ForeignKey("ServiceOrderId")]
-        public virtual ServiceOrder ServiceOrder { get; set; }
+        public virtual ServiceOrder ServiceOrder { get; set; } = null!;
 
         // Właściwość obliczana
         public decimal TotalTaskCost => LaborCost;

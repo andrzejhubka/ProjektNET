@@ -6,7 +6,7 @@ namespace ProjektZaliczeniowyNET.DTOs.ServiceOrder
     {
         [Required(ErrorMessage = "Opis jest wymagany")]
         [StringLength(1000, ErrorMessage = "Opis nie może być dłuższy niż 1000 znaków")]
-        public string Description { get; set; }
+        public string Description { get; set; } = null!;
 
         public DateTime? EstimatedCompletionDate { get; set; }
 

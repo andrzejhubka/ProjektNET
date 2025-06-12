@@ -15,7 +15,7 @@ namespace ProjektZaliczeniowyNET.Models
 
         [Required]
         [StringLength(2000)]
-        public string Content { get; set; }
+        public string Content { get; set; } = null!;
 
         public CommentType Type { get; set; } = CommentType.Internal;
 
@@ -27,13 +27,13 @@ namespace ProjektZaliczeniowyNET.Models
 
         // Klucze obce
         public int ServiceOrderId { get; set; }
-        public string AuthorId { get; set; }
+        public string AuthorId { get; set; } = null!;
 
         // Właściwości nawigacyjne
         [ForeignKey("ServiceOrderId")]
-        public virtual ServiceOrder ServiceOrder { get; set; }
+        public virtual ServiceOrder ServiceOrder { get; set; } = null!;
 
         [ForeignKey("AuthorId")]
-        public virtual User Author { get; set; }
+        public virtual User Author { get; set; } = null!;
     }
 }

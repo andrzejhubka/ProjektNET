@@ -7,10 +7,10 @@ namespace ProjektZaliczeniowyNET.DTOs.ServiceOrder
     public class ServiceOrderDto
     {
         public int Id { get; set; }
-        public string OrderNumber { get; set; }
-        public string Description { get; set; }
+        public string? OrderNumber { get; set; }
+        public string? Description { get; set; }
         public ServiceOrderStatus Status { get; set; }
-        public string StatusDisplay { get; set; }
+        public string? StatusDisplay { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? StartedAt { get; set; }
         public DateTime? CompletedAt { get; set; }
@@ -25,22 +25,22 @@ namespace ProjektZaliczeniowyNET.DTOs.ServiceOrder
         
         // Informacje o kliencie
         public int CustomerId { get; set; }
-        public string CustomerName { get; set; }
-        public string CustomerEmail { get; set; }
-        public string CustomerPhone { get; set; }
+        public string? CustomerName { get; set; }
+        public string? CustomerEmail { get; set; }
+        public string? CustomerPhone { get; set; }
         
         // Informacje o pojeździe
         public int VehicleId { get; set; }
-        public string VehicleDisplayName { get; set; }
-        public string VehicleLicensePlate { get; set; }
+        public string? VehicleDisplayName { get; set; }
+        public string? VehicleLicensePlate { get; set; }
         
         // Informacje o mechaniku
         public string? AssignedMechanicId { get; set; }
         public string? AssignedMechanicName { get; set; }
         
         // Informacje o twórcy
-        public string CreatedByUserId { get; set; }
-        public string CreatedByUserName { get; set; }
+        public string? CreatedByUserId { get; set; }
+        public string? CreatedByUserName { get; set; }
         
         // Zadania i komentarze
         public List<ServiceTaskDto> ServiceTasks { get; set; } = new List<ServiceTaskDto>();

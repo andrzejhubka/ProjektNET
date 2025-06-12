@@ -6,7 +6,7 @@ namespace ProjektZaliczeniowyNET.DTOs.ServiceTask
     {
         [Required(ErrorMessage = "Opis jest wymagany")]
         [StringLength(200, ErrorMessage = "Opis nie może być dłuższy niż 200 znaków")]
-        public string Description { get; set; }
+        public string Description { get; set; } = null!;
 
         [StringLength(1000, ErrorMessage = "Szczegółowy opis nie może być dłuższy niż 1000 znaków")]
         public string? DetailedDescription { get; set; }

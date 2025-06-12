@@ -6,21 +6,21 @@ namespace ProjektZaliczeniowyNET.DTOs.Customer
     {
         [Required(ErrorMessage = "Imię jest wymagane")]
         [StringLength(50, ErrorMessage = "Imię nie może być dłuższe niż 50 znaków")]
-        public string FirstName { get; set; }
+        public string FirstName { get; set; } = null!;
 
         [Required(ErrorMessage = "Nazwisko jest wymagane")]
         [StringLength(50, ErrorMessage = "Nazwisko nie może być dłuższe niż 50 znaków")]
-        public string LastName { get; set; }
+        public string LastName { get; set; } = null!;
 
         [Required(ErrorMessage = "Email jest wymagany")]
         [StringLength(100, ErrorMessage = "Email nie może być dłuższy niż 100 znaków")]
         [EmailAddress(ErrorMessage = "Nieprawidłowy format email")]
-        public string Email { get; set; }
+        public string Email { get; set; } = null!;
 
         [Required(ErrorMessage = "Numer telefonu jest wymagany")]
         [StringLength(20, ErrorMessage = "Numer telefonu nie może być dłuższy niż 20 znaków")]
         [Phone(ErrorMessage = "Nieprawidłowy format numeru telefonu")]
-        public string PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; } = null!;
 
         [StringLength(200, ErrorMessage = "Adres nie może być dłuższy niż 200 znaków")]
         public string? Address { get; set; }

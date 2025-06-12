@@ -3,7 +3,7 @@ namespace ProjektZaliczeniowyNET.DTOs.ServiceTask
     public class ServiceTaskDto
     {
         public int Id { get; set; }
-        public string Description { get; set; }
+        public string Description { get; set; } = null!;
         public string? DetailedDescription { get; set; }
         public decimal LaborHours { get; set; }
         public decimal HourlyRate { get; set; }
@@ -13,6 +13,6 @@ namespace ProjektZaliczeniowyNET.DTOs.ServiceTask
         public DateTime? CompletedAt { get; set; }
         public string? Notes { get; set; }
         public int ServiceOrderId { get; set; }
-        public string ServiceOrderNumber { get; set; }
+        public string ServiceOrderNumber { get; set; } = null!;
     }
 }

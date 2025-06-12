@@ -17,7 +17,6 @@ namespace ProjektZaliczeniowyNET.Mappers
                 DetailedDescription = serviceTask.DetailedDescription,
                 LaborHours = serviceTask.LaborHours,
                 HourlyRate = serviceTask.HourlyRate,
-                LaborCost = serviceTask.LaborCost,
                 TotalTaskCost = serviceTask.TotalTaskCost,
                 IsCompleted = serviceTask.IsCompleted,
                 CompletedAt = serviceTask.CompletedAt,
@@ -38,7 +37,7 @@ namespace ProjektZaliczeniowyNET.Mappers
                 Description = serviceTask.Description,
                 LaborHours = serviceTask.LaborHours,
                 HourlyRate = serviceTask.HourlyRate,
-                LaborCost = serviceTask.LaborCost,
+                TotalTaskCost = serviceTask.TotalTaskCost,
                 IsCompleted = serviceTask.IsCompleted,
                 CompletedAt = serviceTask.CompletedAt,
                 ServiceOrderId = serviceTask.ServiceOrderId,
@@ -57,7 +56,6 @@ namespace ProjektZaliczeniowyNET.Mappers
                 DetailedDescription = createDto.DetailedDescription,
                 LaborHours = createDto.LaborHours,
                 HourlyRate = createDto.HourlyRate,
-                LaborCost = createDto.LaborHours * createDto.HourlyRate,
                 Notes = createDto.Notes,
                 ServiceOrderId = createDto.ServiceOrderId,
                 IsCompleted = false,
@@ -76,10 +74,8 @@ namespace ProjektZaliczeniowyNET.Mappers
             serviceTask.DetailedDescription = updateDto.DetailedDescription;
             serviceTask.LaborHours = updateDto.LaborHours;
             serviceTask.HourlyRate = updateDto.HourlyRate;
-            serviceTask.LaborCost = updateDto.LaborHours * updateDto.HourlyRate;
             serviceTask.Notes = updateDto.Notes;
-            
-            // Obsługa zmiany statusu ukończenia
+
             if (updateDto.IsCompleted && !serviceTask.IsCompleted)
             {
                 serviceTask.IsCompleted = true;
@@ -94,18 +90,12 @@ namespace ProjektZaliczeniowyNET.Mappers
 
         public IEnumerable<ServiceTaskDto> ToDtoList(IEnumerable<ServiceTask> serviceTasks)
         {
-            if (serviceTasks == null)
-                return Enumerable.Empty<ServiceTaskDto>();
-
-            return serviceTasks.Select(ToDto);
+            return serviceTasks?.Select(ToDto) ?? Enumerable.Empty<ServiceTaskDto>();
         }
 
         public IEnumerable<ServiceTaskListDto> ToListDtoList(IEnumerable<ServiceTask> serviceTasks)
         {
-            if (serviceTasks == null)
-                return Enumerable.Empty<ServiceTaskListDto>();
-
-            return serviceTasks.Select(ToListDto);
+            return serviceTasks?.Select(ToListDto) ?? Enumerable.Empty<ServiceTaskListDto>();
         }
     }
 }

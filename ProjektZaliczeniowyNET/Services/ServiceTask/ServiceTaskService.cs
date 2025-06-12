@@ -231,7 +231,7 @@ namespace ProjektZaliczeniowyNET.Services
             {
                 var totalCost = await _context.ServiceTasks
                     .Where(st => st.ServiceOrderId == serviceOrderId)
-                    .SumAsync(st => st.LaborCost);
+                    .SumAsync(st => st.TotalTaskCost);
 
                 return totalCost;
             }

@@ -54,7 +54,7 @@ namespace ProjektZaliczeniowyNET.Mappers
                 {
                     Id = st.Id,
                     Description = st.Description,
-                    LaborCost = st.LaborCost,
+                    TotalTaskCost = st.TotalTaskCost,
                     IsCompleted = st.IsCompleted,
                     // ... inne właściwości ServiceTaskDto jeśli są
                 }).ToList(),

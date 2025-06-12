@@ -77,7 +77,7 @@ namespace ProjektZaliczeniowyNET.Models
         public virtual ICollection<ServiceOrderPart> ServiceOrderParts { get; set; } = new List<ServiceOrderPart>();
 
         // Właściwości obliczane
-        public decimal TotalLaborCost => ServiceTasks.Sum(st => st.LaborCost);
+        public decimal TotalLaborCost => ServiceTasks.Sum(st => st.TotalTaskCost);
 
         public decimal TotalPartsCost => ServiceOrderParts.Sum(p => p.Cost);
 

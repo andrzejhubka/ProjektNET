@@ -20,9 +20,6 @@ namespace ProjektZaliczeniowyNET.Models
         [Column(TypeName = "decimal(8,2)")]
         public decimal HourlyRate { get; set; }
 
-        [Column(TypeName = "decimal(10,2)")]
-        public decimal LaborCost { get; set; }
-
         public bool IsCompleted { get; set; } = false;
 
         public DateTime? CompletedAt { get; set; }
@@ -38,6 +35,6 @@ namespace ProjektZaliczeniowyNET.Models
         public virtual ServiceOrder ServiceOrder { get; set; } = null!;
 
         // Właściwość obliczana
-        public decimal TotalTaskCost => LaborCost;
+        public decimal TotalTaskCost => LaborHours * HourlyRate;
     }
 }

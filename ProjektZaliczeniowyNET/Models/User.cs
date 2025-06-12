@@ -19,17 +19,17 @@ namespace ProjektZaliczeniowyNET.Models
 
         public DateTime? LastLoginAt { get; set; }
 
-        // Właściwości specyficzne dla warsztatu
+        [StringLength(20)]
         public string? EmployeeNumber { get; set; }
 
         [StringLength(500)]
         public string? Notes { get; set; }
 
-        // Właściwości nawigacyjne - relacje z innymi encjami
-        public virtual ICollection<ServiceOrder> AssignedOrders { get; set; } = new List<ServiceOrder>();
-        public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
+        // Nawigacje (opcjonalne)
+        public virtual ICollection<ServiceOrder>? AssignedOrders { get; set; }
+        public virtual ICollection<Comment>? Comments { get; set; }
 
-        // Właściwość obliczana
+        // Pole wyliczane
         public string FullName => $"{FirstName} {LastName}";
     }
 }

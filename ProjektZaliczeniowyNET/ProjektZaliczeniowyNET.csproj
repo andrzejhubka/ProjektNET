@@ -9,7 +9,6 @@
     <ItemGroup>
       <Folder Include="Migrations\" />
       <Folder Include="Services\ServiceOrder\" />
-      <Folder Include="Services\ServiceTask\" />
       <Folder Include="Services\Vehicle\" />
     </ItemGroup>
 

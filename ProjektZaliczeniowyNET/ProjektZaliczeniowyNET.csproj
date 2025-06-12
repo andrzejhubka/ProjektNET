@@ -8,6 +8,12 @@
 
     <ItemGroup>
       <Folder Include="Migrations\" />
+      <Folder Include="Services\ApplicationRole\" />
+      <Folder Include="Services\Comment\" />
+      <Folder Include="Services\Customer\" />
+      <Folder Include="Services\ServiceOrder\" />
+      <Folder Include="Services\ServiceTask\" />
+      <Folder Include="Services\Vehicle\" />
     </ItemGroup>
 
     <ItemGroup>

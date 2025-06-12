@@ -32,14 +32,6 @@ namespace ProjektZaliczeniowyNET.DTOs.Customer
         [RegularExpression(@"^\d{2}-\d{3}$", ErrorMessage = "Kod pocztowy musi być w formacie XX-XXX")]
         public string? PostalCode { get; set; }
 
-        [StringLength(11, ErrorMessage = "NIP nie może być dłuższy niż 11 znaków")]
-        [RegularExpression(@"^\d{10}$", ErrorMessage = "NIP musi składać się z 10 cyfr")]
-        public string? TaxNumber { get; set; }
-
-        public bool IsCompany { get; set; }
-
-        [StringLength(100, ErrorMessage = "Nazwa firmy nie może być dłuższa niż 100 znaków")]
-        public string? CompanyName { get; set; }
 
         [StringLength(500, ErrorMessage = "Notatki nie mogą być dłuższe niż 500 znaków")]
         public string? Notes { get; set; }

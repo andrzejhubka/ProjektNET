@@ -12,15 +12,11 @@ public class CustomerMapper : ICustomerMapper
             FirstName = customer.FirstName,
             LastName = customer.LastName,
             FullName = customer.FullName,
-            DisplayName = customer.DisplayName,
             Email = customer.Email,
             PhoneNumber = customer.PhoneNumber,
             Address = customer.Address,
             City = customer.City,
             PostalCode = customer.PostalCode,
-            TaxNumber = customer.TaxNumber,
-            IsCompany = customer.IsCompany,
-            CompanyName = customer.CompanyName,
             CreatedAt = customer.CreatedAt,
             IsActive = customer.IsActive,
             Notes = customer.Notes,
@@ -34,11 +30,10 @@ public class CustomerMapper : ICustomerMapper
         return new CustomerListDto
         {
             Id = customer.Id,
-            DisplayName = customer.DisplayName,
+            FullName = customer.FullName,
             Email = customer.Email,
             PhoneNumber = customer.PhoneNumber,
             City = customer.City,
-            IsCompany = customer.IsCompany,
             IsActive = customer.IsActive,
             VehiclesCount = customer.Vehicles?.Count ?? 0
         };
@@ -49,7 +44,7 @@ public class CustomerMapper : ICustomerMapper
         return new CustomerSelectDto
         {
             Id = customer.Id,
-            DisplayName = customer.DisplayName,
+            FullName = customer.FullName,
             Email = customer.Email,
             PhoneNumber = customer.PhoneNumber
         };
@@ -66,9 +61,6 @@ public class CustomerMapper : ICustomerMapper
             Address = createDto.Address ?? string.Empty,
             City = createDto.City ?? string.Empty,
             PostalCode = createDto.PostalCode ?? string.Empty,
-            TaxNumber = createDto.TaxNumber,
-            IsCompany = createDto.IsCompany,
-            CompanyName = createDto.CompanyName,
             Notes = createDto.Notes,
             CreatedAt = DateTime.UtcNow,
             IsActive = true
@@ -84,9 +76,6 @@ public class CustomerMapper : ICustomerMapper
         customer.Address = updateDto.Address ?? string.Empty;
         customer.City = updateDto.City ?? string.Empty;
         customer.PostalCode = updateDto.PostalCode ?? string.Empty;
-        customer.TaxNumber = updateDto.TaxNumber;
-        customer.IsCompany = updateDto.IsCompany;
-        customer.CompanyName = updateDto.CompanyName;
         customer.IsActive = updateDto.IsActive;
         customer.Notes = updateDto.Notes;
     }

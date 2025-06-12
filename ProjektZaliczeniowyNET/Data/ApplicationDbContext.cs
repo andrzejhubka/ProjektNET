@@ -35,8 +35,6 @@ public class ApplicationDbContext : IdentityDbContext<User>
             entity.Property(e => e.Address).HasMaxLength(200);
             entity.Property(e => e.City).HasMaxLength(50);
             entity.Property(e => e.PostalCode).HasMaxLength(10);
-            entity.Property(e => e.TaxNumber).HasMaxLength(11);
-            entity.Property(e => e.CompanyName).HasMaxLength(100);
             entity.Property(e => e.Notes).HasMaxLength(500);
 
             // Index dla unikalnego emaila

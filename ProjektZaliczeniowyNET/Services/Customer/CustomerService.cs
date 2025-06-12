@@ -22,7 +22,7 @@ public class CustomerService : ICustomerService
     {
         var customers = await _context.Customers
             .Include(c => c.Vehicles)
-            .OrderBy(c => c.DisplayName)
+            .OrderBy(c => c.FullName)
             .ToListAsync();
 
         return customers.Select(_mapper.ToListDto);
@@ -32,7 +32,7 @@ public class CustomerService : ICustomerService
     {
         var customers = await _context.Customers
             .Where(c => c.IsActive)
-            .OrderBy(c => c.DisplayName)
+            .OrderBy(c => c.FullName)
             .ToListAsync();
 
         return customers.Select(_mapper.ToSelectDto);

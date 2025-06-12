@@ -28,7 +28,7 @@ namespace ProjektZaliczeniowyNET.Mappers
                 DisplayName = vehicle.DisplayName,
 
                 CustomerId = vehicle.CustomerId,
-                CustomerName = vehicle.Customer?.DisplayName ?? "",
+                CustomerName = vehicle.Customer?.FullName ?? "",
                 CustomerEmail = vehicle.Customer?.Email ?? "",
                 CustomerPhone = vehicle.Customer?.PhoneNumber ?? "",
 
@@ -50,7 +50,7 @@ namespace ProjektZaliczeniowyNET.Mappers
                 FuelType = vehicle.FuelType,
                 Mileage = vehicle.Mileage,
                 IsActive = vehicle.IsActive,
-                CustomerName = vehicle.Customer?.DisplayName
+                CustomerName = vehicle.Customer?.FullName
             };
         }
 

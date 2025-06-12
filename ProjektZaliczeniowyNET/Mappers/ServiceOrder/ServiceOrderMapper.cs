@@ -36,7 +36,7 @@ namespace ProjektZaliczeniowyNET.Mappers
                 IsWarrantyWork = order.IsWarrantyWork,
 
                 CustomerId = order.CustomerId,
-                CustomerName = order.Customer?.DisplayName ?? "",
+                CustomerName = order.Customer?.FullName ?? "",
                 CustomerEmail = order.Customer?.Email ?? "",
                 CustomerPhone = order.Customer?.PhoneNumber ?? "",
 
@@ -96,7 +96,7 @@ namespace ProjektZaliczeniowyNET.Mappers
                 EstimatedCompletionDate = order.EstimatedCompletionDate,
                 EstimatedCost = order.EstimatedCost,
                 TotalCost = order.TotalCost,
-                CustomerName = order.Customer?.DisplayName ?? "",
+                CustomerName = order.Customer?.FullName ?? "",
                 VehicleDisplayName = order.Vehicle?.DisplayName ?? "",
                 AssignedMechanicName = order.AssignedMechanic?.UserName ?? "",
                 TasksCount = order.ServiceTasks.Count,
@@ -120,7 +120,7 @@ namespace ProjektZaliczeniowyNET.Mappers
                 OrderNumber = order.OrderNumber,
                 Description = order.Description,
                 Status = order.Status,
-                CustomerName = order.Customer?.DisplayName ?? "",
+                CustomerName = order.Customer?.FullName ?? "",
                 VehicleDisplayName = order.Vehicle?.DisplayName ?? ""
             };
         }

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using ProjektZaliczeniowyNET.DTOs;
+using Microsoft.Extensions.Logging;
+using ProjektZaliczeniowyNET.DTOs.User;
 using ProjektZaliczeniowyNET.Models;
 using ProjektZaliczeniowyNET.Mappers;
 
@@ -32,8 +33,7 @@ namespace ProjektZaliczeniowyNET.Services
                 foreach (var user in users)
                 {
                     var userDto = _userMapper.ToUserDto(user);
-                    var roles = await _userManager.GetRolesAsync(user);
-                    userDto.Roles = roles;
+                    userDto.Roles = await _userManager.GetRolesAsync(user);
                     userDtos.Add(userDto);
                 }
 
@@ -54,14 +54,13 @@ namespace ProjektZaliczeniowyNET.Services
                 if (user == null) return null;
 
                 var userDto = _userMapper.ToUserDto(user);
-                var roles = await _userManager.GetRolesAsync(user);
-                userDto.Roles = roles;
+                userDto.Roles = await _userManager.GetRolesAsync(user);
 
                 return userDto;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting user by id: {UserId}", userId);
+                _logger.LogError(ex, $"Error getting user by id: {userId}");
                 throw;
             }
         }
@@ -74,19 +73,18 @@ namespace ProjektZaliczeniowyNET.Services
                 if (user == null) return null;
 
                 var userDto = _userMapper.ToUserDto(user);
-                var roles = await _userManager.GetRolesAsync(user);
-                userDto.Roles = roles;
+                userDto.Roles = await _userManager.GetRolesAsync(user);
 
                 return userDto;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting user by email: {Email}", email);
+                _logger.LogError(ex, $"Error getting user by email: {email}");
                 throw;
             }
         }
 
-        public async Task<bool> CreateUserAsync(CreateUserDto createUserDto)
+        public async Task<bool> CreateUserAsync(UserCreateDto createUserDto)
         {
             try
             {
@@ -96,13 +94,15 @@ namespace ProjektZaliczeniowyNET.Services
 
                 var result = await _userManager.CreateAsync(user, createUserDto.Password);
 
-                if (result.Succeeded)
+                if (!result.Succeeded)
+                    return false;
+
+                foreach (var role in createUserDto.Roles)
                 {
-                    await _userManager.AddToRoleAsync(user, createUserDto.Role);
-                    return true;
+                    await _userManager.AddToRoleAsync(user, role);
                 }
 
-                return false;
+                return true;
             }
             catch (Exception ex)
             {
@@ -111,7 +111,7 @@ namespace ProjektZaliczeniowyNET.Services
             }
         }
 
-        public async Task<bool> UpdateUserAsync(string userId, UpdateUserDto updateUserDto)
+        public async Task<bool> UpdateUserAsync(string userId, UserUpdateDto updateUserDto)
         {
             try
             {
@@ -119,13 +119,25 @@ namespace ProjektZaliczeniowyNET.Services
                 if (user == null) return false;
 
                 _userMapper.UpdateUserFromDto(updateUserDto, user);
-
                 var result = await _userManager.UpdateAsync(user);
-                return result.Succeeded;
+                if (!result.Succeeded)
+                    return false;
+
+                var currentRoles = await _userManager.GetRolesAsync(user);
+                var rolesToRemove = currentRoles.Except(updateUserDto.Roles).ToList();
+                var rolesToAdd = updateUserDto.Roles.Except(currentRoles).ToList();
+
+                if (rolesToRemove.Any())
+                    await _userManager.RemoveFromRolesAsync(user, rolesToRemove);
+
+                if (rolesToAdd.Any())
+                    await _userManager.AddToRolesAsync(user, rolesToAdd);
+
+                return true;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error updating user: {UserId}", userId);
+                _logger.LogError(ex, $"Error updating user: {userId}");
                 return false;
             }
         }
@@ -142,7 +154,7 @@ namespace ProjektZaliczeniowyNET.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error deleting user: {UserId}", userId);
+                _logger.LogError(ex, $"Error deleting user: {userId}");
                 return false;
             }
         }

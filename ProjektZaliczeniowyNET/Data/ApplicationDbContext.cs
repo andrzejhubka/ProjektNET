@@ -89,6 +89,31 @@ public class ApplicationDbContext : DbContext
             entity.Ignore(e => e.TotalCost);
         });
 
+        modelBuilder.Entity<Part>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name)
+                .IsRequired()
+                .HasMaxLength(150);
+
+            entity.Property(e => e.Description)
+                .HasMaxLength(500);
+
+            // Precyzja i skala dla ceny
+            entity.Property(e => e.Price)
+                .IsRequired()
+                .HasColumnType("decimal(18,2)");
+
+            entity.Property(e => e.QuantityInStock)
+                .IsRequired();
+
+            entity.Property(e => e.CreatedAt)
+                .IsRequired();
+
+            entity.Property(e => e.UpdatedAt)
+                .IsRequired(false);
+        });
+
         // Konfiguracja dla ServiceTask
         modelBuilder.Entity<ServiceTask>(entity =>
         {

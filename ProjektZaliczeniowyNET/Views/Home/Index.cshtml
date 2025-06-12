@@ -1,8 +1,60 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model ProjektZaliczeniowyNET.ViewModels.HomeIndexViewModel
+
+@{
+    ViewData["Title"] = "Strona główna";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container">
+    <div class="jumbotron">
+        <h1 class="display-4">@Model.WelcomeMessage</h1>
+        <p class="lead">System zarządzania warsztatem samochodowym</p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card text-white bg-warning mb-3">
+                <div class="card-header">Aktywne zlecenia</div>
+                <div class="card-body">
+                    <h4 class="card-title">@Model.ActiveOrdersCount</h4>
+                    <p class="card-text">Zlecenia w trakcie realizacji</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-header">Zakończone zlecenia</div>
+                <div class="card-body">
+                    <h4 class="card-title">@Model.CompletedOrdersCount</h4>
+                    <p class="card-text">Pomyślnie zakończone naprawy</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-white bg-info mb-3">
+                <div class="card-header">Wskaźnik realizacji</div>
+                <div class="card-body">
+                    <h4 class="card-title">@Model.CompletionRate%</h4>
+                    <p class="card-text">Procent zakończonych zleceń</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Szybkie akcje</h5>
+                </div>
+                <div class="card-body">
+                    <a href="/ServiceOrder/Create" class="btn btn-primary">Nowe zlecenie</a>
+                    <a href="/Customer/Index" class="btn btn-secondary">Lista klientów</a>
+                    <a href="/Vehicle/Index" class="btn btn-info">Lista pojazdów</a>
+                    <a href="/ServiceOrder/Index" class="btn btn-success">Wszystkie zlecenia</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

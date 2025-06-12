@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ProjektZaliczeniowyNET.Models;
 
 namespace ProjektZaliczeniowyNET.Data;
 
-public class ApplicationDbContext : DbContext
+// ZMIEŃ na IdentityDbContext zamiast DbContext
+public class ApplicationDbContext : IdentityDbContext<User>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
@@ -135,10 +137,17 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<Comment>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Content).IsRequired();
+            entity.Property(e => e.Content).IsRequired().HasMaxLength(2000);
+            entity.Property(e => e.Type)
+                .IsRequired()
+                .HasConversion<int>(); // Konwersja enum na int
             entity.Property(e => e.CreatedAt).IsRequired();
-            entity.Property(e => e.AuthorId).IsRequired();
+            entity.Property(e => e.UpdatedAt).IsRequired(false);
+            entity.Property(e => e.AuthorId).IsRequired().HasMaxLength(450); // Dodaj maksymalną długość
             entity.Property(e => e.ServiceOrderId).IsRequired();
+    
+            // Ignoruj właściwość obliczaną
+            entity.Ignore(e => e.IsEdited);
         });
 
         // Konfiguracja dla ServiceOrderPart

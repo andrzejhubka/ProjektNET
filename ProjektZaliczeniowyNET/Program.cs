@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using ProjektZaliczeniowyNET.Data;
+using ProjektZaliczeniowyNET.Interfaces;
 using ProjektZaliczeniowyNET.Models;
 using ProjektZaliczeniowyNET.Services;
 using ProjektZaliczeniowyNET.Mappers;
@@ -12,7 +13,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Konfiguracja Identity
-builder.Services.AddIdentity<User, IdentityRole>(options =>
+builder.Services.AddIdentity<User, ApplicationRole>(options =>
     {
         // Konfiguracja hasła
         options.Password.RequiredLength = 6;
@@ -36,6 +37,21 @@ builder.Services.AddScoped<IVehicleMapper, VehicleMapper>();
 
 builder.Services.AddScoped<IServiceOrderService, ServiceOrderService>();
 builder.Services.AddScoped<IServiceOrderMapper, ServiceOrderMapper>();
+
+builder.Services.AddScoped<IServiceOrderPartService, ServiceOrderPartService>();
+builder.Services.AddScoped<IServiceOrderPartMapper, ServiceOrderPartMapper>();
+
+builder.Services.AddScoped<IServiceTaskService, ServiceTaskService>();
+builder.Services.AddScoped<IServiceTaskMapper, ServiceTaskMapper>();
+
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<ICustomerMapper, CustomerMapper>();
+
+builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddScoped<ICommentMapper, CommentMapper>();
+
+builder.Services.AddScoped<IApplicationRoleService, ApplicationRoleService>();
+builder.Services.AddScoped<IApplicationRoleMapper, ApplicationRoleMapper>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

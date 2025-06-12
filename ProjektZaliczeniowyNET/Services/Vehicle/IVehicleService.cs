@@ -13,5 +13,7 @@ namespace ProjektZaliczeniowyNET.Services
         Task<VehicleDto> CreateAsync(VehicleCreateDto dto);
         Task<bool> UpdateAsync(int id, UpdateVehicleDto dto);
         Task<bool> DeleteAsync(int id);
+
+        Task<bool> SetImageUrlAsync(int id, string imageUrl);
     }
 }

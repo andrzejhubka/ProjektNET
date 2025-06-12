@@ -72,5 +72,16 @@ namespace ProjektZaliczeniowyNET.Services
             await _dbContext.SaveChangesAsync();
             return true;
         }
+        
+        public async Task<bool> SetImageUrlAsync(int id, string imageUrl)
+        {
+            var vehicle = await _dbContext.Vehicles.FindAsync(id);
+            if (vehicle == null) return false;
+
+            vehicle.ImageUrl = imageUrl;
+            _dbContext.Vehicles.Update(vehicle);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
     }
 }

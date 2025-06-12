@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using ProjektZaliczeniowyNET.DTOs.User;
 using ProjektZaliczeniowyNET.Models;
 using ProjektZaliczeniowyNET.Mappers;

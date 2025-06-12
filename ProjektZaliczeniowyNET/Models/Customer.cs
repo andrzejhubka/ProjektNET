@@ -8,30 +8,30 @@ namespace ProjektZaliczeniowyNET.Models
 
         [Required]
         [StringLength(50)]
-        public string FirstName { get; set; }
+        public string FirstName { get; set; } = string.Empty;
 
         [Required]
         [StringLength(50)]
-        public string LastName { get; set; }
+        public string LastName { get; set; } = string.Empty;
 
         [Required]
         [StringLength(100)]
         [EmailAddress]
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
 
         [Required]
         [StringLength(20)]
         [Phone]
-        public string PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; } = string.Empty;
 
         [StringLength(200)]
-        public string Address { get; set; }
+        public string Address { get; set; } = string.Empty;
 
         [StringLength(50)]
-        public string City { get; set; }
+        public string City { get; set; } = string.Empty;
 
         [StringLength(10)]
-        public string PostalCode { get; set; }
+        public string PostalCode { get; set; } = string.Empty;
 
         [StringLength(11)]
         public string? TaxNumber { get; set; } // NIP dla firm

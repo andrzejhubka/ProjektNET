@@ -1,45 +1,51 @@
 using Microsoft.AspNetCore.Mvc;
 using ProjektZaliczeniowyNET.Services;
 using ProjektZaliczeniowyNET.Mappers;
-using ProjektZaliczeniowyNET.DTOs;
+using ProjektZaliczeniowyNET.DTOs.User;  // <-- poprawione namespace
 
-namespace ProjektZaliczeniowyNET.Controllers;
-
-
-public class UsersController : Controller
+namespace ProjektZaliczeniowyNET.Controllers
 {
-    private readonly IUserService _userService;
-    private readonly UserMapper _userMapper;
-    
-    public UsersController(IUserService userService, UserMapper userMapper)
+    public class UsersController : Controller
     {
-        _userService = userService;
-        _userMapper = userMapper;
-    }
+        private readonly IUserService _userService;
+        private readonly UserMapper _userMapper;
 
-    [HttpGet]
-    public async Task<IActionResult> Index()
-    {
-        var users = await _userService.GetAllUsersAsync();
-        return View(users);
-    }
-    
-    [HttpGet]
-    public IActionResult Create()
-    {
-        return View();
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> Create(CreateUserDto createUserDto)
-    {
-        var success = await _userService.CreateUserAsync(createUserDto);
-        
-        if (success)
+        public UsersController(IUserService userService, UserMapper userMapper)
         {
-            return RedirectToAction(nameof(Index));
+            _userService = userService;
+            _userMapper = userMapper;
         }
 
-        return View(createUserDto);
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            var users = await _userService.GetAllUsersAsync();
+            return View(users);
+        }
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(UserCreateDto createUserDto)  // <-- UserCreateDto, nie CreateUserDto
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(createUserDto);
+            }
+
+            var success = await _userService.CreateUserAsync(createUserDto);
+
+            if (success)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            ModelState.AddModelError(string.Empty, "Nie udało się utworzyć użytkownika.");
+            return View(createUserDto);
+        }
     }
 }

@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace ProjektZaliczeniowyNET.Mappers
 {
-    public class VehicleMapper
+    public class VehicleMapper : IVehicleMapper
     {
         public VehicleDto ToDto(Vehicle vehicle)
         {

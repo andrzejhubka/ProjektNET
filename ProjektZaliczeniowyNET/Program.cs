@@ -31,6 +31,12 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserMapper, UserMapper>();
 
+builder.Services.AddScoped<IVehicleService, VehicleService>();
+builder.Services.AddScoped<IVehicleMapper, VehicleMapper>();
+
+builder.Services.AddScoped<IServiceOrderService, ServiceOrderService>();
+builder.Services.AddScoped<IServiceOrderMapper, ServiceOrderMapper>();
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 

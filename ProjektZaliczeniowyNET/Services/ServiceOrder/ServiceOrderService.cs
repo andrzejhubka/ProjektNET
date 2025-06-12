@@ -76,5 +76,19 @@ namespace ProjektZaliczeniowyNET.Services
             await _context.SaveChangesAsync();
             return true;
         }
+        public async Task<int> GetActiveOrdersCountAsync()
+        {
+            var activeStatuses = new[] 
+            { 
+                ServiceOrderStatus.Pending, 
+                ServiceOrderStatus.InProgress, 
+                ServiceOrderStatus.WaitingForParts 
+            };
+
+            return await _context.ServiceOrders
+                .CountAsync(o => activeStatuses.Contains(o.Status));
+        }
+
+
     }
 }

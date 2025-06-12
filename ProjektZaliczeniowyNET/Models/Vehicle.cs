@@ -46,10 +46,10 @@ namespace ProjektZaliczeniowyNET.Models
 
         public bool IsActive { get; set; } = true;
 
-        // Foreign Keys
+        // Klucze obce
         public int CustomerId { get; set; }
 
-        // Navigation properties
+        // Właściwości nawigacyjne
         [ForeignKey("CustomerId")]
         public virtual Customer Customer { get; set; }
         public virtual ICollection<ServiceOrder> ServiceOrders { get; set; } = new List<ServiceOrder>();

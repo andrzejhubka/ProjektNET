@@ -1,0 +1,103 @@
+using Microsoft.EntityFrameworkCore;
+using ProjektZaliczeniowyNET.Data;
+using ProjektZaliczeniowyNET.DTOs.Customer;
+using ProjektZaliczeniowyNET.Mappers;
+using ProjektZaliczeniowyNET.Models;
+using ProjektZaliczeniowyNET.Services;
+
+namespace ProjektZaliczeniowyNET.Services;
+
+public class CustomerService : ICustomerService
+{
+    private readonly ApplicationDbContext _context;
+    private readonly ICustomerMapper _mapper;
+
+    public CustomerService(ApplicationDbContext context, ICustomerMapper mapper)
+    {
+        _context = context;
+        _mapper = mapper;
+    }
+
+    public async Task<IEnumerable<CustomerListDto>> GetAllCustomersAsync()
+    {
+        var customers = await _context.Customers
+            .Include(c => c.Vehicles)
+            .OrderBy(c => c.DisplayName)
+            .ToListAsync();
+
+        return customers.Select(_mapper.ToListDto);
+    }
+
+    public async Task<IEnumerable<CustomerSelectDto>> GetCustomersForSelectAsync()
+    {
+        var customers = await _context.Customers
+            .Where(c => c.IsActive)
+            .OrderBy(c => c.DisplayName)
+            .ToListAsync();
+
+        return customers.Select(_mapper.ToSelectDto);
+    }
+
+    public async Task<CustomerDto?> GetCustomerByIdAsync(int id)
+    {
+        var customer = await _context.Customers
+            .Include(c => c.Vehicles)
+            .Include(c => c.ServiceOrders)
+            .FirstOrDefaultAsync(c => c.Id == id);
+
+        return customer != null ? _mapper.ToDto(customer) : null;
+    }
+
+    public async Task<CustomerDto> CreateCustomerAsync(CustomerCreateDto createDto)
+    {
+        var customer = _mapper.ToEntity(createDto);
+        
+        _context.Customers.Add(customer);
+        await _context.SaveChangesAsync();
+
+        return _mapper.ToDto(customer);
+    }
+
+    public async Task<CustomerDto?> UpdateCustomerAsync(int id, CustomerUpdateDto updateDto)
+    {
+        var customer = await _context.Customers.FindAsync(id);
+        if (customer == null)
+            return null;
+
+        _mapper.UpdateEntity(customer, updateDto);
+        
+        await _context.SaveChangesAsync();
+
+        return _mapper.ToDto(customer);
+    }
+
+    public async Task<bool> DeleteCustomerAsync(int id)
+    {
+        var customer = await _context.Customers.FindAsync(id);
+        if (customer == null)
+            return false;
+
+        // Soft delete - tylko ustawiamy IsActive na false
+        customer.IsActive = false;
+        await _context.SaveChangesAsync();
+
+        return true;
+    }
+
+    public async Task<bool> CustomerExistsAsync(int id)
+    {
+        return await _context.Customers.AnyAsync(c => c.Id == id);
+    }
+
+    public async Task<bool> IsEmailUniqueAsync(string email, int? excludeId = null)
+    {
+        var query = _context.Customers.Where(c => c.Email == email);
+        
+        if (excludeId.HasValue)
+        {
+            query = query.Where(c => c.Id != excludeId.Value);
+        }
+
+        return !await query.AnyAsync();
+    }
+}

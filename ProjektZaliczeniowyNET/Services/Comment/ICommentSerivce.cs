@@ -1,4 +1,4 @@
-/*using ProjektZaliczeniowyNET.DTOs.Comment;
+using ProjektZaliczeniowyNET.DTOs.Comment;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -12,4 +12,4 @@ namespace ProjektZaliczeniowyNET.Services
         Task<bool> UpdateCommentAsync(int id, UpdateCommentDto updateDto);
         Task<bool> DeleteCommentAsync(int id);
     }
-}*/
+}

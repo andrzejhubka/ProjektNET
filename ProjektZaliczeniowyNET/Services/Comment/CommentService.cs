@@ -1,9 +1,10 @@
-/*using ProjektZaliczeniowyNET.DTOs.Comment;
+using ProjektZaliczeniowyNET.DTOs.Comment;
 using ProjektZaliczeniowyNET.Mappers;
 using ProjektZaliczeniowyNET.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ProjektZaliczeniowyNET.Data;
 
 namespace ProjektZaliczeniowyNET.Services
 {
@@ -78,4 +79,4 @@ namespace ProjektZaliczeniowyNET.Services
             return true;
         }
     }
-}*/
+}

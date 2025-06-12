@@ -29,7 +29,7 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 
 // Rejestracja serwisów
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<UserMapper>();
+builder.Services.AddScoped<IUserMapper, UserMapper>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

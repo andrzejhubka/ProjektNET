@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
-using ProjektZaliczeniowyNET.Services;
-using ProjektZaliczeniowyNET.Mappers;
 using ProjektZaliczeniowyNET.DTOs.User;
+using ProjektZaliczeniowyNET.Mappers;
+using ProjektZaliczeniowyNET.Services;
 
 namespace ProjektZaliczeniowyNET.Controllers
 {
-    public class UsersController : Controller
+    [ApiController]
+    [Route("api/[controller]")]
+    public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
         private readonly UserMapper _userMapper;
@@ -16,36 +18,73 @@ namespace ProjektZaliczeniowyNET.Controllers
             _userMapper = userMapper;
         }
 
+        // GET: api/users
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> GetAll()
         {
-            var users = await _userService.GetAllUsersAsync();
-            return View(users);
+            var users = await _userService.GetUsersForListAsync();
+            return Ok(users);
         }
 
-        [HttpGet]
-        public IActionResult Create()
+        // GET: api/users/{id}
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(string id)
         {
-            return View();
+            var user = await _userService.GetUserByIdAsync(id);
+            if (user == null)
+                return NotFound();
+
+            return Ok(user);
         }
 
+        // POST: api/users
         [HttpPost]
-        public async Task<IActionResult> Create(UserCreateDto createUserDto)  // <-- UserCreateDto, nie CreateUserDto
+        public async Task<IActionResult> Create([FromBody] UserCreateDto createUserDto)
         {
             if (!ModelState.IsValid)
-            {
-                return View(createUserDto);
-            }
+                return BadRequest(ModelState);
 
             var success = await _userService.CreateUserAsync(createUserDto);
+            if (!success)
+                return BadRequest("Nie udało się utworzyć użytkownika.");
 
-            if (success)
-            {
-                return RedirectToAction(nameof(Index));
-            }
+            return CreatedAtAction(nameof(GetById), new { id = createUserDto.Email }, createUserDto);
+        }
 
-            ModelState.AddModelError(string.Empty, "Nie udało się utworzyć użytkownika.");
-            return View(createUserDto);
+        // PUT: api/users/{id}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(string id, [FromBody] UserUpdateDto updateUserDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var success = await _userService.UpdateUserAsync(id, updateUserDto);
+            if (!success)
+                return NotFound("Nie znaleziono użytkownika lub nie udało się zaktualizować.");
+
+            return NoContent();
+        }
+
+        // DELETE: api/users/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var success = await _userService.DeleteUserAsync(id);
+            if (!success)
+                return NotFound("Nie znaleziono użytkownika lub nie udało się usunąć.");
+
+            return NoContent();
+        }
+
+        // POST: api/users/{id}/toggle-status
+        [HttpPost("{id}/toggle-status")]
+        public async Task<IActionResult> ToggleStatus(string id)
+        {
+            var success = await _userService.ToggleUserStatusAsync(id);
+            if (!success)
+                return NotFound("Nie znaleziono użytkownika lub nie udało się zmienić statusu.");
+
+            return NoContent();
         }
     }
 }

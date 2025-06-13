@@ -53,6 +53,9 @@ builder.Services.AddScoped<CommentMapper>();
 builder.Services.AddScoped<IApplicationRoleService, ApplicationRoleService>();
 builder.Services.AddScoped<ApplicationRoleMapper>();
 
+builder.Services.AddScoped<IPartService, PartService>();
+builder.Services.AddScoped<PartMapper>();  
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 

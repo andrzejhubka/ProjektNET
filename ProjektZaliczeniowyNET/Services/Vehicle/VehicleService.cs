@@ -1,7 +1,6 @@
 using ProjektZaliczeniowyNET.Data;
 using ProjektZaliczeniowyNET.DTOs.Vehicle;
 using ProjektZaliczeniowyNET.Mappers;
-using ProjektZaliczeniowyNET.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ProjektZaliczeniowyNET.Services

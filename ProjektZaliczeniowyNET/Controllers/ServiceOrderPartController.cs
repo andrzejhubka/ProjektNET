@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using ProjektZaliczeniowyNET.DTOs.ServiceOrderPart;
-using ProjektZaliczeniowyNET.Interfaces;
 using ProjektZaliczeniowyNET.Services;
 
 namespace ProjektZaliczeniowyNET.Controllers;

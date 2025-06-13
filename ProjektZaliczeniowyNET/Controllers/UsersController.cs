@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ProjektZaliczeniowyNET.Services;
 using ProjektZaliczeniowyNET.Mappers;
-using ProjektZaliczeniowyNET.DTOs.User;  // <-- poprawione namespace
+using ProjektZaliczeniowyNET.DTOs.User;
 
 namespace ProjektZaliczeniowyNET.Controllers
 {

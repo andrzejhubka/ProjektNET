@@ -4,7 +4,6 @@ using ProjektZaliczeniowyNET.Models;
 
 namespace ProjektZaliczeniowyNET.Data;
 
-// ZMIEŃ na IdentityDbContext zamiast DbContext
 public class ApplicationDbContext : IdentityDbContext<User>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)

@@ -121,7 +121,6 @@ public class ApplicationDbContext : IdentityDbContext<User>
             entity.Property(e => e.DetailedDescription).HasMaxLength(1000);
             entity.Property(e => e.LaborHours).IsRequired().HasColumnType("decimal(8,2)");
             entity.Property(e => e.HourlyRate).IsRequired().HasColumnType("decimal(8,2)");
-            entity.Property(e => e.TotalTaskCost).IsRequired().HasColumnType("decimal(10,2)");
             entity.Property(e => e.IsCompleted).IsRequired().HasDefaultValue(false);
             entity.Property(e => e.Notes).HasMaxLength(500);
             entity.Property(e => e.ServiceOrderId).IsRequired();

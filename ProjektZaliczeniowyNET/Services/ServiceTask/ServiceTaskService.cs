@@ -10,12 +10,12 @@ namespace ProjektZaliczeniowyNET.Services
     public class ServiceTaskService : IServiceTaskService
     {
         private readonly ApplicationDbContext _context;
-        private readonly IServiceTaskMapper _mapper;
+        private readonly ServiceTaskMapper _mapper;
         private readonly ILogger<ServiceTaskService> _logger;
 
         public ServiceTaskService(
             ApplicationDbContext context,
-            IServiceTaskMapper mapper,
+            ServiceTaskMapper mapper,
             ILogger<ServiceTaskService> logger)
         {
             _context = context;

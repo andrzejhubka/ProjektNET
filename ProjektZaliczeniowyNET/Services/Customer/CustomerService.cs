@@ -10,9 +10,9 @@ namespace ProjektZaliczeniowyNET.Services
     public class CustomerService : ICustomerService
     {
         private readonly ApplicationDbContext _context;
-        private readonly ICustomerMapper _mapper;
+        private readonly CustomerMapper _mapper;
 
-        public CustomerService(ApplicationDbContext context, ICustomerMapper mapper)
+        public CustomerService(ApplicationDbContext context, CustomerMapper mapper)
         {
             _context = context;
             _mapper = mapper;

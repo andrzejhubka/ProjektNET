@@ -9,9 +9,9 @@ namespace ProjektZaliczeniowyNET.Services
     public class ServiceOrderPartService : IServiceOrderPartService
     {
         private readonly ApplicationDbContext _context;
-        private readonly IServiceOrderPartMapper _mapper;
+        private readonly ServiceOrderPartMapper _mapper;
 
-        public ServiceOrderPartService(ApplicationDbContext context, IServiceOrderPartMapper mapper)
+        public ServiceOrderPartService(ApplicationDbContext context, ServiceOrderPartMapper mapper)
         {
             _context = context;
             _mapper = mapper;

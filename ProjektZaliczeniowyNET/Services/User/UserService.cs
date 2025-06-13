@@ -9,12 +9,12 @@ namespace ProjektZaliczeniowyNET.Services
     public class UserService : IUserService
     {
         private readonly UserManager<User> _userManager;
-        private readonly IUserMapper _userMapper;
+        private readonly UserMapper _userMapper;
         private readonly ILogger<UserService> _logger;
 
         public UserService(
             UserManager<User> userManager,
-            IUserMapper userMapper,
+            UserMapper userMapper,
             ILogger<UserService> logger)
         {
             _userManager = userManager;

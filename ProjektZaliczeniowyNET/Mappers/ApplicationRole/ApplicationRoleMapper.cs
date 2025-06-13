@@ -1,48 +1,16 @@
+using Riok.Mapperly.Abstractions;
 using ProjektZaliczeniowyNET.DTOs.Role;
-using ProjektZaliczeniowyNET.Models;
+using ProjektZaliczeniowyNET.Models; // Załóżmy, że masz klasę ApplicationRole w Models
 
 namespace ProjektZaliczeniowyNET.Mappers
 {
-    public class ApplicationRoleMapper : IApplicationRoleMapper
+    [Mapper]
+    public partial class ApplicationRoleMapper
     {
-        public ApplicationRoleListDto ToListDto(ApplicationRole role)
-        {
-            return new ApplicationRoleListDto
-            {
-                Id = role.Id,
-                Name = role.Name!,
-                Description = role.Description,
-                CreatedAt = role.CreatedAt
-            };
-        }
+        // Mapowanie do listy (szczegóły)
+        public partial ApplicationRoleListDto ToListDto(ApplicationRole role);
 
-        public ApplicationRoleSelectDto ToSelectDto(ApplicationRole role)
-        {
-            return new ApplicationRoleSelectDto
-            {
-                Id = role.Id,
-                Name = role.Name
-            };
-        }
-
-        public IEnumerable<ApplicationRoleListDto> ToListDto(IEnumerable<ApplicationRole> roles)
-        {
-            return roles.Select(ToListDto);
-        }
-
-        public IEnumerable<ApplicationRoleSelectDto> ToSelectDto(IEnumerable<ApplicationRole> roles)
-        {
-            return roles.Select(ToSelectDto);
-        }
-
-        public ApplicationRole ToEntity(ApplicationRoleListDto dto)
-        {
-            return new ApplicationRole(dto.Name)
-            {
-                Id = dto.Id,
-                Description = dto.Description,
-                CreatedAt = dto.CreatedAt
-            };
-        }
+        // Mapowanie do select (prostsza wersja)
+        public partial ApplicationRoleSelectDto ToSelectDto(ApplicationRole role);
     }
 }

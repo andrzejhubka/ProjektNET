@@ -11,9 +11,9 @@ namespace ProjektZaliczeniowyNET.Services
     public class CommentService : ICommentService
     {
         private readonly ApplicationDbContext _context;
-        private readonly ICommentMapper _commentMapper;
+        private readonly CommentMapper _commentMapper;
 
-        public CommentService(ApplicationDbContext context, ICommentMapper commentMapper)
+        public CommentService(ApplicationDbContext context, CommentMapper commentMapper)
         {
             _context = context;
             _commentMapper = commentMapper;

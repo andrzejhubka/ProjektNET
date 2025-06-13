@@ -9,9 +9,9 @@ namespace ProjektZaliczeniowyNET.Services
     public class VehicleService : IVehicleService
     {
         private readonly ApplicationDbContext _dbContext;
-        private readonly IVehicleMapper _mapper;
+        private readonly VehicleMapper _mapper;
 
-        public VehicleService(ApplicationDbContext dbContext, IVehicleMapper mapper)
+        public VehicleService(ApplicationDbContext dbContext, VehicleMapper mapper)
         {
             _dbContext = dbContext;
             _mapper = mapper;

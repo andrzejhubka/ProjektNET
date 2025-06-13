@@ -9,9 +9,9 @@ namespace ProjektZaliczeniowyNET.Services
     public class ApplicationRoleService : IApplicationRoleService
     {
         private readonly RoleManager<ApplicationRole> _roleManager;
-        private readonly IApplicationRoleMapper _mapper;
+        private readonly ApplicationRoleMapper _mapper;
 
-        public ApplicationRoleService(RoleManager<ApplicationRole> roleManager, IApplicationRoleMapper mapper)
+        public ApplicationRoleService(RoleManager<ApplicationRole> roleManager, ApplicationRoleMapper mapper)
         {
             _roleManager = roleManager;
             _mapper = mapper;
@@ -20,13 +20,13 @@ namespace ProjektZaliczeniowyNET.Services
         public async Task<IEnumerable<ApplicationRoleListDto>> GetAllRolesAsync()
         {
             var roles = await _roleManager.Roles.ToListAsync();
-            return _mapper.ToListDto(roles);
+            return roles.Select(_mapper.ToListDto);
         }
 
         public async Task<IEnumerable<ApplicationRoleSelectDto>> GetRolesForSelectAsync()
         {
             var roles = await _roleManager.Roles.ToListAsync();
-            return _mapper.ToSelectDto(roles);
+            return roles.Select(_mapper.ToSelectDto);
         }
 
         public async Task<ApplicationRoleListDto?> GetRoleByIdAsync(string id)

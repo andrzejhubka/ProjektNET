@@ -30,28 +30,28 @@ builder.Services.AddIdentity<User, ApplicationRole>(options =>
 
 // Rejestracja serwisów
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IUserMapper, UserMapper>();
+builder.Services.AddScoped<UserMapper>();
 
 builder.Services.AddScoped<IVehicleService, VehicleService>();
-builder.Services.AddScoped<IVehicleMapper, VehicleMapper>();
+builder.Services.AddScoped<VehicleMapper>();
 
 builder.Services.AddScoped<IServiceOrderService, ServiceOrderService>();
-builder.Services.AddScoped<IServiceOrderMapper, ServiceOrderMapper>();
+builder.Services.AddScoped<ServiceOrderMapper>();
 
 builder.Services.AddScoped<IServiceOrderPartService, ServiceOrderPartService>();
-builder.Services.AddScoped<IServiceOrderPartMapper, ServiceOrderPartMapper>();
+builder.Services.AddScoped<ServiceOrderPartMapper>();
 
 builder.Services.AddScoped<IServiceTaskService, ServiceTaskService>();
-builder.Services.AddScoped<IServiceTaskMapper, ServiceTaskMapper>();
+builder.Services.AddScoped<ServiceTaskMapper>();
 
 builder.Services.AddScoped<ICustomerService, CustomerService>();
-builder.Services.AddScoped<ICustomerMapper, CustomerMapper>();
+builder.Services.AddScoped<CustomerMapper>();
 
 builder.Services.AddScoped<ICommentService, CommentService>();
-builder.Services.AddScoped<ICommentMapper, CommentMapper>();
+builder.Services.AddScoped<CommentMapper>();
 
 builder.Services.AddScoped<IApplicationRoleService, ApplicationRoleService>();
-builder.Services.AddScoped<IApplicationRoleMapper, ApplicationRoleMapper>();
+builder.Services.AddScoped<ApplicationRoleMapper>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

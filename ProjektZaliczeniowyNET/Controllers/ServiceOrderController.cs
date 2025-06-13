@@ -1,21 +1,28 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using ProjektZaliczeniowyNET.Services;
 using ProjektZaliczeniowyNET.DTOs.ServiceOrder;
 
 namespace ProjektZaliczeniowyNET.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
-public class ServiceOrderController : ControllerBase
+[Controller]
+public class ServiceOrderController : Controller
 {
     private readonly IServiceOrderService _serviceOrderService;
+    private readonly ICustomerService _customerService;
+    private readonly IVehicleService _vehicleService;
 
-    public ServiceOrderController(IServiceOrderService serviceOrderService)
+    public ServiceOrderController(
+        IServiceOrderService serviceOrderService,
+        ICustomerService customerService,
+        IVehicleService vehicleService)
     {
         _serviceOrderService = serviceOrderService;
+        _customerService = customerService;
+        _vehicleService = vehicleService;
     }
 
-    // GET: api/ServiceOrder
+    // GET: /ServiceOrder
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
@@ -23,7 +30,7 @@ public class ServiceOrderController : ControllerBase
         return Ok(orders);
     }
 
-    // GET: api/ServiceOrder/5
+    // GET: /ServiceOrder/5
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -31,7 +38,7 @@ public class ServiceOrderController : ControllerBase
         return order == null ? NotFound() : Ok(order);
     }
 
-    // POST: api/ServiceOrder
+    // POST: /ServiceOrder
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] ServiceOrderCreateDto dto)
     {
@@ -42,7 +49,7 @@ public class ServiceOrderController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
 
-    // PUT: api/ServiceOrder/5
+    // PUT: /ServiceOrder/5
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, [FromBody] ServiceOrderUpdateDto dto)
     {
@@ -50,7 +57,7 @@ public class ServiceOrderController : ControllerBase
         return updated ? NoContent() : NotFound();
     }
 
-    // DELETE: api/ServiceOrder/5
+    // DELETE: /ServiceOrder/5
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
@@ -58,7 +65,7 @@ public class ServiceOrderController : ControllerBase
         return deleted ? NoContent() : NotFound();
     }
 
-    // GET: api/ServiceOrder/active/count
+    // GET: /ServiceOrder/active/count
     [HttpGet("active/count")]
     public async Task<IActionResult> GetActiveOrdersCount()
     {
@@ -76,5 +83,15 @@ public class ServiceOrderController : ControllerBase
 
         var result = await _serviceOrderService.UpdateAsync(id, updateDto);
         return result ? NoContent() : NotFound();
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> Create()
+    {
+        // TODO: POPRAWIC TE METODY -> WYWOLUJA BLEDY
+        //ViewBag.Customers = await _customerService.GetAllCustomersAsync();
+        //ViewBag.Vehicles = await _vehicleService.GetAllAsync();
+
+        return View(new ServiceOrderCreateDto());
     }
 }

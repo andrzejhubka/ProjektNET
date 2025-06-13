@@ -1,0 +1,22 @@
+@{
+    ViewData["Title"] = "Testowy Widok";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<p>To jest prosty widok testowy!</p>
+
+<form method="post">
+    <div>
+        <label for="testInput">Wpisz coś:</label>
+        <input id="testInput" name="testInput" type="text" />
+    </div>
+    <button type="submit">Wyślij</button>
+</form>
+
+@if (ViewBag.Message != null)
+{
+    <div>
+        <strong>Odebrano:</strong> @ViewBag.Message
+    </div>
+}

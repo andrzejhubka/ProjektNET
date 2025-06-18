@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using ProjektZaliczeniowyNET.Services;
 using ProjektZaliczeniowyNET.DTOs.ServiceOrder;
+using ProjektZaliczeniowyNET.Mappers;
 
 namespace ProjektZaliczeniowyNET.Controllers;
 
@@ -11,15 +13,19 @@ public class ServiceOrderController : Controller
     private readonly IServiceOrderService _serviceOrderService;
     private readonly ICustomerService _customerService;
     private readonly IVehicleService _vehicleService;
+    private readonly ServiceOrderMapper _mapper;
 
     public ServiceOrderController(
         IServiceOrderService serviceOrderService,
         ICustomerService customerService,
-        IVehicleService vehicleService)
+        IVehicleService vehicleService,
+        ServiceOrderMapper mapper  // <-- dodaj mapper tutaj
+    )
     {
         _serviceOrderService = serviceOrderService;
         _customerService = customerService;
         _vehicleService = vehicleService;
+        _mapper = mapper;   // <-- przypisz
     }
 
     public async Task<IActionResult> Index()
@@ -44,15 +50,27 @@ public class ServiceOrderController : Controller
         return order == null ? NotFound() : Ok(order);
     }
 
-    // POST: /ServiceOrder
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] ServiceOrderCreateDto dto)
+    public async Task<IActionResult> Create(ServiceOrderCreateDto dto)
     {
-        // Przykład: użytkownik twórca — zakładamy autoryzację i ID użytkownika
-        var userId = User?.Identity?.Name ?? "system"; // zamień na pobieranie z tokena, jeśli masz JWT
+        // TODO: SPRAWDZIC CZY DZIALA
+        if (!ModelState.IsValid)
+        {
+            // Odśwież dropdowny i zwróć widok z błędami
+            ViewBag.Customers = (await _customerService.GetAllCustomersAsync())
+                .Select(c => new SelectListItem(c.FullName, c.Id.ToString())).ToList();
 
-        var created = await _serviceOrderService.CreateAsync(dto, userId);
-        return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+            ViewBag.Vehicles = (await _vehicleService.GetAllAsync())
+                .Select(v => new SelectListItem(v.DisplayName, v.Id.ToString())).ToList();
+
+            return View(dto);
+        }
+
+        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "";
+
+        var createdDto = await _serviceOrderService.CreateAsync(dto, userId);
+
+        return RedirectToAction(nameof(Index));
     }
 
     // PUT: /ServiceOrder/5
@@ -94,8 +112,8 @@ public class ServiceOrderController : Controller
     [HttpGet]
     public async Task<IActionResult> Create()
     {
-        ViewBag.Customers = await _customerService.GetAllCustomersAsync();
-        ViewBag.Vehicles = await _vehicleService.GetAllAsync();
+        ViewBag.Customers = new SelectList(await _customerService.GetAllCustomersAsync(), "Id", "FullName");
+        ViewBag.Vehicles = new SelectList(await _vehicleService.GetAllAsync(), "Id", "DisplayName");
 
         return View(new ServiceOrderCreateDto());
     }

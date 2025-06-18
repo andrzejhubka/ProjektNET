@@ -1,22 +1,70 @@
+@model ProjektZaliczeniowyNET.DTOs.ServiceOrder.ServiceOrderCreateDto
+
 @{
-    ViewData["Title"] = "Testowy Widok";
+    ViewData["Title"] = "Dodaj nowe zlecenie serwisowe";
 }
 
 <h2>@ViewData["Title"]</h2>
 
-<p>To jest prosty widok testowy!</p>
-
-<form method="post">
+<form asp-action="Create" method="post">
     <div>
-        <label for="testInput">Wpisz coś:</label>
-        <input id="testInput" name="testInput" type="text" />
+        <label asp-for="Description">Opis zlecenia</label><br />
+        <textarea asp-for="Description" rows="4" cols="50"></textarea><br />
+        <span asp-validation-for="Description" style="color:red"></span>
     </div>
-    <button type="submit">Wyślij</button>
+
+    <div>
+        <label asp-for="EstimatedCompletionDate">Szacowana data zakończenia</label><br />
+        <input asp-for="EstimatedCompletionDate" type="date" /><br />
+        <span asp-validation-for="EstimatedCompletionDate" style="color:red"></span>
+    </div>
+
+    <div>
+        <label asp-for="EstimatedCost">Szacowany koszt (PLN)</label><br />
+        <input asp-for="EstimatedCost" type="number" step="0.01" /><br />
+        <span asp-validation-for="EstimatedCost" style="color:red"></span>
+    </div>
+
+    <div>
+        <label asp-for="CustomerComplaints">Skargi klienta</label><br />
+        <textarea asp-for="CustomerComplaints" rows="3" cols="50"></textarea><br />
+        <span asp-validation-for="CustomerComplaints" style="color:red"></span>
+    </div>
+
+    <div>
+        <label asp-for="InternalNotes">Notatki wewnętrzne</label><br />
+        <textarea asp-for="InternalNotes" rows="3" cols="50"></textarea><br />
+        <span asp-validation-for="InternalNotes" style="color:red"></span>
+    </div>
+
+    <div>
+        <label asp-for="IsWarrantyWork">Praca na gwarancji</label><br />
+        <input asp-for="IsWarrantyWork" type="checkbox" /><br />
+        <span asp-validation-for="IsWarrantyWork" style="color:red"></span>
+    </div>
+
+    <div>
+        <label asp-for="CustomerId">Klient</label><br />
+        @Html.DropDownListFor(m => m.CustomerId, (SelectList)ViewBag.Customers, "Wybierz klienta")
+        <span asp-validation-for="CustomerId" style="color:red"></span>
+    </div>
+
+    <div>
+        <label asp-for="VehicleId">Pojazd</label><br />
+        @Html.DropDownListFor(m => m.VehicleId, (SelectList)ViewBag.Vehicles, "Wybierz pojazd")
+        <span asp-validation-for="VehicleId" style="color:red"></span>
+    </div>
+
+    <div>
+        <label asp-for="AssignedMechanicId">Przypisany mechanik (opcjonalnie)</label><br />
+        <input asp-for="AssignedMechanicId" /><br />
+        <span asp-validation-for="AssignedMechanicId" style="color:red"></span>
+    </div>
+
+    <br />
+    <button type="submit">Dodaj zlecenie</button>
 </form>
 
-@if (ViewBag.Message != null)
-{
-    <div>
-        <strong>Odebrano:</strong> @ViewBag.Message
-    </div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 }

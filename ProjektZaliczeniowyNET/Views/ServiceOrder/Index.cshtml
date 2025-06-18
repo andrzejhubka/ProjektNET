@@ -1,123 +1,45 @@
-@model ProjektZaliczeniowyNET.Models.ServiceOrder
+@model IEnumerable<ProjektZaliczeniowyNET.DTOs.ServiceOrder.ServiceOrderListDto>
 
-@{
-    ViewData["Title"] = "Szczegóły zamówienia serwisowego";
-}
+<h1>Lista zleceń serwisowych</h1>
 
-<h1>@ViewData["Title"]</h1>
-
-<div>
-    <h4>Zamówienie #@Model.OrderNumber</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-3">Opis</dt>
-        <dd class="col-sm-9">@Model.Description</dd>
-
-        <dt class="col-sm-3">Status</dt>
-        <dd class="col-sm-9">@Model.Status.ToString()</dd>
-
-        <dt class="col-sm-3">Data utworzenia</dt>
-        <dd class="col-sm-9">@Model.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</dd>
-
-        <dt class="col-sm-3">Data rozpoczęcia</dt>
-        <dd class="col-sm-9">@Model.StartedAt?.ToLocalTime().ToString("yyyy-MM-dd HH:mm") ?? "Nie rozpoczęte"</dd>
-
-        <dt class="col-sm-3">Data zakończenia</dt>
-        <dd class="col-sm-9">@Model.CompletedAt?.ToLocalTime().ToString("yyyy-MM-dd HH:mm") ?? "Nie zakończone"</dd>
-
-        <dt class="col-sm-3">Szacowana data zakończenia</dt>
-        <dd class="col-sm-9">@Model.EstimatedCompletionDate?.ToLocalTime().ToString("yyyy-MM-dd") ?? "Brak"</dd>
-
-        <dt class="col-sm-3">Szacowany koszt</dt>
-        <dd class="col-sm-9">@Model.EstimatedCost.ToString("C")</dd>
-
-        <dt class="col-sm-3">Końcowy koszt</dt>
-        <dd class="col-sm-9">@Model.FinalCost.ToString("C")</dd>
-
-        <dt class="col-sm-3">Koszt robocizny (sumaryczny)</dt>
-        <dd class="col-sm-9">@Model.TotalLaborCost.ToString("C")</dd>
-
-        <dt class="col-sm-3">Koszt części (sumaryczny)</dt>
-        <dd class="col-sm-9">@Model.TotalPartsCost.ToString("C")</dd>
-
-        <dt class="col-sm-3">Całkowity koszt</dt>
-        <dd class="col-sm-9">@Model.TotalCost.ToString("C")</dd>
-
-        <dt class="col-sm-3">Skargi klienta</dt>
-        <dd class="col-sm-9">@Model.CustomerComplaints ?? "Brak"</dd>
-
-        <dt class="col-sm-3">Notatki wewnętrzne</dt>
-        <dd class="col-sm-9">@Model.InternalNotes ?? "Brak"</dd>
-
-        <dt class="col-sm-3">Praca gwarancyjna</dt>
-        <dd class="col-sm-9">@Model.IsWarrantyWork ? "Tak" : "Nie"</dd>
-
-        <dt class="col-sm-3">Klient</dt>
-
-        <dt class="col-sm-3">Pojazd</dt>
-        <dd class="col-sm-9">@Model.Vehicle?.LicensePlate ?? "Brak danych"</dd>
-
-        <dt class="col-sm-3">Przypisany mechanik</dt>
-        <dd class="col-sm-9">@Model.AssignedMechanic?.FullName ?? "Brak"</dd>
-
-        <dt class="col-sm-3">Utworzone przez</dt>
-        <dd class="col-sm-9">@Model.CreatedByUser?.FullName ?? "Brak"</dd>
-    </dl>
-</div>
-
-<h4>Zadania serwisowe</h4>
-@if (Model.ServiceTasks.Any())
-{
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Nazwa zadania</th>
-                <th>Opis</th>
-                <th>Koszt zadania</th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach(var task in Model.ServiceTasks)
-        {
-            <tr>
-                <td>@task.Description</td>
-                <td>@task.TotalTaskCost.ToString("C")</td>
-            </tr>
-        }
-        </tbody>
-    </table>
-}
-else
-{
-    <p>Brak zadań serwisowych przypisanych do tego zamówienia.</p>
-}
-
-<h4>Części zamówione</h4>
-@if (Model.ServiceOrderParts.Any())
-{
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Nazwa części</th>
-                <th>Ilość</th>
-                <th>Koszt</th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach(var part in Model.ServiceOrderParts)
-        {
-            <tr>
-                <td>@part.Quantity</td>
-                <td>@part.Cost.ToString("C")</td>
-            </tr>
-        }
-        </tbody>
-    </table>
-}
-else
-{
-    <p>Brak części przypisanych do tego zamówienia.</p>
-}
-
-<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edytuj</a> |
-<a asp-action="Index" class="btn btn-secondary">Powrót do listy</a>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Numer zlecenia</th>
+        <th>Klient</th>
+        <th>Pojazd</th>
+        <th>Mechanik</th>
+        <th>Opis</th>
+        <th>Status</th>
+        <th>Data utworzenia</th>
+        <th>Planowany termin</th>
+        <th>Koszt szacowany</th>
+        <th>Koszt całkowity</th>
+        <th>Zadania (ukończone / wszystkie)</th>
+        <th>Gwarancja</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var order in Model)
+    {
+        <tr>
+            <td>@order.OrderNumber</td>
+            <td>@order.CustomerName</td>
+            <td>@order.VehicleDisplayName</td>
+            <td>@order.AssignedMechanicName ?? "-" </td>
+            <td>@order.Description</td>
+            <td>@order.StatusDisplay</td>
+            <td>@order.CreatedAt.ToString("yyyy-MM-dd")</td>
+            <td>@order.EstimatedCompletionDate?.ToString("yyyy-MM-dd") ?? "-" </td>
+            <td>@order.EstimatedCost.ToString("C")</td>
+            <td>@order.TotalCost.ToString("C")</td>
+            <td>@order.CompletedTasksCount / @order.TasksCount</td>
+            <td>@(order.IsWarrantyWork ? "Tak" : "Nie")</td>
+            <td>
+                <a asp-controller="ServiceOrder" asp-action="Details" asp-route-id="@order.Id" class="btn btn-primary btn-sm">Szczegóły</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

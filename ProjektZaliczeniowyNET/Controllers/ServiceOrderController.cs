@@ -22,6 +22,12 @@ public class ServiceOrderController : Controller
         _vehicleService = vehicleService;
     }
 
+    public async Task<IActionResult> Index()
+    {
+        var serviceOrders = await _serviceOrderService.GetAllAsync();
+        return View(serviceOrders);
+    }
+    
     // GET: /ServiceOrder
     [HttpGet]
     public async Task<IActionResult> GetAll()

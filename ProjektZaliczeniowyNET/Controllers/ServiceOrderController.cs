@@ -88,9 +88,8 @@ public class ServiceOrderController : Controller
     [HttpGet]
     public async Task<IActionResult> Create()
     {
-        // TODO: POPRAWIC TE METODY -> WYWOLUJA BLEDY
-        //ViewBag.Customers = await _customerService.GetAllCustomersAsync();
-        //ViewBag.Vehicles = await _vehicleService.GetAllAsync();
+        ViewBag.Customers = await _customerService.GetAllCustomersAsync();
+        ViewBag.Vehicles = await _vehicleService.GetAllAsync();
 
         return View(new ServiceOrderCreateDto());
     }

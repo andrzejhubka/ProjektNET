@@ -35,7 +35,8 @@ namespace ProjektZaliczeniowyNET.Services
             }
 
             var customers = await query
-                .OrderBy(c => c.FullName)
+                .OrderBy(c => c.FirstName)
+                .ThenBy(c => c.LastName)
                 .ToListAsync();
 
             return customers.Select(_mapper.ToListDto);

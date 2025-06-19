@@ -1,33 +1,50 @@
-@model ProjektZaliczeniowyNET.ViewModels.CustomerListViewModel
+@model IEnumerable<ProjektZaliczeniowyNET.DTOs.Customer.CustomerListDto>
 
 @{
     ViewData["Title"] = "Lista klientów";
 }
 
-<h2>@ViewData["Title"]</h2>
+<h2>Lista klientów</h2>
 
 <table class="table table-striped">
     <thead>
     <tr>
-        <th>Id</th>
-        <th>Nazwa klienta</th>
+        <th>Imię i nazwisko</th>
         <th>Email</th>
+        <th>Telefon</th>
+        <th>Miasto</th>
+        <th>Pojazdy</th>
+        <th>Status</th>
         <th>Akcje</th>
     </tr>
     </thead>
     <tbody>
-    @foreach (var customer in Model.Customers)
+    @foreach (var customer in Model)
     {
         <tr>
-            <td>@customer.Id</td>
             <td>@customer.FullName</td>
             <td>@customer.Email</td>
+            <td>@customer.PhoneNumber</td>
+            <td>@customer.City</td>
+            <td>@customer.VehiclesCount</td>
             <td>
-                <a href="/Customer/Details/@customer.Id" class="btn btn-sm btn-info">Szczegóły</a>
-                <a href="/Customer/Edit/@customer.Id" class="btn btn-sm btn-warning">Edytuj</a>
-                <a href="/Customer/Delete/@customer.Id" class="btn btn-sm btn-danger">Usuń</a>
+                @if (customer.IsActive)
+                {
+                    <span class="badge bg-success">Aktywny</span>
+                }
+                else
+                {
+                    <span class="badge bg-secondary">Nieaktywny</span>
+                }
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@customer.Id" class="btn btn-info btn-sm">Szczegóły</a>
+                <a asp-action="Edit" asp-route-id="@customer.Id" class="btn btn-warning btn-sm">Edytuj</a>
+                <a asp-action="Delete" asp-route-id="@customer.Id" class="btn btn-danger btn-sm">Usuń</a>
             </td>
         </tr>
     }
     </tbody>
 </table>
+
+<a asp-action="Create" class="btn btn-primary">Dodaj klienta</a>

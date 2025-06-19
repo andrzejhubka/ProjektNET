@@ -1,101 +1,116 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProjektZaliczeniowyNET.DTOs.Customer;
-using ProjektZaliczeniowyNET.DTOs.Vehicle;
 using ProjektZaliczeniowyNET.Services;
 
 namespace ProjektZaliczeniowyNET.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class CustomersController : ControllerBase
+    [Authorize]
+    public class CustomerController : Controller
     {
         private readonly ICustomerService _customerService;
 
-        public CustomersController(ICustomerService customerService)
+        public CustomerController(ICustomerService customerService)
         {
             _customerService = customerService;
         }
 
-        // GET: api/customers?search=abc
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<CustomerListDto>>> GetAll([FromQuery] string? search)
+        // GET: Customer
+        public async Task<IActionResult> Index(string? search)
         {
             var customers = await _customerService.GetAllCustomersAsync(search);
-            return Ok(customers);
+            return View(customers);
         }
 
-        // GET: api/customers/select
-        [HttpGet("select")]
-        public async Task<ActionResult<IEnumerable<CustomerSelectDto>>> GetForSelect()
-        {
-            var customers = await _customerService.GetCustomersForSelectAsync();
-            return Ok(customers);
-        }
-
-        // GET: api/customers/5
-        [HttpGet("{id:int}")]
-        public async Task<ActionResult<CustomerDto>> GetById(int id)
+        // GET: Customer/Details/5
+        public async Task<IActionResult> Details(int id)
         {
             var customer = await _customerService.GetCustomerByIdAsync(id);
-            if (customer == null)
-                return NotFound();
-
-            return Ok(customer);
+            if (customer == null) return NotFound();
+            return View(customer);
         }
 
-        // GET: api/customers/5/vehicles
-        [HttpGet("{id:int}/vehicles")]
-        public async Task<ActionResult<IEnumerable<VehicleDto>>> GetVehicles(int id)
+        // GET: Customer/Create
+        public IActionResult Create()
         {
-            var vehicles = await _customerService.GetVehiclesForCustomerAsync(id);
-            if (vehicles == null)
-                return NotFound();
-
-            return Ok(vehicles);
+            return View();
         }
 
-        // POST: api/customers
+        // POST: Customer/Create
         [HttpPost]
-        public async Task<ActionResult<CustomerDto>> Create(CustomerCreateDto createDto)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(CustomerCreateDto dto)
         {
-            var isUnique = await _customerService.IsEmailUniqueAsync(createDto.Email);
-            if (!isUnique)
+            if (!ModelState.IsValid)
+                return View(dto);
+
+            if (!await _customerService.IsEmailUniqueAsync(dto.Email))
             {
-                ModelState.AddModelError("Email", "Email jest już zajęty.");
-                return ValidationProblem(ModelState);
+                ModelState.AddModelError(nameof(dto.Email), "Podany email już istnieje.");
+                return View(dto);
             }
 
-            var createdCustomer = await _customerService.CreateCustomerAsync(createDto);
-            return CreatedAtAction(nameof(GetById), new { id = createdCustomer.Id }, createdCustomer);
+            await _customerService.CreateCustomerAsync(dto);
+            return RedirectToAction(nameof(Index));
         }
 
-        // PUT: api/customers/5
-        [HttpPut("{id:int}")]
-        public async Task<ActionResult<CustomerDto>> Update(int id, CustomerUpdateDto updateDto)
+        // GET: Customer/Edit/5
+        public async Task<IActionResult> Edit(int id)
         {
-            var isUnique = await _customerService.IsEmailUniqueAsync(updateDto.Email, id);
-            if (!isUnique)
+            var customer = await _customerService.GetCustomerByIdAsync(id);
+            if (customer == null) return NotFound();
+
+            // Mapowanie do CustomerUpdateDto jeśli masz osobny DTO do edycji
+            var dto = new CustomerUpdateDto
             {
-                ModelState.AddModelError("Email", "Email jest już zajęty.");
-                return ValidationProblem(ModelState);
+                FirstName = customer.FirstName,
+                LastName = customer.LastName,
+                Email = customer.Email,
+                PhoneNumber = customer.PhoneNumber,
+                Address = customer.Address,
+                City = customer.City,
+                PostalCode = customer.PostalCode,
+                Notes = customer.Notes
+            };
+            return View(dto);
+        }
+
+        // POST: Customer/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, CustomerUpdateDto dto)
+        {
+            if (!ModelState.IsValid)
+                return View(dto);
+
+            if (!await _customerService.IsEmailUniqueAsync(dto.Email, id))
+            {
+                ModelState.AddModelError(nameof(dto.Email), "Podany email już istnieje.");
+                return View(dto);
             }
 
-            var updatedCustomer = await _customerService.UpdateCustomerAsync(id, updateDto);
-            if (updatedCustomer == null)
-                return NotFound();
+            var result = await _customerService.UpdateCustomerAsync(id, dto);
+            if (result == null) return NotFound();
 
-            return Ok(updatedCustomer);
+            return RedirectToAction(nameof(Index));
         }
 
-        // DELETE: api/customers/5
-        [HttpDelete("{id:int}")]
+        // GET: Customer/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            var success = await _customerService.DeleteCustomerAsync(id);
-            if (!success)
-                return NotFound();
+            var customer = await _customerService.GetCustomerByIdAsync(id);
+            if (customer == null) return NotFound();
+            return View(customer);
+        }
 
-            return NoContent();
+        // POST: Customer/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var result = await _customerService.DeleteCustomerAsync(id);
+            if (!result) return NotFound();
+            return RedirectToAction(nameof(Index));
         }
     }
 }

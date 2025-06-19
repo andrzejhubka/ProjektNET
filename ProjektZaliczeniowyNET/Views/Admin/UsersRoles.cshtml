@@ -1,0 +1,37 @@
+@model List<ProjektZaliczeniowyNET.ViewModels.UserWithRolesViewModel>
+
+<h2>Zarządzanie rolami użytkowników</h2>
+<table class="table">
+    <thead>
+    <tr>
+        <th>Email</th>
+        <th>Rola</th>
+        <th>Akcja</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var user in Model)
+    {
+        <tr>
+            <td>@user.Email</td>
+            <td>
+                <form asp-action="ChangeUserRole" method="post" class="d-flex align-items-center">
+                    <input type="hidden" name="userId" value="@user.UserId" />
+                    <select name="selectedRole" class="form-select form-select-sm" style="width:auto;">
+                        <option value="">Brak</option>
+                        @foreach (var role in user.AllRoles)
+                        {
+                            <option value="@role" selected="@(role == user.SelectedRole ? "selected" : null)">@role</option>
+
+                        }
+                    </select>
+                    <button type="submit" class="btn btn-primary btn-sm ms-2">Zmień</button>
+                </form>
+            </td>
+            <td>
+                <!-- Możesz dodać inne akcje, np. blokowanie konta -->
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

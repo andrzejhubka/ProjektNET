@@ -28,6 +28,13 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
+// domyslna sciezka do widoku braku dostepu
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.AccessDeniedPath = "/AccessDenied"; // ścieżka do Twojej akcji AccessDenied w HomeController
+    options.LoginPath = "/Account/Login"; // (opcjonalnie) ścieżka do logowania
+});
+
 // Rejestracja serwisów
 
 builder.Services.AddScoped<IVehicleService, VehicleService>();

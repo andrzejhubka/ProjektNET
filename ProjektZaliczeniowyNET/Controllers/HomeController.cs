@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProjektZaliczeniowyNET.Services;
 using ProjektZaliczeniowyNET.ViewModels;
@@ -30,6 +31,13 @@ namespace ProjektZaliczeniowyNET.Controllers
             };
 
             return View(model);
+        }
+        
+        [AllowAnonymous]
+        [Route("AccessDenied")]
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }

@@ -16,6 +16,7 @@ namespace ProjektZaliczeniowyNET.Controllers
         }
 
         // GET: Customer
+        [HttpGet("/Customer")]
         public async Task<IActionResult> Index(string? search)
         {
             var customers = await _customerService.GetAllCustomersAsync(search);

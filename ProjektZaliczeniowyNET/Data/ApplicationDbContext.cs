@@ -1,10 +1,11 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ProjektZaliczeniowyNET.Models;
 
 namespace ProjektZaliczeniowyNET.Data;
 
-public class ApplicationDbContext : IdentityDbContext<User>
+public class ApplicationDbContext : IdentityDbContext<IdentityUser>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
@@ -17,7 +18,7 @@ public class ApplicationDbContext : IdentityDbContext<User>
     public DbSet<Comment> Comments { get; set; }
     public DbSet<Part> Parts { get; set; }
     public DbSet<ServiceOrderPart> ServiceOrderParts { get; set; }
-    public DbSet<User> Users { get; set; }
+    public DbSet<IdentityUser> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

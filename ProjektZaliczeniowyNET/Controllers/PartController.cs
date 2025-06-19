@@ -10,7 +10,7 @@ namespace ProjektZaliczeniowyNET.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = Roles.Admin + "," + Roles.Recepcjonista)]  // dostęp tylko dla Admin i Recepcjonista
+    [Authorize(Roles = "Admin,Recepcjonista")]
     public class PartsController : ControllerBase
     {
         private readonly IPartService _partService;

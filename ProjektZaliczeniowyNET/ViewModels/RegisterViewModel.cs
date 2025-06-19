@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace ProjektZaliczeniowyNET.Models
+namespace ProjektZaliczeniowyNET.ViewModels
 {
     public class RegisterViewModel
     {
@@ -10,9 +10,9 @@ namespace ProjektZaliczeniowyNET.Models
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        [Required]
         [DataType(DataType.Password)]
-        [Compare("Password", ErrorMessage = "Hasła się nie zgadzają")]
+        [Display(Name = "Potwierdź hasło")]
+        [Compare("Password", ErrorMessage = "Hasła nie są takie same.")]
         public string ConfirmPassword { get; set; }
     }
 }

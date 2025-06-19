@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 
 namespace ProjektZaliczeniowyNET.Models
 {
@@ -34,6 +35,6 @@ namespace ProjektZaliczeniowyNET.Models
         public virtual ServiceOrder ServiceOrder { get; set; } = null!;
 
         [ForeignKey("AuthorId")]
-        public virtual User Author { get; set; } = null!;
+        public virtual IdentityUser Author { get; set; } = null!;
     }
 }

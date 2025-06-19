@@ -13,7 +13,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Konfiguracja Identity
-builder.Services.AddIdentity<User, ApplicationRole>(options =>
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     {
         // Konfiguracja hasła
         options.Password.RequiredLength = 6;
@@ -29,8 +29,6 @@ builder.Services.AddIdentity<User, ApplicationRole>(options =>
     .AddDefaultTokenProviders();
 
 // Rejestracja serwisów
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<UserMapper>();
 
 builder.Services.AddScoped<IVehicleService, VehicleService>();
 builder.Services.AddScoped<VehicleMapper>();
@@ -49,9 +47,6 @@ builder.Services.AddScoped<CustomerMapper>();
 
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<CommentMapper>();
-
-builder.Services.AddScoped<IApplicationRoleService, ApplicationRoleService>();
-builder.Services.AddScoped<ApplicationRoleMapper>();
 
 builder.Services.AddScoped<IPartService, PartService>();
 builder.Services.AddScoped<PartMapper>();  

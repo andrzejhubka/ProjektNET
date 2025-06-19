@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 
 namespace ProjektZaliczeniowyNET.Models
 {
@@ -64,10 +65,10 @@ namespace ProjektZaliczeniowyNET.Models
         public virtual Vehicle? Vehicle { get; set; }
 
         [ForeignKey("AssignedMechanicId")] 
-        public virtual User? AssignedMechanic { get; set; }
+        public virtual IdentityUser? AssignedMechanic { get; set; }
 
         [ForeignKey("CreatedByUserId")] 
-        public virtual User? CreatedByUser { get; set; }
+        public virtual IdentityUser? CreatedByUser { get; set; }
 
         public virtual ICollection<ServiceTask> ServiceTasks { get; set; } = new List<ServiceTask>();
 

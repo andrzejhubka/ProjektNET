@@ -17,6 +17,7 @@ namespace ProjektZaliczeniowyNET.Controllers
 
         // GET: Customer
         [HttpGet("/Customer")]
+        [HttpGet("/Customer/Index")]
         public async Task<IActionResult> Index(string? search)
         {
             var customers = await _customerService.GetAllCustomersAsync(search);
@@ -96,23 +97,23 @@ namespace ProjektZaliczeniowyNET.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
-        // GET: Customer/Delete/5
-        public async Task<IActionResult> Delete(int id)
-        {
-            var customer = await _customerService.GetCustomerByIdAsync(id);
-            if (customer == null) return NotFound();
-            return View(customer);
-        }
-
+        
         // POST: Customer/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var result = await _customerService.DeleteCustomerAsync(id);
             if (!result) return NotFound();
             return RedirectToAction(nameof(Index));
+        }
+        
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result = await _customerService.DeleteCustomerAsync(id);
+            if (!result) return NotFound();
+            return Ok();
         }
     }
 }

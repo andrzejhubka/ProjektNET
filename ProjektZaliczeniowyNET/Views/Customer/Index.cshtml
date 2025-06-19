@@ -40,7 +40,8 @@
             <td>
                 <a asp-action="Details" asp-route-id="@customer.Id" class="btn btn-info btn-sm">Szczegóły</a>
                 <a asp-action="Edit" asp-route-id="@customer.Id" class="btn btn-warning btn-sm">Edytuj</a>
-                <a asp-action="Delete" asp-route-id="@customer.Id" class="btn btn-danger btn-sm">Usuń</a>
+                <button class="btn btn-danger btn-sm delete-btn" data-id="@customer.Id">Usuń</button>
+
             </td>
         </tr>
     }
@@ -48,3 +49,26 @@
 </table>
 
 <a asp-action="Create" class="btn btn-primary">Dodaj klienta</a>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', async function () {
+                    const id = this.dataset.id;
+                    if (!confirm('Czy na pewno chcesz usunąć tego klienta?')) return;
+
+                    const response = await fetch(`/Customer/Delete/${id}`, {
+                        method: 'DELETE'
+                    });
+
+                    if (response.ok) {
+                        this.closest('tr')?.remove();
+                    } else {
+                        alert('Błąd podczas usuwania klienta.');
+                    }
+                });
+            });
+        });
+    </script>
+}

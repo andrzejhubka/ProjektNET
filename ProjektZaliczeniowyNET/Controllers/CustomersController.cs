@@ -31,6 +31,7 @@ namespace ProjektZaliczeniowyNET.Controllers
         }
 
         // GET: Customer/Create
+        [HttpGet]
         public IActionResult Create()
         {
             return View();

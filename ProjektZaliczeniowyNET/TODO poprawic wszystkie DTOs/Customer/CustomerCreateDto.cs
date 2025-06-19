@@ -31,9 +31,5 @@ namespace ProjektZaliczeniowyNET.DTOs.Customer
         [StringLength(10, ErrorMessage = "Kod pocztowy nie może być dłuższy niż 10 znaków")]
         [RegularExpression(@"^\d{2}-\d{3}$", ErrorMessage = "Kod pocztowy musi być w formacie XX-XXX")]
         public string? PostalCode { get; set; }
-
-
-        [StringLength(500, ErrorMessage = "Notatki nie mogą być dłuższe niż 500 znaków")]
-        public string? Notes { get; set; }
     }
 }

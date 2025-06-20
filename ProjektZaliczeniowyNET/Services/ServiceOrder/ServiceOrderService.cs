@@ -23,11 +23,9 @@ namespace ProjektZaliczeniowyNET.Services
                 .Include(o => o.Customer)
                 .Include(o => o.Vehicle)
                 .Include(o => o.AssignedMechanic)
-                .Include(o => o.CreatedByUser)
                 .Include(o => o.ServiceTasks)
                 .Include(o => o.Comments)
-                    .ThenInclude(c => c.Author)
-                .Include(o => o.ServiceOrderParts)
+                .ThenInclude(c => c.Author)
                 .FirstOrDefaultAsync(o => o.Id == id);
 
             if (order == null)
@@ -78,15 +76,7 @@ namespace ProjektZaliczeniowyNET.Services
         }
         public async Task<int> GetActiveOrdersCountAsync()
         {
-            var activeStatuses = new[] 
-            { 
-                ServiceOrderStatus.Pending, 
-                ServiceOrderStatus.InProgress, 
-                ServiceOrderStatus.WaitingForParts 
-            };
-
-            return await _context.ServiceOrders
-                .CountAsync(o => activeStatuses.Contains(o.Status));
+            return 0;
         }
 
 

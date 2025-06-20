@@ -5,18 +5,12 @@
 <table class="table table-striped">
     <thead>
     <tr>
-        <th>Numer zlecenia</th>
+        <th>Numer</th>
         <th>Klient</th>
         <th>Pojazd</th>
         <th>Mechanik</th>
-        <th>Opis</th>
         <th>Status</th>
         <th>Data utworzenia</th>
-        <th>Planowany termin</th>
-        <th>Koszt szacowany</th>
-        <th>Koszt całkowity</th>
-        <th>Zadania (ukończone / wszystkie)</th>
-        <th>Gwarancja</th>
         <th></th>
     </tr>
     </thead>
@@ -24,18 +18,12 @@
     @foreach (var order in Model)
     {
         <tr>
-            <td>@order.OrderNumber</td>
-            <td>@order.CustomerName</td>
+            <td>@order.Id</td>
+            <td>@order.CustomerFullName</td>
             <td>@order.VehicleDisplayName</td>
-            <td>@order.AssignedMechanicName ?? "-" </td>
-            <td>@order.Description</td>
-            <td>@order.StatusDisplay</td>
+            <td>@order.AssignedMechanicEmail</td>
+            <td>@order.Status.ToString()</td>
             <td>@order.CreatedAt.ToString("yyyy-MM-dd")</td>
-            <td>@order.EstimatedCompletionDate?.ToString("yyyy-MM-dd") ?? "-" </td>
-            <td>@order.EstimatedCost.ToString("C")</td>
-            <td>@order.TotalCost.ToString("C")</td>
-            <td>@order.CompletedTasksCount / @order.TasksCount</td>
-            <td>@(order.IsWarrantyWork ? "Tak" : "Nie")</td>
             <td>
                 <a asp-controller="ServiceOrder" asp-action="Details" asp-route-id="@order.Id" class="btn btn-primary btn-sm">Szczegóły</a>
             </td>

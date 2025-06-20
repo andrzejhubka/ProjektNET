@@ -1,32 +1,23 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
+using ProjektZaliczeniowyNET.DTOs.ServiceTask;
 
 namespace ProjektZaliczeniowyNET.DTOs.ServiceOrder
 {
     public class ServiceOrderCreateDto
     {
-        [Required(ErrorMessage = "Opis jest wymagany")]
-        [StringLength(1000, ErrorMessage = "Opis nie może być dłuższy niż 1000 znaków")]
-        public string Description { get; set; } = null!;
-
-        public DateTime? EstimatedCompletionDate { get; set; }
-
-        [Range(0, 999999.99, ErrorMessage = "Szacowany koszt musi być nieujemny")]
-        public decimal EstimatedCost { get; set; }
-
-        [StringLength(1000, ErrorMessage = "Skargi klienta nie mogą być dłuższe niż 1000 znaków")]
-        public string? CustomerComplaints { get; set; }
-
-        [StringLength(1000, ErrorMessage = "Notatki wewnętrzne nie mogą być dłuższe niż 1000 znaków")]
-        public string? InternalNotes { get; set; }
-
-        public bool IsWarrantyWork { get; set; }
-
-        [Required(ErrorMessage = "Klient jest wymagany")]
-        public int CustomerId { get; set; }
-
-        [Required(ErrorMessage = "Pojazd jest wymagany")]
+        
+        [Required] 
         public int VehicleId { get; set; }
 
+        [Required] 
+        public int CustomerId { get; set; }
+
+        [Required]
         public string? AssignedMechanicId { get; set; }
+
+        public List<ServiceTaskCreateDto> ServiceTasks { get; set; } = new();
+        
+        public Models.ServiceOrderStatus Status { get; set; } = Models.ServiceOrderStatus.Pending;
     }
 }

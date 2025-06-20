@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using ProjektZaliczeniowyNET.Services;
 using ProjektZaliczeniowyNET.DTOs.ServiceOrder;
@@ -14,18 +16,21 @@ public class ServiceOrderController : Controller
     private readonly ICustomerService _customerService;
     private readonly IVehicleService _vehicleService;
     private readonly ServiceOrderMapper _mapper;
+    private readonly UserManager<IdentityUser> _userManager;
 
     public ServiceOrderController(
         IServiceOrderService serviceOrderService,
         ICustomerService customerService,
         IVehicleService vehicleService,
-        ServiceOrderMapper mapper  // <-- dodaj mapper tutaj
+        ServiceOrderMapper mapper,
+        UserManager<IdentityUser> userManager
     )
     {
         _serviceOrderService = serviceOrderService;
         _customerService = customerService;
         _vehicleService = vehicleService;
-        _mapper = mapper;   // <-- przypisz
+        _mapper = mapper;  
+        _userManager = userManager;
     }
 
     public async Task<IActionResult> Index()
@@ -114,7 +119,11 @@ public class ServiceOrderController : Controller
     {
         ViewBag.Customers = new SelectList(await _customerService.GetAllCustomersAsync(), "Id", "FullName");
         ViewBag.Vehicles = new SelectList(await _vehicleService.GetAllAsync(), "Id", "DisplayName");
-
+        ViewBag.AssignedMechanicId = new SelectList(
+            await _userManager.Users.ToListAsync(), // pobiera wszystkich użytkowników
+            "Id",                                  // wartość (value) opcji
+            "UserName"                             // tekst wyświetlany w select
+        );
         return View(new ServiceOrderCreateDto());
     }
 }

@@ -44,6 +44,10 @@
         <input asp-for="PostalCode" class="form-control" />
         <span asp-validation-for="PostalCode" class="text-danger"></span>
     </div>
+    
+    <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+    <div asp-validation-summary="All" class="text-danger"></div>
+    
     <button type="submit" class="btn btn-primary">Dodaj</button>
     <a asp-action="Index" class="btn btn-secondary">Anuluj</a>
 </form>

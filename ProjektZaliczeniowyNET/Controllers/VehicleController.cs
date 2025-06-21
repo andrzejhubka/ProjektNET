@@ -35,20 +35,28 @@ namespace ProjektZaliczeniowyNET.Controllers
 
         // GET: Vehicle/Create
         [HttpGet]
-        public IActionResult Create()
+        public IActionResult Create(string returnUrl = null)
         {
+            ViewBag.ReturnUrl = returnUrl;
             return View();
         }
 
         // POST: Vehicle/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(VehicleCreateDto dto)
+        public async Task<IActionResult> Create(VehicleCreateDto dto, string returnUrl = null)
         {
             if (!ModelState.IsValid)
                 return View(dto);
 
             await _vehicleService.CreateAsync(dto);
+            
+            // Sprawdź czy jest returnUrl i przekieruj tam
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+            
             return RedirectToAction(nameof(Index));
         }
 

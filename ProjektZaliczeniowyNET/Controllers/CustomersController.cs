@@ -115,13 +115,5 @@ namespace ProjektZaliczeniowyNET.Controllers
             if (!result) return NotFound();
             return RedirectToAction(nameof(Index));
         }
-        
-        [HttpDelete]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var result = await _customerService.DeleteCustomerAsync(id);
-            if (!result) return NotFound();
-            return Ok();
-        }
     }
 }

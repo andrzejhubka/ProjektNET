@@ -121,11 +121,12 @@ public class ServiceOrderController : Controller
         ViewBag.Customers = new SelectList(await _customerService.GetAllCustomersAsync(), "Id", "FullName");
         ViewBag.Vehicles = new SelectList(await _vehicleService.GetAllAsync(), "Id", "DisplayName");
         ViewBag.Parts = new SelectList(await _partService.GetAllAsync(), "Id", "Name");
-        ViewBag.AssignedMechanicId = new SelectList(
-            await _userManager.Users.ToListAsync(), // pobiera wszystkich użytkowników
-            "Id",                                  // wartość (value) opcji
-            "UserName"                             // tekst wyświetlany w select
-        );
+        ViewBag.Mechanics = new SelectList(await _userManager.Users.ToListAsync(), "Id", "UserName");
+        
+        // Debug części
+        var parts = await _partService.GetAllAsync();
+        Console.WriteLine($"Liczba części z serwisu: {parts.Count()}");
+        ViewBag.Parts = new SelectList(parts, "Id", "Name");
         return View(new ServiceOrderCreateDto());
     }
 }

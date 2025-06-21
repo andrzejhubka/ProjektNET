@@ -34,15 +34,16 @@ namespace ProjektZaliczeniowyNET.Controllers
 
         // GET: Customer/Create
         [HttpGet]
-        public IActionResult Create()
+        public IActionResult Create(string returnUrl = null)
         {
+            ViewBag.ReturnUrl = returnUrl;
             return View();
         }
 
         // POST: Customer/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CustomerCreateDto dto)
+        public async Task<IActionResult> Create(CustomerCreateDto dto, string returnUrl = null)
         {
             if (!ModelState.IsValid)
                 return View(dto);
@@ -54,6 +55,13 @@ namespace ProjektZaliczeniowyNET.Controllers
             }
 
             await _customerService.CreateCustomerAsync(dto);
+            
+            // Sprawdź czy jest returnUrl i przekieruj tam
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+            
             return RedirectToAction(nameof(Index));
         }
 
@@ -106,14 +114,6 @@ namespace ProjektZaliczeniowyNET.Controllers
             var result = await _customerService.DeleteCustomerAsync(id);
             if (!result) return NotFound();
             return RedirectToAction(nameof(Index));
-        }
-        
-        [HttpDelete]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var result = await _customerService.DeleteCustomerAsync(id);
-            if (!result) return NotFound();
-            return Ok();
         }
     }
 }

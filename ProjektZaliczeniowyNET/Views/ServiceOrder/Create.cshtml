@@ -39,16 +39,6 @@
             new { @class = "form-control" })
         @Html.ValidationMessageFor(m => m.AssignedMechanicId)
     </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.AssignedMechanicId, "Dodaj zadania")
-        @Html.DropDownListFor(
-            m => m.AssignedMechanicId, 
-            ViewBag.Mechanics as SelectList, 
-            "-- Wybierz mechanika --", 
-            new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.AssignedMechanicId)
-    </div>
     
     <div class="form-group">
         <h4>Zadania serwisowe</h4>

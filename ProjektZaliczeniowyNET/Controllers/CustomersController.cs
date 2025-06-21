@@ -34,8 +34,9 @@ namespace ProjektZaliczeniowyNET.Controllers
 
         // GET: Customer/Create
         [HttpGet]
-        public IActionResult Create()
+        public IActionResult Create(string returnUrl = null)
         {
+            ViewBag.ReturnUrl = returnUrl;
             return View();
         }
 

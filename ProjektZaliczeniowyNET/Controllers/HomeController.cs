@@ -17,10 +17,10 @@ namespace ProjektZaliczeniowyNET.Controllers
         public async Task<IActionResult> Index()
         {
             var allOrders = await _serviceOrderService.GetAllAsync();
-            var activeOrdersCount = allOrders.Count(o => 
-                o.Status == Models.ServiceOrderStatus.Pending || 
+            var activeOrdersCount = allOrders.Count(o =>
+                o.Status == Models.ServiceOrderStatus.Pending ||
                 o.Status == Models.ServiceOrderStatus.InProgress);
-            var completedOrdersCount = allOrders.Count(o => 
+            var completedOrdersCount = allOrders.Count(o =>
                 o.Status == Models.ServiceOrderStatus.Completed);
 
             var model = new HomeIndexViewModel
@@ -32,10 +32,17 @@ namespace ProjektZaliczeniowyNET.Controllers
 
             return View(model);
         }
-        
+
         [AllowAnonymous]
         [Route("AccessDenied")]
         public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
+        // *** DODANA AKCJA PRIVACY ***
+        [AllowAnonymous]
+        public IActionResult Privacy()
         {
             return View();
         }

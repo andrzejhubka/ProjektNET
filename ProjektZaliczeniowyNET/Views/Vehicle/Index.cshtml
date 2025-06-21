@@ -1,0 +1,87 @@
+@model IEnumerable<ProjektZaliczeniowyNET.DTOs.Vehicle.VehicleListDto>
+
+@{
+    ViewData["Title"] = "Lista pojazdów";
+}
+
+<h2>Lista pojazdów</h2>
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Pojazd</th>
+        <th>Rejestracja</th>
+        <th>Marka</th>
+        <th>Model</th>
+        <th>Rok</th>
+        <th>Paliwo</th>
+        <th>Przebieg</th>
+        <th>Klient</th>
+        <th>Zlecenia</th>
+        <th>Status</th>
+        <th>Akcje</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var vehicle in Model)
+    {
+        <tr>
+            <td>@vehicle.DisplayName</td>
+            <td>@vehicle.LicensePlate</td>
+            <td>@vehicle.Make</td>
+            <td>@vehicle.Model</td>
+            <td>@vehicle.Year</td>
+            <td>@vehicle.FuelType</td>
+            <td>@(vehicle.Mileage.HasValue ? $"{vehicle.Mileage} km" : "-")</td>
+            <td>@vehicle.CustomerName</td>
+            <td>@vehicle.ServiceOrdersCount</td>
+            <td>
+                @if (vehicle.IsActive)
+                {
+                    <span class="badge bg-success">Aktywny</span>
+                }
+                else
+                {
+                    <span class="badge bg-secondary">Nieaktywny</span>
+                }
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@vehicle.Id" class="btn btn-info btn-sm">Szczegóły</a>
+                <a asp-action="Edit" asp-route-id="@vehicle.Id" class="btn btn-warning btn-sm">Edytuj</a>
+                <button class="btn btn-danger btn-sm delete-btn" data-id="@vehicle.Id">Usuń</button>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<a asp-action="Create" class="btn btn-primary">Dodaj pojazd</a>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', async function () {
+                    const id = this.dataset.id;
+                    if (!confirm('Czy na pewno chcesz usunąć ten pojazd?')) return;
+
+                    const response = await fetch(`/Vehicle/DeleteConfirmed/${id}`, {
+                        method: 'POST',
+                        headers: {
+                            'RequestVerificationToken': csrfToken,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        this.closest('tr')?.remove();
+                    } else {
+                        alert('Błąd podczas usuwania pojazdu.');
+                    }
+                });
+            });
+        });
+    </script>
+}

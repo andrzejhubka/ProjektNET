@@ -1,72 +1,104 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ProjektZaliczeniowyNET.Services;
 using ProjektZaliczeniowyNET.DTOs.Vehicle;
+using ProjektZaliczeniowyNET.Services;
+using System.Threading.Tasks;
 
-namespace ProjektZaliczeniowyNET.Controllers;
-
-[ApiController]
-[Route("api/[controller]")]
-public class VehicleController : ControllerBase
+namespace ProjektZaliczeniowyNET.Controllers
 {
-    private readonly IVehicleService _vehicleService;
-
-    public VehicleController(IVehicleService vehicleService)
+    [Authorize]
+    public class VehicleController : Controller
     {
-        _vehicleService = vehicleService;
-    }
+        private readonly IVehicleService _vehicleService;
 
-    [HttpGet]
-    public async Task<IActionResult> GetAll() =>
-        Ok(await _vehicleService.GetAllAsync());
-
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(int id)
-    {
-        var vehicle = await _vehicleService.GetByIdAsync(id);
-        return vehicle == null ? NotFound() : Ok(vehicle);
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> Create([FromBody] VehicleCreateDto dto)
-    {
-        var created = await _vehicleService.CreateAsync(dto);
-        return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
-    }
-
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, [FromBody] UpdateVehicleDto dto)
-    {
-        var updated = await _vehicleService.UpdateAsync(id, dto);
-        return updated ? NoContent() : NotFound();
-    }
-
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
-    {
-        var deleted = await _vehicleService.DeleteAsync(id);
-        return deleted ? NoContent() : NotFound();
-    }
-    
-    [HttpPost("{id}/upload-image")]
-    public async Task<IActionResult> UploadImage(int id, IFormFile image)
-    {
-        if (image == null || image.Length == 0)
-            return BadRequest("Brak obrazu");
-
-        var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
-        if (!Directory.Exists(uploadsFolder))
-            Directory.CreateDirectory(uploadsFolder);
-
-        var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(image.FileName)}";
-        var filePath = Path.Combine(uploadsFolder, fileName);
-
-        using (var stream = new FileStream(filePath, FileMode.Create))
+        public VehicleController(IVehicleService vehicleService)
         {
-            await image.CopyToAsync(stream);
+            _vehicleService = vehicleService;
         }
 
-        var imageUrl = $"/uploads/{fileName}";
-        var updated = await _vehicleService.SetImageUrlAsync(id, imageUrl);
-        return updated ? Ok(new { imageUrl }) : NotFound();
+        // GET: Vehicle
+        [HttpGet("/Vehicle")]
+        [HttpGet("/Vehicle/Index")]
+        public async Task<IActionResult> Index()
+        {
+            var vehicles = await _vehicleService.GetAllAsync();
+            return View(vehicles);
+        }
+
+        // GET: Vehicle/Details/5
+        public async Task<IActionResult> Details(int id)
+        {
+            var vehicle = await _vehicleService.GetByIdAsync(id);
+            if (vehicle == null) return NotFound();
+            return View(vehicle);
+        }
+
+        // GET: Vehicle/Create
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: Vehicle/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(VehicleCreateDto dto)
+        {
+            if (!ModelState.IsValid)
+                return View(dto);
+
+            await _vehicleService.CreateAsync(dto);
+            return RedirectToAction(nameof(Index));
+        }
+
+        // GET: Vehicle/Edit/5
+        public async Task<IActionResult> Edit(int id)
+        {
+            var vehicle = await _vehicleService.GetByIdAsync(id);
+            if (vehicle == null) return NotFound();
+
+            var dto = new UpdateVehicleDto
+            {
+                VIN = vehicle.VIN,
+                LicensePlate = vehicle.LicensePlate,
+                Make = vehicle.Make,
+                Model = vehicle.Model,
+                Year = vehicle.Year,
+                Color = vehicle.Color,
+                EngineNumber = vehicle.EngineNumber,
+                Mileage = vehicle.Mileage,
+                FuelType = vehicle.FuelType,
+                Notes = vehicle.Notes,
+                ImageUrl = vehicle.ImageUrl,
+                IsActive = vehicle.IsActive
+            };
+
+            return View(dto);
+        }
+
+        // POST: Vehicle/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, UpdateVehicleDto dto)
+        {
+            if (!ModelState.IsValid)
+                return View(dto);
+
+            var updated = await _vehicleService.UpdateAsync(id, dto);
+            if (!updated) return NotFound();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        // POST: Vehicle/DeleteConfirmed/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var deleted = await _vehicleService.DeleteAsync(id);
+            if (!deleted) return NotFound();
+            return Ok();
+        }
     }
 }

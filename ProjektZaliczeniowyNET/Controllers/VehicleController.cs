@@ -19,7 +19,6 @@ namespace ProjektZaliczeniowyNET.Controllers
             _customerService = customerService;
         }
 
-        // GET: Vehicle
         [HttpGet("/Vehicle")]
         [HttpGet("/Vehicle/Index")]
         public async Task<IActionResult> Index()
@@ -28,7 +27,6 @@ namespace ProjektZaliczeniowyNET.Controllers
             return View(vehicles);
         }
 
-        // GET: Vehicle/Details/5
         public async Task<IActionResult> Details(int id)
         {
             var vehicle = await _vehicleService.GetByIdAsync(id);
@@ -36,7 +34,6 @@ namespace ProjektZaliczeniowyNET.Controllers
             return View(vehicle);
         }
 
-        // GET: Vehicle/Create
         [HttpGet]
         public async Task<IActionResult> Create()
         {
@@ -44,14 +41,13 @@ namespace ProjektZaliczeniowyNET.Controllers
             return View();
         }
 
-        // POST: Vehicle/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(VehicleCreateDto dto)
         {
             if (!ModelState.IsValid)
             {
-                await LoadCustomersToViewBag();
+                await LoadCustomersToViewBag(dto.CustomerId);
                 return View(dto);
             }
 
@@ -59,7 +55,6 @@ namespace ProjektZaliczeniowyNET.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Vehicle/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
             var vehicle = await _vehicleService.GetByIdAsync(id);
@@ -86,7 +81,6 @@ namespace ProjektZaliczeniowyNET.Controllers
             return View(dto);
         }
 
-        // POST: Vehicle/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, UpdateVehicleDto dto)
@@ -103,7 +97,6 @@ namespace ProjektZaliczeniowyNET.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // POST: Vehicle/DeleteConfirmed/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -113,7 +106,6 @@ namespace ProjektZaliczeniowyNET.Controllers
             return Ok();
         }
 
-        // Private helper to populate ViewBag
         private async Task LoadCustomersToViewBag(int? selectedId = null)
         {
             var customers = await _customerService.GetAllCustomersAsync();

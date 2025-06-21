@@ -47,5 +47,7 @@ namespace ProjektZaliczeniowyNET.DTOs.Vehicle
 
         [Required(ErrorMessage = "Klient jest wymagany")]
         public int CustomerId { get; set; }
+
+        public bool IsActive { get; set; } = true;
     }
 }

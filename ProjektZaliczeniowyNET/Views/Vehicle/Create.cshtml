@@ -35,26 +35,8 @@
 
     <div class="mb-3">
         <label asp-for="Year" class="form-label"></label>
-        <input asp-for="Year" type="number" class="form-control" />
+        <input asp-for="Year" class="form-control" />
         <span asp-validation-for="Year" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Color" class="form-label"></label>
-        <input asp-for="Color" class="form-control" />
-        <span asp-validation-for="Color" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="EngineNumber" class="form-label"></label>
-        <input asp-for="EngineNumber" class="form-control" />
-        <span asp-validation-for="EngineNumber" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Mileage" class="form-label"></label>
-        <input asp-for="Mileage" type="number" class="form-control" />
-        <span asp-validation-for="Mileage" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
@@ -64,21 +46,20 @@
     </div>
 
     <div class="mb-3">
-        <label asp-for="ImageUrl" class="form-label"></label>
-        <input asp-for="ImageUrl" class="form-control" />
-        <span asp-validation-for="ImageUrl" class="text-danger"></span>
+        <label asp-for="Mileage" class="form-label"></label>
+        <input asp-for="Mileage" class="form-control" />
+        <span asp-validation-for="Mileage" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="Notes" class="form-label"></label>
-        <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
-        <span asp-validation-for="Notes" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="CustomerId" class="form-label"></label>
-        <input asp-for="CustomerId" type="number" class="form-control" />
+        <label asp-for="CustomerId" class="form-label">Klient</label>
+        <select asp-for="CustomerId" asp-items="ViewBag.Customers" class="form-control"></select>
         <span asp-validation-for="CustomerId" class="text-danger"></span>
+    </div>
+
+    <div class="form-check mb-3">
+        <input asp-for="IsActive" class="form-check-input" />
+        <label asp-for="IsActive" class="form-check-label"></label>
     </div>
 
     <button type="submit" class="btn btn-primary">Dodaj</button>

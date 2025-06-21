@@ -46,9 +46,9 @@ namespace ProjektZaliczeniowyNET.Services
             return orders.Select(o => _mapper.ToListDto(o));
         }
 
-        public async Task<ServiceOrderDto> CreateAsync(ServiceOrderCreateDto dto, string createdByUserId)
+        public async Task<ServiceOrderDto> CreateAsync(ServiceOrderCreateDto dto)
         {
-            var order = _mapper.ToEntity(dto, createdByUserId);
+            var order = _mapper.ToEntity(dto);
             _context.ServiceOrders.Add(order);
             await _context.SaveChangesAsync();
             return _mapper.ToDto(order);

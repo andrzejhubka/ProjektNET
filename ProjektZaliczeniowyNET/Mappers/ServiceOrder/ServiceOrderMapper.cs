@@ -7,7 +7,7 @@ namespace ProjektZaliczeniowyNET.Mappers
     [Mapper]
     public partial class ServiceOrderMapper
     {
-        public partial ServiceOrder ToEntity(ServiceOrderCreateDto dto, string createdByUserId);
+        public partial ServiceOrder ToEntity(ServiceOrderCreateDto dto);
 
         public partial ServiceOrderDto ToDto(ServiceOrder entity);
 

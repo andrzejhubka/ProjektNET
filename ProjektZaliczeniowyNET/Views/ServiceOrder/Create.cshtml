@@ -1,8 +1,22 @@
 @model ProjektZaliczeniowyNET.DTOs.ServiceOrder.ServiceOrderCreateDto
 
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        Formularz zawiera błędy:
+        <ul>
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <li>@error.ErrorMessage</li>
+            }
+        </ul>
+    </div>
+}
+
 @{
 ViewData["Title"] = "Nowe zlecenie serwisowe";
 }
+
 
 <h2>@ViewData["Title"]</h2>
 

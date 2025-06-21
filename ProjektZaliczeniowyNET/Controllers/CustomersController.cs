@@ -42,7 +42,7 @@ namespace ProjektZaliczeniowyNET.Controllers
         // POST: Customer/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CustomerCreateDto dto)
+        public async Task<IActionResult> Create(CustomerCreateDto dto, string returnUrl = null)
         {
             if (!ModelState.IsValid)
                 return View(dto);
@@ -54,6 +54,13 @@ namespace ProjektZaliczeniowyNET.Controllers
             }
 
             await _customerService.CreateCustomerAsync(dto);
+            
+            // Sprawdź czy jest returnUrl i przekieruj tam
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+            
             return RedirectToAction(nameof(Index));
         }
 

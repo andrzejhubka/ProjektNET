@@ -36,9 +36,9 @@ ViewData["Title"] = "Nowe zlecenie serwisowe";
             "-- Wybierz klienta --",
             new { @class = "form-control" })
         <div class="input-group-append">
-            <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#addCustomerModal">
+            <a href="/Customer/Create?returnUrl=/ServiceOrder/Create" class="btn btn-outline-secondary">
                 <i class="fas fa-plus"></i> Dodaj klienta
-            </button>
+            </a>
         </div>
     </div>
     @Html.ValidationMessageFor(m => m.CustomerId)

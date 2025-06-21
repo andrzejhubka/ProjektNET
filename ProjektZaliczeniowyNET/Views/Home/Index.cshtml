@@ -53,6 +53,10 @@
                     <a href="/Customer/Index" class="btn btn-secondary">Lista klientów</a>
                     <a href="/Vehicle/Index" class="btn btn-info">Lista pojazdów</a>
                     <a href="/ServiceOrder/Index" class="btn btn-success">Wszystkie zlecenia</a>
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                        <a href="/Admin/UsersRoles" class="btn btn-primary">Panel Admina</a>
+                    }
                 </div>
             </div>
         </div>

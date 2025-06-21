@@ -21,14 +21,7 @@ public class ServiceTaskController : ControllerBase
         var tasks = await _service.GetAllAsync();
         return Ok(tasks);
     }
-
-    [HttpGet("byServiceOrder/{serviceOrderId}")]
-    public async Task<IActionResult> GetByServiceOrder(int serviceOrderId)
-    {
-        var tasks = await _service.GetByServiceOrderIdAsync(serviceOrderId);
-        return Ok(tasks);
-    }
-
+    
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -76,26 +69,5 @@ public class ServiceTaskController : ControllerBase
     {
         var success = await _service.MarkAsNotCompletedAsync(id);
         return success ? NoContent() : NotFound();
-    }
-
-    [HttpGet("totalCost/{serviceOrderId}")]
-    public async Task<IActionResult> GetTotalCostByServiceOrder(int serviceOrderId)
-    {
-        var cost = await _service.GetTotalCostByServiceOrderIdAsync(serviceOrderId);
-        return Ok(cost);
-    }
-
-    [HttpGet("completedCount/{serviceOrderId}")]
-    public async Task<IActionResult> GetCompletedTasksCount(int serviceOrderId)
-    {
-        var count = await _service.GetCompletedTasksCountByServiceOrderIdAsync(serviceOrderId);
-        return Ok(count);
-    }
-
-    [HttpGet("{id}/exists")]
-    public async Task<IActionResult> Exists(int id)
-    {
-        var exists = await _service.ExistsAsync(id);
-        return Ok(exists);
     }
 }

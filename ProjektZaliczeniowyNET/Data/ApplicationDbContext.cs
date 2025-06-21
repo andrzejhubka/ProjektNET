@@ -65,29 +65,8 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
         });
 
         // Konfiguracja dla ServiceOrder
-        modelBuilder.Entity<ServiceOrder>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.OrderNumber).IsRequired().HasMaxLength(20);
-            entity.Property(e => e.Description).IsRequired().HasMaxLength(1000);
-            entity.Property(e => e.Status).IsRequired();
-            entity.Property(e => e.CreatedAt).IsRequired();
-            entity.Property(e => e.EstimatedCost).HasColumnType("decimal(10,2)");
-            entity.Property(e => e.FinalCost).HasColumnType("decimal(10,2)");
-            entity.Property(e => e.CustomerComplaints).HasMaxLength(1000);
-            entity.Property(e => e.InternalNotes).HasMaxLength(1000);
-            entity.Property(e => e.CustomerId).IsRequired();
-            entity.Property(e => e.VehicleId).IsRequired();
-            entity.Property(e => e.CreatedByUserId).IsRequired();
-
-            // Index dla unikalnego numeru zlecenia
-            entity.HasIndex(e => e.OrderNumber).IsUnique();
-            
-            // Właściwości obliczane - ignorowane w mapowaniu bazy danych
-            entity.Ignore(e => e.TotalLaborCost);
-            entity.Ignore(e => e.TotalPartsCost);
-            entity.Ignore(e => e.TotalCost);
-        });
+        modelBuilder.Entity<ServiceOrder>()
+            .HasKey(o => o.Id);
 
         modelBuilder.Entity<Part>(entity =>
         {
@@ -100,34 +79,19 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
                 .HasMaxLength(500);
 
             // Precyzja i skala dla ceny
-            entity.Property(e => e.Price)
+            entity.Property(e => e.UnitPrice)
                 .IsRequired()
                 .HasColumnType("decimal(18,2)");
 
             entity.Property(e => e.QuantityInStock)
                 .IsRequired();
-
-            entity.Property(e => e.CreatedAt)
-                .IsRequired();
-
-            entity.Property(e => e.UpdatedAt)
-                .IsRequired(false);
         });
 
         // Konfiguracja dla ServiceTask
         modelBuilder.Entity<ServiceTask>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Description).IsRequired().HasMaxLength(200);
-            entity.Property(e => e.DetailedDescription).HasMaxLength(1000);
-            entity.Property(e => e.LaborHours).IsRequired().HasColumnType("decimal(8,2)");
-            entity.Property(e => e.HourlyRate).IsRequired().HasColumnType("decimal(8,2)");
-            entity.Property(e => e.IsCompleted).IsRequired().HasDefaultValue(false);
-            entity.Property(e => e.Notes).HasMaxLength(500);
-            entity.Property(e => e.ServiceOrderId).IsRequired();
-
-            // Właściwość obliczana - ignorowana w mapowaniu bazy danych
-            entity.Ignore(e => e.TotalTaskCost);
+            entity.Property(e => e.Description).IsRequired().HasMaxLength(200); 
         });
 
         // Konfiguracja dla Comment
@@ -180,40 +144,18 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
             .HasForeignKey(so => so.AssignedMechanicId)
             .OnDelete(DeleteBehavior.SetNull);
 
-        modelBuilder.Entity<ServiceOrder>()
-            .HasOne(so => so.CreatedByUser)
-            .WithMany()
-            .HasForeignKey(so => so.CreatedByUserId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<ServiceTask>()
-            .HasOne(st => st.ServiceOrder)
-            .WithMany(so => so.ServiceTasks)
-            .HasForeignKey(st => st.ServiceOrderId)
-            .OnDelete(DeleteBehavior.Cascade);
-
+        
         modelBuilder.Entity<Comment>()
             .HasOne(c => c.ServiceOrder)
             .WithMany(so => so.Comments)
             .HasForeignKey(c => c.ServiceOrderId)
             .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<ServiceOrderPart>()
-            .HasOne(sop => sop.ServiceOrder)
-            .WithMany(so => so.ServiceOrderParts)
-            .HasForeignKey(sop => sop.ServiceOrderId)
-            .OnDelete(DeleteBehavior.Cascade);
-
+        
         modelBuilder.Entity<ServiceOrderPart>()
             .HasOne(sop => sop.Part)
             .WithMany()
             .HasForeignKey(sop => sop.PartId)
             .OnDelete(DeleteBehavior.Restrict);
-
-        // Dodatkowe konfiguracje indeksów dla wydajności
-        modelBuilder.Entity<ServiceTask>()
-            .HasIndex(st => st.ServiceOrderId)
-            .HasDatabaseName("IX_ServiceTasks_ServiceOrderId");
 
         modelBuilder.Entity<ServiceTask>()
             .HasIndex(st => st.IsCompleted)

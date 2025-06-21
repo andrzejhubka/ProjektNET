@@ -44,7 +44,6 @@ namespace ProjektZaliczeniowyNET.Services
             if (part == null) return false;
 
             _mapper.UpdateEntity(part, dto);
-            part.UpdatedAt = DateTime.UtcNow;
 
             _dbContext.Parts.Update(part);
             await _dbContext.SaveChangesAsync();

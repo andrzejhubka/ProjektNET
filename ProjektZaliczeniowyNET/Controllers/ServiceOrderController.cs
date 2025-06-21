@@ -17,13 +17,15 @@ public class ServiceOrderController : Controller
     private readonly IVehicleService _vehicleService;
     private readonly ServiceOrderMapper _mapper;
     private readonly UserManager<IdentityUser> _userManager;
+    private readonly IPartService _partService;
 
     public ServiceOrderController(
         IServiceOrderService serviceOrderService,
         ICustomerService customerService,
         IVehicleService vehicleService,
         ServiceOrderMapper mapper,
-        UserManager<IdentityUser> userManager
+        UserManager<IdentityUser> userManager,
+        IPartService partService
     )
     {
         _serviceOrderService = serviceOrderService;
@@ -31,6 +33,7 @@ public class ServiceOrderController : Controller
         _vehicleService = vehicleService;
         _mapper = mapper;  
         _userManager = userManager;
+        _partService = partService;
     }
 
     public async Task<IActionResult> Index()
@@ -58,10 +61,8 @@ public class ServiceOrderController : Controller
     [HttpPost]
     public async Task<IActionResult> Create(ServiceOrderCreateDto dto)
     {
-        // TODO: SPRAWDZIC CZY DZIALA
         if (!ModelState.IsValid)
         {
-            // Odśwież dropdowny i zwróć widok z błędami
             ViewBag.Customers = (await _customerService.GetAllCustomersAsync())
                 .Select(c => new SelectListItem(c.FullName, c.Id.ToString())).ToList();
 
@@ -119,6 +120,7 @@ public class ServiceOrderController : Controller
     {
         ViewBag.Customers = new SelectList(await _customerService.GetAllCustomersAsync(), "Id", "FullName");
         ViewBag.Vehicles = new SelectList(await _vehicleService.GetAllAsync(), "Id", "DisplayName");
+        ViewBag.Parts = new SelectList(await _partService.GetAllAsync(), "Id", "Name");
         ViewBag.AssignedMechanicId = new SelectList(
             await _userManager.Users.ToListAsync(), // pobiera wszystkich użytkowników
             "Id",                                  // wartość (value) opcji

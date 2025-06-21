@@ -1,0 +1,75 @@
+@model ProjektZaliczeniowyNET.DTOs.Vehicle.VehicleDto
+
+@{
+    ViewData["Title"] = "Szczegóły pojazdu";
+}
+
+<h2>Szczegóły pojazdu</h2>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <strong>@Model.Make @Model.Model (@Model.Year)</strong>
+        <span class="badge bg-@(Model.IsActive ? "success" : "secondary")">
+            @(Model.IsActive ? "Aktywny" : "Nieaktywny")
+        </span>
+    </div>
+    <div class="card-body row">
+        <div class="col-md-6">
+            <dl class="row">
+                <dt class="col-sm-4">VIN</dt>
+                <dd class="col-sm-8">@Model.VIN</dd>
+
+                <dt class="col-sm-4">Rejestracja</dt>
+                <dd class="col-sm-8">@Model.LicensePlate</dd>
+
+                <dt class="col-sm-4">Kolor</dt>
+                <dd class="col-sm-8">@Model.Color</dd>
+
+                <dt class="col-sm-4">Silnik</dt>
+                <dd class="col-sm-8">@Model.EngineNumber</dd>
+
+                <dt class="col-sm-4">Paliwo</dt>
+                <dd class="col-sm-8">@Model.FuelType</dd>
+
+                <dt class="col-sm-4">Przebieg</dt>
+                <dd class="col-sm-8">@Model.Mileage km</dd>
+
+                <dt class="col-sm-4">Dodano</dt>
+                <dd class="col-sm-8">@Model.CreatedAt.ToString("dd.MM.yyyy")</dd>
+            </dl>
+        </div>
+        <div class="col-md-6">
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <img src="@Model.ImageUrl" class="img-fluid rounded mb-2" alt="Zdjęcie pojazdu" />
+            }
+            else
+            {
+                <p class="text-muted">Brak zdjęcia</p>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.Notes))
+            {
+                <div class="alert alert-info">
+                    <strong>Notatki:</strong><br />
+                    @Model.Notes
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<h4>Właściciel</h4>
+<div class="mb-4">
+    <p><strong>@Model.CustomerName</strong></p>
+    <p>Email: @Model.CustomerEmail</p>
+    <p>Telefon: @Model.CustomerPhone</p>
+</div>
+
+<h4>Statystyki</h4>
+<ul>
+    <li>Liczba zleceń serwisowych: <strong>@Model.ServiceOrdersCount</strong></li>
+</ul>
+
+<a asp-action="Index" class="btn btn-secondary">Powrót do listy</a>
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edytuj</a>

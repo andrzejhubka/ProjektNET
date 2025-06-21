@@ -1,0 +1,60 @@
+@model ProjektZaliczeniowyNET.DTOs.Customer.CustomerDto
+
+@{
+    ViewData["Title"] = "Szczegóły klienta";
+}
+
+<h2>@Model.FullName</h2>
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">Email</dt>
+        <dd class="col-sm-10">@Model.Email</dd>
+
+        <dt class="col-sm-2">Telefon</dt>
+        <dd class="col-sm-10">@Model.PhoneNumber</dd>
+
+        <dt class="col-sm-2">Adres</dt>
+        <dd class="col-sm-10">@Model.Address, @Model.City, @Model.PostalCode</dd>
+
+        <dt class="col-sm-2">Data utworzenia</dt>
+        <dd class="col-sm-10">@Model.CreatedAt.ToString("dd.MM.yyyy")</dd>
+
+        <dt class="col-sm-2">Status</dt>
+        <dd class="col-sm-10">
+            @if (Model.IsActive)
+            {
+                <span class="badge bg-success">Aktywny</span>
+            }
+            else
+            {
+                <span class="badge bg-secondary">Nieaktywny</span>
+            }
+        </dd>
+
+        <dt class="col-sm-2">Notatki</dt>
+        <dd class="col-sm-10">@Model.Notes</dd>
+    </dl>
+</div>
+
+<h3>Pojazdy klienta</h3>
+@if (Model.VehiclesCount > 0)
+{
+    <p>Klient posiada @Model.VehiclesCount pojazd(ów).</p>
+}
+else
+{
+    <p>Brak pojazdów.</p>
+}
+
+<h3>Zlecenia serwisowe</h3>
+@if (Model.ServiceOrdersCount > 0)
+{
+    <p>Klient ma @Model.ServiceOrdersCount zleceń serwisowych.</p>
+}
+else
+{
+    <p>Brak zleceń serwisowych.</p>
+}
+
+<a asp-action="Index" class="btn btn-secondary">Powrót do listy</a>

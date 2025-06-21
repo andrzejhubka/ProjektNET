@@ -79,34 +79,19 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
                 .HasMaxLength(500);
 
             // Precyzja i skala dla ceny
-            entity.Property(e => e.Price)
+            entity.Property(e => e.UnitPrice)
                 .IsRequired()
                 .HasColumnType("decimal(18,2)");
 
             entity.Property(e => e.QuantityInStock)
                 .IsRequired();
-
-            entity.Property(e => e.CreatedAt)
-                .IsRequired();
-
-            entity.Property(e => e.UpdatedAt)
-                .IsRequired(false);
         });
 
         // Konfiguracja dla ServiceTask
         modelBuilder.Entity<ServiceTask>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Description).IsRequired().HasMaxLength(200);
-            entity.Property(e => e.DetailedDescription).HasMaxLength(1000);
-            entity.Property(e => e.LaborHours).IsRequired().HasColumnType("decimal(8,2)");
-            entity.Property(e => e.HourlyRate).IsRequired().HasColumnType("decimal(8,2)");
-            entity.Property(e => e.IsCompleted).IsRequired().HasDefaultValue(false);
-            entity.Property(e => e.Notes).HasMaxLength(500);
-            entity.Property(e => e.ServiceOrderId).IsRequired();
-
-            // Właściwość obliczana - ignorowana w mapowaniu bazy danych
-            entity.Ignore(e => e.TotalTaskCost);
+            entity.Property(e => e.Description).IsRequired().HasMaxLength(200); 
         });
 
         // Konfiguracja dla Comment
@@ -160,12 +145,6 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
             .OnDelete(DeleteBehavior.SetNull);
 
         
-        modelBuilder.Entity<ServiceTask>()
-            .HasOne(st => st.ServiceOrder)
-            .WithMany(so => so.ServiceTasks)
-            .HasForeignKey(st => st.ServiceOrderId)
-            .OnDelete(DeleteBehavior.Cascade);
-
         modelBuilder.Entity<Comment>()
             .HasOne(c => c.ServiceOrder)
             .WithMany(so => so.Comments)
@@ -177,11 +156,6 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
             .WithMany()
             .HasForeignKey(sop => sop.PartId)
             .OnDelete(DeleteBehavior.Restrict);
-
-        // Dodatkowe konfiguracje indeksów dla wydajności
-        modelBuilder.Entity<ServiceTask>()
-            .HasIndex(st => st.ServiceOrderId)
-            .HasDatabaseName("IX_ServiceTasks_ServiceOrderId");
 
         modelBuilder.Entity<ServiceTask>()
             .HasIndex(st => st.IsCompleted)

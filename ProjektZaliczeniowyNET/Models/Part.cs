@@ -16,13 +16,9 @@ public class Part
 
     [Required]
     [Range(0, double.MaxValue)]
-    public decimal Price { get; set; }
+    public decimal UnitPrice { get; set; }
 
     [Required]
     [Range(0, int.MaxValue)]
     public int QuantityInStock { get; set; }
-
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-    public DateTime? UpdatedAt { get; set; }
 }

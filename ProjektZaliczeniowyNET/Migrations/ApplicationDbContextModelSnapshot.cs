@@ -328,9 +328,6 @@ namespace ProjektZaliczeniowyNET.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Description")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
@@ -340,16 +337,18 @@ namespace ProjektZaliczeniowyNET.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<int>("QuantityInStock")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<int?>("ServiceTaskId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ServiceTaskId");
 
                     b.ToTable("Parts");
                 });
@@ -363,53 +362,14 @@ namespace ProjektZaliczeniowyNET.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AssignedMechanicId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime?>("CompletedAt")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("CreatedByUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("CustomerComplaints")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<DateTime?>("EstimatedCompletionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("EstimatedCost")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<decimal>("FinalCost")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<string>("InternalNotes")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<bool>("IsWarrantyWork")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("OrderNumber")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<DateTime?>("StartedAt")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -424,12 +384,7 @@ namespace ProjektZaliczeniowyNET.Migrations
                     b.HasIndex("CreatedAt")
                         .HasDatabaseName("IX_ServiceOrders_CreatedAt");
 
-                    b.HasIndex("CreatedByUserId");
-
                     b.HasIndex("CustomerId");
-
-                    b.HasIndex("OrderNumber")
-                        .IsUnique();
 
                     b.HasIndex("Status")
                         .HasDatabaseName("IX_ServiceOrders_Status");
@@ -479,34 +434,18 @@ namespace ProjektZaliczeniowyNET.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime?>("CompletedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<string>("DetailedDescription")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<decimal>("HourlyRate")
-                        .HasColumnType("decimal(8,2)");
-
                     b.Property<bool>("IsCompleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
+                        .HasColumnType("bit");
 
-                    b.Property<decimal>("LaborHours")
-                        .HasColumnType("decimal(8,2)");
+                    b.Property<decimal>("LaborCost")
+                        .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("Notes")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<int>("ServiceOrderId")
+                    b.Property<int?>("ServiceOrderId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -514,8 +453,7 @@ namespace ProjektZaliczeniowyNET.Migrations
                     b.HasIndex("IsCompleted")
                         .HasDatabaseName("IX_ServiceTasks_IsCompleted");
 
-                    b.HasIndex("ServiceOrderId")
-                        .HasDatabaseName("IX_ServiceTasks_ServiceOrderId");
+                    b.HasIndex("ServiceOrderId");
 
                     b.ToTable("ServiceTasks");
                 });
@@ -666,17 +604,19 @@ namespace ProjektZaliczeniowyNET.Migrations
                     b.Navigation("ServiceOrder");
                 });
 
+            modelBuilder.Entity("ProjektZaliczeniowyNET.Models.Part", b =>
+                {
+                    b.HasOne("ProjektZaliczeniowyNET.Models.ServiceTask", null)
+                        .WithMany("UsedParts")
+                        .HasForeignKey("ServiceTaskId");
+                });
+
             modelBuilder.Entity("ProjektZaliczeniowyNET.Models.ServiceOrder", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "AssignedMechanic")
                         .WithMany()
                         .HasForeignKey("AssignedMechanicId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedByUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
                     b.HasOne("ProjektZaliczeniowyNET.Models.Customer", "Customer")
@@ -693,8 +633,6 @@ namespace ProjektZaliczeniowyNET.Migrations
 
                     b.Navigation("AssignedMechanic");
 
-                    b.Navigation("CreatedByUser");
-
                     b.Navigation("Customer");
 
                     b.Navigation("Vehicle");
@@ -709,7 +647,7 @@ namespace ProjektZaliczeniowyNET.Migrations
                         .IsRequired();
 
                     b.HasOne("ProjektZaliczeniowyNET.Models.ServiceOrder", "ServiceOrder")
-                        .WithMany("ServiceOrderParts")
+                        .WithMany()
                         .HasForeignKey("ServiceOrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -721,13 +659,9 @@ namespace ProjektZaliczeniowyNET.Migrations
 
             modelBuilder.Entity("ProjektZaliczeniowyNET.Models.ServiceTask", b =>
                 {
-                    b.HasOne("ProjektZaliczeniowyNET.Models.ServiceOrder", "ServiceOrder")
+                    b.HasOne("ProjektZaliczeniowyNET.Models.ServiceOrder", null)
                         .WithMany("ServiceTasks")
-                        .HasForeignKey("ServiceOrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ServiceOrder");
+                        .HasForeignKey("ServiceOrderId");
                 });
 
             modelBuilder.Entity("ProjektZaliczeniowyNET.Models.Vehicle", b =>
@@ -752,9 +686,12 @@ namespace ProjektZaliczeniowyNET.Migrations
                 {
                     b.Navigation("Comments");
 
-                    b.Navigation("ServiceOrderParts");
-
                     b.Navigation("ServiceTasks");
+                });
+
+            modelBuilder.Entity("ProjektZaliczeniowyNET.Models.ServiceTask", b =>
+                {
+                    b.Navigation("UsedParts");
                 });
 
             modelBuilder.Entity("ProjektZaliczeniowyNET.Models.Vehicle", b =>

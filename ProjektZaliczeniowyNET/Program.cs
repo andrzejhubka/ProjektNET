@@ -66,7 +66,9 @@ var app = builder.Build();
 // seedowanie
 using (var scope = app.Services.CreateScope())
 {
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var services = scope.ServiceProvider;
+    // role
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
     string[] roleNames = { "Admin", "Mechanik", "Recepcjonista" };
 
     foreach (var roleName in roleNames)
@@ -76,6 +78,19 @@ using (var scope = app.Services.CreateScope())
             await roleManager.CreateAsync(new IdentityRole(roleName));
         }
     }
+    
+    // czesci
+    var context = services.GetRequiredService<ApplicationDbContext>(); 
+    if (!context.Parts.Any())
+    {
+        var parts = new List<Part>
+        {
+            new Part { Name = "Niestandardowa", UnitPrice = 0m, QuantityInStock = 100 },
+        };
+        context.Parts.AddRange(parts);
+        await context.SaveChangesAsync();
+    }
+    
 }
 
 // Configure the HTTP request pipeline.

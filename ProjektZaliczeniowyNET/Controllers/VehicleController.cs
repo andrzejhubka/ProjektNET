@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using ProjektZaliczeniowyNET.DTOs.Vehicle;
 using ProjektZaliczeniowyNET.Services;
 using System.Threading.Tasks;
@@ -10,10 +11,12 @@ namespace ProjektZaliczeniowyNET.Controllers
     public class VehicleController : Controller
     {
         private readonly IVehicleService _vehicleService;
+        private readonly ICustomerService _customerService;
 
-        public VehicleController(IVehicleService vehicleService)
+        public VehicleController(IVehicleService vehicleService, ICustomerService customerService)
         {
             _vehicleService = vehicleService;
+            _customerService = customerService;
         }
 
         // GET: Vehicle
@@ -35,8 +38,9 @@ namespace ProjektZaliczeniowyNET.Controllers
 
         // GET: Vehicle/Create
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            await LoadCustomersToViewBag();
             return View();
         }
 
@@ -46,7 +50,10 @@ namespace ProjektZaliczeniowyNET.Controllers
         public async Task<IActionResult> Create(VehicleCreateDto dto)
         {
             if (!ModelState.IsValid)
+            {
+                await LoadCustomersToViewBag();
                 return View(dto);
+            }
 
             await _vehicleService.CreateAsync(dto);
             return RedirectToAction(nameof(Index));
@@ -71,9 +78,11 @@ namespace ProjektZaliczeniowyNET.Controllers
                 FuelType = vehicle.FuelType,
                 Notes = vehicle.Notes,
                 ImageUrl = vehicle.ImageUrl,
-                IsActive = vehicle.IsActive
+                IsActive = vehicle.IsActive,
+                CustomerId = vehicle.CustomerId
             };
 
+            await LoadCustomersToViewBag(vehicle.CustomerId);
             return View(dto);
         }
 
@@ -83,7 +92,10 @@ namespace ProjektZaliczeniowyNET.Controllers
         public async Task<IActionResult> Edit(int id, UpdateVehicleDto dto)
         {
             if (!ModelState.IsValid)
+            {
+                await LoadCustomersToViewBag(dto.CustomerId);
                 return View(dto);
+            }
 
             var updated = await _vehicleService.UpdateAsync(id, dto);
             if (!updated) return NotFound();
@@ -99,6 +111,13 @@ namespace ProjektZaliczeniowyNET.Controllers
             var deleted = await _vehicleService.DeleteAsync(id);
             if (!deleted) return NotFound();
             return Ok();
+        }
+
+        // Private helper to populate ViewBag
+        private async Task LoadCustomersToViewBag(int? selectedId = null)
+        {
+            var customers = await _customerService.GetAllCustomersAsync();
+            ViewBag.Customers = new SelectList(customers, "Id", "FullName", selectedId);
         }
     }
 }

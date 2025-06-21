@@ -12,21 +12,35 @@ ViewData["Title"] = "Nowe zlecenie serwisowe";
 
 <div class="form-group">
     @Html.LabelFor(m => m.VehicleId, "Pojazd")
-    @Html.DropDownListFor(
-    m => m.VehicleId,
-    ViewBag.Vehicles as SelectList,
-    "-- Wybierz pojazd --",
-    new { @class = "form-control" })
+    <div class="input-group">
+        @Html.DropDownListFor(
+            m => m.VehicleId, 
+            ViewBag.Vehicles as SelectList, 
+            "-- Wybierz pojazd --", 
+            new { @class = "form-control" })
+        <div class="input-group-append">
+            <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#addVehicleModal">
+                <i class="fas fa-plus"></i> Dodaj pojazd
+            </button>
+        </div>
+    </div>
     @Html.ValidationMessageFor(m => m.VehicleId)
 </div>
 
 <div class="form-group">
     @Html.LabelFor(m => m.CustomerId, "Klient")
-    @Html.DropDownListFor(
-    m => m.CustomerId,
-    ViewBag.Customers as SelectList,
-    "-- Wybierz klienta --",
-    new { @class = "form-control" })
+    <div class="input-group">
+        @Html.DropDownListFor(
+            m => m.CustomerId,
+            ViewBag.Customers as SelectList,
+            "-- Wybierz klienta --",
+            new { @class = "form-control" })
+        <div class="input-group-append">
+            <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#addCustomerModal">
+                <i class="fas fa-plus"></i> Dodaj klienta
+            </button>
+        </div>
+    </div>
     @Html.ValidationMessageFor(m => m.CustomerId)
 </div>
 
@@ -157,3 +171,4 @@ ViewData["Title"] = "Nowe zlecenie serwisowe";
         addServiceTask();
     });
 </script>
+

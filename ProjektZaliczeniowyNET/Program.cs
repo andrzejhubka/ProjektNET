@@ -24,6 +24,10 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 
         // Konfiguracja użytkownika
         options.User.RequireUniqueEmail = true;
+        
+        // wymaganie potwierdzenia hasla
+        options.SignIn.RequireConfirmedEmail = true;
+        options.SignIn.RequireConfirmedAccount = true;
     })
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();

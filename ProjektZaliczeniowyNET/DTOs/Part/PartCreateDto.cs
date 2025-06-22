@@ -13,7 +13,7 @@ namespace ProjektZaliczeniowyNET.DTOs.Part
 
         [Required]
         [Range(0, double.MaxValue)]
-        public decimal Price { get; set; }
+        public decimal UnitPrice { get; set; }
 
         [Required]
         [Range(0, int.MaxValue)]

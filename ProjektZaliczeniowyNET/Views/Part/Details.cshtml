@@ -1,0 +1,37 @@
+@model ProjektZaliczeniowyNET.DTOs.Part.PartDto
+
+@{
+    ViewData["Title"] = "Szczegóły części";
+}
+
+<h2>Szczegóły części</h2>
+
+<div class="mb-3">
+    <strong>Nazwa:</strong> @Model.Name
+</div>
+
+<div class="mb-3">
+    <strong>Opis:</strong> @Model.Description ?? "-"
+</div>
+
+<div class="mb-3">
+    <strong>Cena:</strong> @Model.UnitPrice.ToString("0.00") zł
+</div>
+
+<div class="mb-3">
+    <strong>Ilość w magazynie:</strong> @Model.QuantityInStock
+</div>
+
+<div class="mb-3">
+    <strong>Utworzono:</strong> @Model.CreatedAt.ToString("g")
+</div>
+
+@if (Model.UpdatedAt.HasValue)
+{
+    <div class="mb-3">
+        <strong>Ostatnia aktualizacja:</strong> @Model.UpdatedAt?.ToString("g")
+    </div>
+}
+
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edytuj</a>
+<a asp-action="Index" class="btn btn-secondary">Wróć</a>

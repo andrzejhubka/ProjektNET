@@ -4,7 +4,7 @@ namespace ProjektZaliczeniowyNET.DTOs.Part
     {
         public int Id { get; set; }
         public string Name { get; set; } = null!;
-        public decimal Price { get; set; }
+        public decimal UnitPrice { get; set; }
         public int QuantityInStock { get; set; }
     }
 }

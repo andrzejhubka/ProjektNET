@@ -1,19 +1,29 @@
 @model ProjektZaliczeniowyNET.ViewModels.LoginViewModel
 
-<h2>Logowanie</h2>
-<form asp-action="Login" method="post">
-    <div asp-validation-summary="All"></div>
-    <div>
-        <label asp-for="Email"></label>
-        <input asp-for="Email" />
+<h2 class="mb-4 text-center">Logowanie</h2>
+
+<form asp-action="Login" method="post" class="mx-auto" style="max-width: 400px;">
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div asp-validation-summary="All" class="alert alert-danger"></div>
+    }
+
+    <div class="mb-3">
+        <label asp-for="Email" class="form-label"></label>
+        <input asp-for="Email" class="form-control" placeholder="Wpisz email" />
+        <span asp-validation-for="Email" class="text-danger"></span>
     </div>
-    <div>
-        <label asp-for="Password"></label>
-        <input asp-for="Password" type="password" />
+
+    <div class="mb-3">
+        <label asp-for="Password" class="form-label"></label>
+        <input asp-for="Password" type="password" class="form-control" placeholder="Wpisz hasło" />
+        <span asp-validation-for="Password" class="text-danger"></span>
     </div>
-    <div>
-        <input asp-for="RememberMe" type="checkbox" />
-        <label asp-for="RememberMe"></label>
+
+    <div class="form-check mb-3">
+        <input asp-for="RememberMe" type="checkbox" class="form-check-input" id="RememberMeCheck" />
+        <label asp-for="RememberMe" class="form-check-label" for="RememberMeCheck"></label>
     </div>
-    <button type="submit">Zaloguj</button>
+
+    <button type="submit" class="btn btn-primary w-100">Zaloguj</button>
 </form>

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using ProjektZaliczeniowyNET.DTOs.Customer;
 using ProjektZaliczeniowyNET.DTOs.Vehicle;
 using ProjektZaliczeniowyNET.DTOs.ServiceTask;
+using ProjektZaliczeniowyNET.DTOs.Mechanic;
 using ProjektZaliczeniowyNET.Models;
 
 namespace ProjektZaliczeniowyNET.DTOs.ServiceOrder
@@ -13,7 +14,8 @@ namespace ProjektZaliczeniowyNET.DTOs.ServiceOrder
         
         public CustomerDto Customer { get; set; }
         //public IdentityUser Mechanic { get; set; }
-
+        public MechanicDto Mechanic { get; set; }
+        
         public List<ServiceTaskCreateDto> ServiceTasks { get; set; } = new();
         public Models.ServiceOrderStatus Status { get; set; } = Models.ServiceOrderStatus.Pending;
     }

@@ -25,7 +25,7 @@ namespace ProjektZaliczeniowyNET.Services
             var order = await _context.ServiceOrders
                 .Include(o => o.Customer)
                 .Include(o => o.Vehicle)
-                .Include(o => o.AssignedMechanic)
+                .Include(o => o.Mechanic)
                 .Include(o => o.ServiceTasks)
                 .Include(o => o.Comments)
                 .ThenInclude(c => c.Author)
@@ -33,7 +33,7 @@ namespace ProjektZaliczeniowyNET.Services
 
             if (order == null)
                 return null;
-
+            
             return _mapper.ToDto(order);
         }
 
@@ -42,7 +42,7 @@ namespace ProjektZaliczeniowyNET.Services
             var orders = await _context.ServiceOrders
                 .Include(o => o.Customer)
                 .Include(o => o.Vehicle)
-                .Include(o => o.AssignedMechanic)
+                .Include(o => o.Mechanic)
                 .Include(o => o.ServiceTasks)
                 .ToListAsync();
 

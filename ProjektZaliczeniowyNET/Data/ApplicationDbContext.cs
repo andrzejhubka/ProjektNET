@@ -139,7 +139,7 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<ServiceOrder>()
-            .HasOne(so => so.AssignedMechanic)
+            .HasOne(so => so.Mechanic)
             .WithMany()
             .HasForeignKey(so => so.AssignedMechanicId)
             .OnDelete(DeleteBehavior.SetNull);

@@ -1,3 +1,4 @@
+using ProjektZaliczeniowyNET.DTOs.Mechanic;
 using ProjektZaliczeniowyNET.Models;
 
 namespace ProjektZaliczeniowyNET.DTOs.ServiceOrder
@@ -10,7 +11,7 @@ namespace ProjektZaliczeniowyNET.DTOs.ServiceOrder
 
         public string VehicleDisplayName { get; set; } = string.Empty;
 
-        public string AssignedMechanicEmail { get; set; } = string.Empty;
+        public MechanicDto? Mechanic { get; set; }
 
         public ServiceOrderStatus Status { get; set; }
 

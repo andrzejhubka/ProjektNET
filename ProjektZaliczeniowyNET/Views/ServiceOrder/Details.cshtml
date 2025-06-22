@@ -4,30 +4,66 @@
     ViewData["Title"] = $"Szczegóły zlecenia #{Model.Id}";
 }
 
-<h2>@ViewData["Title"]</h2>
+<h2 class="mb-4">@ViewData["Title"]</h2>
 
-<div class="row">
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-header">Samochod</div>
+<div class="row g-4">
+    <!-- Samochód -->
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-secondary text-white">
+                <i class="bi bi-car-front-fill me-2"></i> Szczegóły samochodu
+            </div>
             <div class="card-body">
-                <p><strong>Nazwa:</strong> @Model.Vehicle.DisplayName</p>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <p><strong>Nazwa:</strong> @Model.Vehicle.DisplayName</p>
+                        <p><strong>Numer rejestracyjny:</strong> @Model.Vehicle.LicensePlate</p>
+                        <p><strong>Marka i model:</strong> @Model.Vehicle.Make @Model.Vehicle.Model</p>
+                        <p><strong>Rok:</strong> @Model.Vehicle.Year</p>
+                        <p><strong>Przebieg:</strong> @Model.Vehicle.Mileage km</p>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.Vehicle.ImageUrl))
+                    {
+                        <div class="col-md-6 text-center align-self-center">
+                            <img src="@Model.Vehicle.ImageUrl" alt="Zdjęcie pojazdu" class="img-thumbnail border rounded shadow-sm" style="max-height: 180px;" />
+                        </div>
+                    }
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-header">Klient</div>
+
+    <!-- Klient -->
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-info text-white">
+                <i class="bi bi-person-fill me-2"></i> Klient
+            </div>
             <div class="card-body">
-                <p><strong>Nazwa:</strong> @Model.Customer.FullName</p>
+                <p><strong>Imię i nazwisko:</strong> @Model.Customer.FullName</p>
                 <p><strong>Email:</strong> @Model.Customer.Email</p>
+                <p><strong>Telefon:</strong> @Model.Customer.PhoneNumber</p>
+                <p><strong>Miasto:</strong> @Model.Customer.City</p>
+                @if (!string.IsNullOrWhiteSpace(Model.Customer.Address))
+                {
+                    <p><strong>Adres:</strong> @Model.Customer.Address</p>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.Customer.Notes))
+                {
+                    <p><strong>Notatki:</strong> @Model.Customer.Notes</p>
+                }
             </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-header">Przypisany Mechanik</div>
+
+    <!-- Mechanik -->
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-success text-white">
+                <i class="bi bi-wrench-adjustable-circle-fill me-2"></i> Mechanik
+            </div>
             <div class="card-body">
+                <p><strong>Imię i nazwisko:</strong> @Model.Mechanic.FullName</p>
                 <p><strong>Email:</strong> @Model.Mechanic.Email</p>
             </div>
         </div>

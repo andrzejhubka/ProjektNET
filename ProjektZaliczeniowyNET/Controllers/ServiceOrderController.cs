@@ -115,10 +115,13 @@ public class ServiceOrderController : Controller
     public async Task<IActionResult> Edit(int id)
     {
         var order = await _serviceOrderService.GetByIdAsync(id);
-        if (order == null) 
+        if (order == null)
+        {
             return NotFound();
-
+        }
+        
         var orderUpdate = _mapper.ToUpdateDto(order);
+     
         // Załaduj listy dropdown
         ViewBag.Customers = new SelectList(await _customerService.GetAllCustomersAsync(), "Id", "FullName");
         ViewBag.Vehicles = new SelectList(await _vehicleService.GetAllAsync(), "Id", "DisplayName");

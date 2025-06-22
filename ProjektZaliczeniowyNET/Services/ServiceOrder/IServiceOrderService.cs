@@ -13,6 +13,7 @@ namespace ProjektZaliczeniowyNET.Services
         Task<bool> UpdateAsync(int id, ServiceOrderUpdateDto dto);
         Task<bool> DeleteAsync(int id);
         Task<int> GetActiveOrdersCountAsync();
+        Task<bool> UpdateStatusAsync(int id, ServiceOrderStatus newStatus);
 
     }
 }

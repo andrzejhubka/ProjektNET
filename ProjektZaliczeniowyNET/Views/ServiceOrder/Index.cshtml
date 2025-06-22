@@ -1,5 +1,7 @@
 @model IEnumerable<ProjektZaliczeniowyNET.DTOs.ServiceOrder.ServiceOrderListDto>
 
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
 <h1>Lista zleceń serwisowych</h1>
 
 <table class="table table-striped">
@@ -11,23 +13,85 @@
         <th>Mechanik</th>
         <th>Status</th>
         <th>Data utworzenia</th>
-        <th></th>
+        <th>Akcje</th>
     </tr>
     </thead>
     <tbody>
     @foreach (var order in Model)
     {
-        <tr>
+        <tr data-order-id="@order.Id">
             <td>@order.Id</td>
             <td>@order.CustomerFullName</td>
             <td>@order.VehicleDisplayName</td>
             <td>@order.AssignedMechanicEmail</td>
-            <td>@order.Status.ToString()</td>
+            <td>
+                <select class="form-control status-select" data-order-id="@order.Id">
+                    @foreach (var status in Enum.GetValues(typeof(ProjektZaliczeniowyNET.Models.ServiceOrderStatus)).Cast<ProjektZaliczeniowyNET.Models.ServiceOrderStatus>())
+                    {
+                        @if (status == order.Status)
+                        {
+                            <option value="@((int)status)" selected>
+                                @status
+                            </option>
+                        }
+                        else
+                        {
+                            <option value="@((int)status)">
+                                @status
+                            </option>
+                        }
+                    }
+                </select>
+            </td>
             <td>@order.CreatedAt.ToString("yyyy-MM-dd")</td>
             <td>
                 <a asp-controller="ServiceOrder" asp-action="Details" asp-route-id="@order.Id" class="btn btn-primary btn-sm">Szczegóły</a>
+                <button class="btn btn-success btn-sm btn-update-status" data-order-id="@order.Id">Zmień status</button>
             </td>
         </tr>
     }
     </tbody>
 </table>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.btn-update-status').forEach(button => {
+            button.addEventListener('click', async function() {
+                const orderId = this.dataset.orderId;
+                const select = document.querySelector(`select.status-select[data-order-id="${orderId}"]`);
+                const newStatus = parseInt(select.value); // Parsuj jako int
+
+                console.log('Aktualizacja statusu:', { orderId, newStatus }); // Debug
+
+                try {
+                    const response = await fetch(`/ServiceOrder/UpdateStatus/${orderId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                        },
+                        body: JSON.stringify({ status: newStatus })
+                    });
+
+                    console.log('Response status:', response.status); // Debug
+
+                    if (response.ok) {
+                        const result = await response.json();
+                        alert('Status został zaktualizowany');
+                        location.reload();
+                    } else {
+                        const errorText = await response.text();
+                        console.error('Błąd odpowiedzi:', errorText);
+                        alert(`Błąd przy aktualizacji statusu: ${response.status} - ${errorText}`);
+                    }
+                } catch (e) {
+                    console.error('Błąd sieci:', e);
+                    alert(`Błąd sieci: ${e.message}`);
+                }
+            });
+        });
+
+        // Dodaj token CSRF do nagłówka
+        const token = '@Html.AntiForgeryToken()';
+    </script>
+}

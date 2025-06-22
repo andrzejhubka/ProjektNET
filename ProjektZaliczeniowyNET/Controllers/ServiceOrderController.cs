@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using ProjektZaliczeniowyNET.Services;
 using ProjektZaliczeniowyNET.DTOs.ServiceOrder;
 using ProjektZaliczeniowyNET.Mappers;
+using System.Threading.Tasks;
+using ProjektZaliczeniowyNET.Models;
 
 namespace ProjektZaliczeniowyNET.Controllers;
 
@@ -73,5 +75,39 @@ public class ServiceOrderController : Controller
     
         await _serviceOrderService.CreateAsync(dto);
         return RedirectToAction(nameof(Index));
+    }
+
+    // DTO dla UpdateStatus - przeniesione poza kontroler
+    public class UpdateStatusDto
+    {
+        public int Status { get; set; } // Zmienione na int zamiast ServiceOrderStatus
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> UpdateStatus(int id, [FromBody] UpdateStatusDto dto)
+    {
+        try
+        {
+            if (dto == null)
+                return BadRequest("Brak danych.");
+
+            // Sprawdź czy wartość statusu jest prawidłowa
+            if (!Enum.IsDefined(typeof(ServiceOrderStatus), dto.Status))
+                return BadRequest("Nieprawidłowa wartość statusu.");
+
+            var status = (ServiceOrderStatus)dto.Status;
+            var success = await _serviceOrderService.UpdateStatusAsync(id, status);
+            
+            if (!success) 
+                return NotFound("Nie znaleziono zlecenia o podanym ID.");
+
+            return Ok(new { message = "Status został pomyślnie zaktualizowany" });
+        }
+        catch (Exception ex)
+        {
+            // Logowanie błędu
+            return StatusCode(500, $"Błąd serwera: {ex.Message}");
+        }
     }
 }

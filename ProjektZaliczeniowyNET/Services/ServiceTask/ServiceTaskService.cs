@@ -87,6 +87,17 @@ namespace ProjektZaliczeniowyNET.Services
             await _context.SaveChangesAsync();
         }
         
+        public async Task DeleteManyAsync(int serviceOrderId, List<ServiceTask> newTasks)
+        {
+            // Usuń wszystkie istniejące
+            var existingTasks = await _context.ServiceTasks
+                .Where(t => t.ServiceOrderId == serviceOrderId)
+                .ToListAsync();
+    
+            _context.ServiceTasks.RemoveRange(existingTasks);
+            await _context.SaveChangesAsync();
+        }
+        
         public async Task<bool> DeleteAsync(int id)
         {
             var serviceTask = await _context.ServiceTasks

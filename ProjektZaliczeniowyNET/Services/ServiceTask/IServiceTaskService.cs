@@ -1,4 +1,6 @@
+using Microsoft.EntityFrameworkCore;
 using ProjektZaliczeniowyNET.DTOs.ServiceTask;
+using ProjektZaliczeniowyNET.Models;
 
 namespace ProjektZaliczeniowyNET.Interfaces
 {
@@ -12,5 +14,6 @@ namespace ProjektZaliczeniowyNET.Interfaces
         Task<bool> MarkAsCompletedAsync(int id);
         Task<bool> MarkAsNotCompletedAsync(int id);
         Task UpdateManyAsync(int serviceOrderId, List<ServiceTaskCreateDto> newTasks);
+        Task DeleteManyAsync(int serviceOrderId, List<ServiceTask> toDeleteTasks);
     }
 }

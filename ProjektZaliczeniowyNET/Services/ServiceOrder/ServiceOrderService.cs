@@ -80,6 +80,10 @@ namespace ProjektZaliczeniowyNET.Services
             var order = await _context.ServiceOrders.FindAsync(id);
             if (order == null) return false;
 
+            // usuwamy wszystkie taski
+            var tasksToDelete = order.ServiceTasks;
+            await _taskService.DeleteManyAsync(order.Id, tasksToDelete);
+            
             _context.ServiceOrders.Remove(order);
             await _context.SaveChangesAsync();
             return true;

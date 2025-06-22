@@ -46,6 +46,9 @@ ViewData["Title"] = "Lista zleceń serwisowych";
                 <a asp-controller="ServiceOrder" asp-action="Edit" asp-route-id="@order.Id" class="btn btn-outline-success">
                     <i class="bi bi-pencil"></i> Edytuj
                 </a>
+                <a asp-controller="ServiceOrder" asp-action="Delete" asp-route-id="@order.Id" class="btn btn-outline-success">
+                    <i class="bi bi-pencil"></i> Usun
+                </a>
             </div>
         </td>
     </tr>

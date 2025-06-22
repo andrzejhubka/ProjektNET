@@ -169,4 +169,11 @@ public class ServiceOrderController : Controller
         }
         return View(order);
     }
+    
+  
+    public async Task<IActionResult> Delete(int id)
+    {
+        await _serviceOrderService.DeleteAsync(id);
+        return RedirectToAction("Index");
+    }
 }

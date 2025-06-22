@@ -11,6 +11,6 @@ namespace ProjektZaliczeniowyNET.Interfaces
         Task<bool> DeleteAsync(int id);
         Task<bool> MarkAsCompletedAsync(int id);
         Task<bool> MarkAsNotCompletedAsync(int id);
-       
+        Task UpdateManyAsync(int serviceOrderId, List<ServiceTaskCreateDto> newTasks);
     }
 }

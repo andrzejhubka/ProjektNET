@@ -64,6 +64,29 @@ namespace ProjektZaliczeniowyNET.Services
             return _mapper.ToDto(serviceTask);
         }
         
+        public async Task UpdateManyAsync(int serviceOrderId, List<ServiceTaskCreateDto> newTasks)
+        {
+            // Usuń wszystkie istniejące
+            var existingTasks = await _context.ServiceTasks
+                .Where(t => t.ServiceOrderId == serviceOrderId)
+                .ToListAsync();
+    
+            _context.ServiceTasks.RemoveRange(existingTasks);
+
+            // Dodaj nowe
+            if (newTasks != null && newTasks.Any())
+            {
+                foreach (var taskDto in newTasks)
+                {
+                    var task = _mapper.ToEntity(taskDto);
+                    task.ServiceOrderId = serviceOrderId;
+                    _context.ServiceTasks.Add(task);
+                }
+            }
+
+            await _context.SaveChangesAsync();
+        }
+        
         public async Task<bool> DeleteAsync(int id)
         {
             var serviceTask = await _context.ServiceTasks

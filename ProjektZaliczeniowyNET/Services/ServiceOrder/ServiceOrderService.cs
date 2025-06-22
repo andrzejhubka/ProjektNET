@@ -3,6 +3,7 @@ using ProjektZaliczeniowyNET.DTOs.ServiceOrder;
 using ProjektZaliczeniowyNET.Mappers;
 using Microsoft.EntityFrameworkCore;
 using ProjektZaliczeniowyNET.Data;
+using ProjektZaliczeniowyNET.Interfaces;
 
 namespace ProjektZaliczeniowyNET.Services
 {
@@ -10,11 +11,13 @@ namespace ProjektZaliczeniowyNET.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly ServiceOrderMapper _mapper;
+        private readonly IServiceTaskService _taskService;
 
-        public ServiceOrderService(ApplicationDbContext context, ServiceOrderMapper mapper)
+        public ServiceOrderService(ApplicationDbContext context, ServiceOrderMapper mapper,  IServiceTaskService taskService)
         {
             _context = context;
             _mapper = mapper;
+            _taskService = taskService;
         }
 
         public async Task<ServiceOrderDto?> GetByIdAsync(int id)
@@ -59,9 +62,16 @@ namespace ProjektZaliczeniowyNET.Services
             var order = await _context.ServiceOrders.FindAsync(id);
             if (order == null) return false;
 
+            var tasksToUpdate = dto.ServiceTasks?.ToList();
+            
+            // wlasnosci serviceorder
             _mapper.UpdateEntity(order, dto);
             _context.ServiceOrders.Update(order);
             await _context.SaveChangesAsync();
+            
+            Console.WriteLine($"PRZEKAZUJĘ zadania count: {dto.ServiceTasks?.Count ?? 0}");
+            // taski z aktualizowanego serviceorder
+            await _taskService.UpdateManyAsync(id, tasksToUpdate);
             return true;
         }
 

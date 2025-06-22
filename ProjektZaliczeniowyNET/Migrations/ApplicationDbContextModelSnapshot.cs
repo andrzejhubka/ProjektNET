@@ -445,7 +445,7 @@ namespace ProjektZaliczeniowyNET.Migrations
                     b.Property<decimal>("LaborCost")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("ServiceOrderId")
+                    b.Property<int>("ServiceOrderId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -661,7 +661,9 @@ namespace ProjektZaliczeniowyNET.Migrations
                 {
                     b.HasOne("ProjektZaliczeniowyNET.Models.ServiceOrder", null)
                         .WithMany("ServiceTasks")
-                        .HasForeignKey("ServiceOrderId");
+                        .HasForeignKey("ServiceOrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ProjektZaliczeniowyNET.Models.Vehicle", b =>

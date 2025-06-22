@@ -1,4 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
+using ProjektZaliczeniowyNET.DTOs.Customer;
+using ProjektZaliczeniowyNET.DTOs.Vehicle;
 using ProjektZaliczeniowyNET.DTOs.ServiceTask;
 using ProjektZaliczeniowyNET.Models;
 
@@ -6,17 +9,12 @@ namespace ProjektZaliczeniowyNET.DTOs.ServiceOrder
 {
     public class ServiceOrderDto
     {
-        [Required] 
-        public int VehicleId { get; set; }
-
-        [Required] 
-        public int CustomerId { get; set; }
-
-        [Required]
-        public string? AssignedMechanicId { get; set; }
+        public int Id { get; set; }
+        
+        public CustomerDto Customer { get; set; }
+        //public IdentityUser Mechanic { get; set; }
 
         public List<ServiceTaskCreateDto> ServiceTasks { get; set; } = new();
-        
         public Models.ServiceOrderStatus Status { get; set; } = Models.ServiceOrderStatus.Pending;
     }
 }

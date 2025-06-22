@@ -151,4 +151,22 @@ public class ServiceOrderController : Controller
 
         return NotFound();
     }
+
+    [HttpGet]
+    public async Task<IActionResult> Details(int id)
+    {
+        var order = await _serviceOrderService.GetByIdAsync(id);
+        
+        if (order != null)
+        {
+            Console.WriteLine($"Order ID: {order.Id}"); // DEBUG
+            Console.WriteLine($"Customer is null: {order.Customer == null}");
+        }
+        else
+        {
+            Console.WriteLine("ORDER IS NULL - returning NotFound");
+            return NotFound();
+        }
+        return View(order);
+    }
 }

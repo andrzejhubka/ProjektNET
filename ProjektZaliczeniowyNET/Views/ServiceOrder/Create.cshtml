@@ -1,80 +1,86 @@
 @model ProjektZaliczeniowyNET.DTOs.ServiceOrder.ServiceOrderCreateDto
 
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        Formularz zawiera błędy:
+        <ul>
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <li>@error.ErrorMessage</li>
+            }
+        </ul>
+    </div>
+}
+
 @{
-ViewData["Title"] = "Nowe zlecenie serwisowe";
+    ViewData["Title"] = "Nowe zlecenie serwisowe";
 }
 
 <h2>@ViewData["Title"]</h2>
 
 @using (Html.BeginForm())
 {
-@Html.AntiForgeryToken()
+    @Html.AntiForgeryToken()
 
-<div class="form-group">
-    @Html.LabelFor(m => m.VehicleId, "Pojazd")
-    <div class="input-group">
-        @Html.DropDownListFor(
-            m => m.VehicleId, 
-            ViewBag.Vehicles as SelectList, 
-            "-- Wybierz pojazd --", 
-            new { @class = "form-control" })
-        <div class="input-group-append">
-            <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#addVehicleModal">
-                <i class="fas fa-plus"></i> Dodaj pojazd
-            </button>
+    <div class="form-group">
+        @Html.LabelFor(m => m.VehicleId, "Pojazd")
+        <div class="input-group">
+            @Html.DropDownListFor(
+                m => m.VehicleId,
+                ViewBag.Vehicles as SelectList,
+                "-- Wybierz pojazd --",
+                new { @class = "form-control" })
+            <div class="input-group-append">
+                <a href="/Vehicle/Create?returnUrl=/ServiceOrder/Create" class="btn btn-outline-secondary">
+                    <i class="fas fa-plus"></i> Dodaj pojazd
+                </a>
+            </div>
         </div>
+        @Html.ValidationMessageFor(m => m.VehicleId)
     </div>
-    @Html.ValidationMessageFor(m => m.VehicleId)
-</div>
 
-<div class="form-group">
-    @Html.LabelFor(m => m.CustomerId, "Klient")
-    <div class="input-group">
-        @Html.DropDownListFor(
-            m => m.CustomerId,
-            ViewBag.Customers as SelectList,
-            "-- Wybierz klienta --",
-            new { @class = "form-control" })
-        <div class="input-group-append">
-            <a href="/Customer/Create?returnUrl=/ServiceOrder/Create" class="btn btn-outline-secondary">
-                <i class="fas fa-plus"></i> Dodaj klienta
-            </a>
+    <div class="form-group">
+        @Html.LabelFor(m => m.CustomerId, "Klient")
+        <div class="input-group">
+            @Html.DropDownListFor(
+                m => m.CustomerId,
+                ViewBag.Customers as SelectList,
+                "-- Wybierz klienta --",
+                new { @class = "form-control" })
+            <div class="input-group-append">
+                <a href="/Customer/Create?returnUrl=/ServiceOrder/Create" class="btn btn-outline-secondary">
+                    <i class="fas fa-plus"></i> Dodaj klienta
+                </a>
+            </div>
         </div>
+        @Html.ValidationMessageFor(m => m.CustomerId)
     </div>
-    @Html.ValidationMessageFor(m => m.CustomerId)
-</div>
 
-<div class="form-group">
-    @Html.LabelFor(m => m.AssignedMechanicId, "Mechanik")
-    @Html.DropDownListFor(
-    m => m.AssignedMechanicId,
-    ViewBag.Mechanics as SelectList,
-    "-- Wybierz mechanika --",
-    new { @class = "form-control" })
-    @Html.ValidationMessageFor(m => m.AssignedMechanicId)
-</div>
-
-<div class="form-group">
-    <h4>Zadania serwisowe</h4>
-    <div id="service-tasks-container">
+    <div class="form-group">
+        @Html.LabelFor(m => m.AssignedMechanicId, "Mechanik")
+        @Html.DropDownListFor(
+            m => m.AssignedMechanicId,
+            ViewBag.Mechanics as SelectList,
+            "-- Wybierz mechanika --",
+            new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.AssignedMechanicId)
     </div>
-    <button type="button" id="add-task-btn" class="btn btn-success">Dodaj zadanie</button>
-</div>
 
-<button type="submit" class="btn btn-primary">Zapisz</button>
-<a asp-action="Index" class="btn btn-secondary">Anuluj</a>
+    <div class="form-group">
+        <h4>Zadania serwisowe</h4>
+        <div id="service-tasks-container">
+        </div>
+        <button type="button" id="add-task-btn" class="btn btn-success">Dodaj zadanie</button>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Zapisz</button>
+    <a asp-action="Index" class="btn btn-secondary">Anuluj</a>
 }
 
 <script>
-    // Przekaż dane części z ViewBag do JavaScript
-    var partsData = [];
-    @if (ViewBag.Parts != null)
-    {
-    <text>
-    partsData = @Html.Raw(Json.Serialize(ViewBag.Parts));
-    </text>
-    }
-
+    // Przekazanie danych części z cenami do JS
+    var partsData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.PartsData));
     console.log('Dane części:', partsData); // Debug
 </script>
 
@@ -124,10 +130,7 @@ ViewData["Title"] = "Nowe zlecenie serwisowe";
 
         if (partsData && partsData.length > 0) {
             partsData.forEach(part => {
-                // Sprawdź różne warianty właściwości
-                const value = part.Value || part.value || part.Id;
-                const text = part.Text || part.text || part.Name;
-                optionsHtml += `<option value="${value}">${text}</option>`;
+                optionsHtml += `<option value="${part.Id}">${part.Name}</option>`;
             });
         }
 
@@ -135,7 +138,7 @@ ViewData["Title"] = "Nowe zlecenie serwisowe";
         <div class="part-item row mb-2 p-2 border rounded">
             <div class="col-md-4">
                 <label class="form-label">Część</label>
-                <select name="ServiceTasks[${taskIdx}].UsedParts[${partIndex}].Id" class="form-control">
+                <select name="ServiceTasks[${taskIdx}].UsedParts[${partIndex}].Id" class="form-control part-select">
                     ${optionsHtml}
                 </select>
             </div>
@@ -147,7 +150,7 @@ ViewData["Title"] = "Nowe zlecenie serwisowe";
             <div class="col-md-3">
                 <label class="form-label">Cena (PLN)</label>
                 <input type="number" step="0.01" name="ServiceTasks[${taskIdx}].UsedParts[${partIndex}].Price" 
-                       class="form-control" min="0" />
+                       class="form-control part-price" min="0" readonly />
             </div>
             <div class="col-md-2">
                 <label class="form-label">&nbsp;</label>
@@ -170,5 +173,21 @@ ViewData["Title"] = "Nowe zlecenie serwisowe";
     document.addEventListener('DOMContentLoaded', function() {
         addServiceTask();
     });
-</script>
 
+    // Automatyczne ustawianie ceny części po wyborze
+    document.addEventListener('change', function(e) {
+        if (e.target.classList.contains('part-select')) {
+            const select = e.target;
+            const selectedPartId = select.value;
+            const container = select.closest('.part-item');
+            const priceInput = container.querySelector('.part-price');
+
+            const part = partsData.find(p => p.Id.toString() === selectedPartId);
+            if (part) {
+                priceInput.value = part.UnitPrice ?? part.unitPrice ?? 0;
+            } else {
+                priceInput.value = 0;
+            }
+        }
+    });
+</script>

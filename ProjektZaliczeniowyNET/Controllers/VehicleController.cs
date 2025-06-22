@@ -43,7 +43,7 @@ namespace ProjektZaliczeniowyNET.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(VehicleCreateDto dto)
+        public async Task<IActionResult> Create(VehicleCreateDto dto, string returnUrl = null)
         {
             if (!ModelState.IsValid)
             {
@@ -52,6 +52,13 @@ namespace ProjektZaliczeniowyNET.Controllers
             }
 
             await _vehicleService.CreateAsync(dto);
+            
+            // Sprawdź czy jest returnUrl i przekieruj tam
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+            
             return RedirectToAction(nameof(Index));
         }
 

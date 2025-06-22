@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using ProjektZaliczeniowyNET.Services;
 using ProjektZaliczeniowyNET.DTOs.ServiceOrder;
 using ProjektZaliczeniowyNET.Mappers;
@@ -42,6 +41,7 @@ public class ServiceOrderController : Controller
         return View(serviceOrders);
     }
     
+    [HttpGet]
     public async Task<IActionResult> Create()
     {
         ViewBag.Customers = new SelectList(await _customerService.GetAllCustomersAsync(), "Id", "FullName");
@@ -52,11 +52,11 @@ public class ServiceOrderController : Controller
         return View(new ServiceOrderCreateDto());
     }
     
+    [HttpPost]
     public async Task<IActionResult> Create(ServiceOrderCreateDto dto)
     {
         if (!ModelState.IsValid)
         {
-            // Użyj tego samego sposobu co w GET
             ViewBag.Customers = new SelectList(await _customerService.GetAllCustomersAsync(), "Id", "FullName");
             ViewBag.Vehicles = new SelectList(await _vehicleService.GetAllAsync(), "Id", "DisplayName");
             ViewBag.Parts = new SelectList(await _partService.GetAllAsync(), "Id", "Name");

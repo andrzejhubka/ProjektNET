@@ -14,5 +14,7 @@ namespace ProjektZaliczeniowyNET.Mappers
         public partial ServiceOrderListDto ToListDto(ServiceOrder entity);
         
         public partial void UpdateEntity(ServiceOrder entity, ServiceOrderUpdateDto dto);
+        
+        public partial ServiceOrderUpdateDto ToUpdateDto(ServiceOrderDto dto);
     }
 }

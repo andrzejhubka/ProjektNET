@@ -110,4 +110,42 @@ public class ServiceOrderController : Controller
             return StatusCode(500, $"Błąd serwera: {ex.Message}");
         }
     }
+    
+    [HttpGet]
+    public async Task<IActionResult> Edit(int id)
+    {
+        var order = await _serviceOrderService.GetByIdAsync(id);
+        if (order == null) 
+            return NotFound();
+
+        var orderUpdate = _mapper.ToUpdateDto(order);
+        // Załaduj listy dropdown
+        ViewBag.Customers = new SelectList(await _customerService.GetAllCustomersAsync(), "Id", "FullName");
+        ViewBag.Vehicles = new SelectList(await _vehicleService.GetAllAsync(), "Id", "DisplayName");
+        ViewBag.Mechanics = new SelectList(await _userManager.Users.ToListAsync(), "Id", "UserName");
+
+        return View(orderUpdate);
+    }
+    
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(int id, ServiceOrderUpdateDto dto)
+    {
+        if (!ModelState.IsValid)
+        {
+            ViewBag.Customers = new SelectList(await _customerService.GetAllCustomersAsync(), "Id", "FullName");
+            ViewBag.Vehicles = new SelectList(await _vehicleService.GetAllAsync(), "Id", "DisplayName");
+            ViewBag.Mechanics = new SelectList(await _userManager.Users.ToListAsync(), "Id", "UserName");
+        
+            return View(dto);
+        }
+
+        var result = await _serviceOrderService.UpdateAsync(id, dto);
+        if (result)
+        {
+            return RedirectToAction(nameof(Index));
+        }
+
+        return NotFound();
+    }
 }

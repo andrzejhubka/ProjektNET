@@ -1,14 +1,22 @@
+using System.ComponentModel.DataAnnotations;
+using ProjektZaliczeniowyNET.DTOs.ServiceTask;
 using ProjektZaliczeniowyNET.Models;
 
 namespace ProjektZaliczeniowyNET.DTOs.ServiceOrder
 {
     public class ServiceOrderDto
     {
-        public int Id { get; set; }
-        public string CustomerFullName { get; set; } = string.Empty;
-        public string VehicleDisplayName { get; set; } = string.Empty;
-        public string AssignedMechanicEmail { get; set; } = string.Empty;
-        public ServiceOrderStatus Status { get; set; }
-        public DateTime CreatedAt { get; set; }
+        [Required] 
+        public int VehicleId { get; set; }
+
+        [Required] 
+        public int CustomerId { get; set; }
+
+        [Required]
+        public string? AssignedMechanicId { get; set; }
+
+        public List<ServiceTaskCreateDto> ServiceTasks { get; set; } = new();
+        
+        public Models.ServiceOrderStatus Status { get; set; } = Models.ServiceOrderStatus.Pending;
     }
 }

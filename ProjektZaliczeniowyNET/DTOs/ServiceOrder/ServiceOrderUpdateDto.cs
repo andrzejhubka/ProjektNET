@@ -6,14 +6,17 @@ namespace ProjektZaliczeniowyNET.DTOs.ServiceOrder
 {
     public class ServiceOrderUpdateDto
     {
-        [Required]
-        public int Id { get; set; }
+        [Required] 
+        public int VehicleId { get; set; }
+
+        [Required] 
+        public int CustomerId { get; set; }
 
         [Required]
-        public ServiceOrderStatus Status { get; set; }
-
         public string? AssignedMechanicId { get; set; }
 
-        public List<ServiceTaskUpdateDto> ServiceTasks { get; set; } = new();
+        public List<ServiceTaskCreateDto> ServiceTasks { get; set; } = new();
+        
+        public Models.ServiceOrderStatus Status { get; set; } = Models.ServiceOrderStatus.Pending;
     }
 }

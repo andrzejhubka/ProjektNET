@@ -46,7 +46,7 @@
             <td>@order.CreatedAt.ToString("yyyy-MM-dd")</td>
             <td>
                 <a asp-controller="ServiceOrder" asp-action="Details" asp-route-id="@order.Id" class="btn btn-primary btn-sm">Szczegóły</a>
-                <button class="btn btn-success btn-sm btn-update-status" data-order-id="@order.Id">Zmień status</button>
+                <a asp-controller="ServiceOrder" asp-action="Edit" asp-route-id="@order.Id" class="btn btn-success btn-sm">Edytuj</a>
             </td>
         </tr>
     }

@@ -5,7 +5,7 @@ using ProjektZaliczeniowyNET.Models;
 
 namespace ProjektZaliczeniowyNET.Data;
 
-public class ApplicationDbContext : IdentityDbContext<IdentityUser>
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
@@ -18,7 +18,7 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     public DbSet<Comment> Comments { get; set; }
     public DbSet<Part> Parts { get; set; }
     public DbSet<ServiceOrderPart> ServiceOrderParts { get; set; }
-    public DbSet<IdentityUser> Users { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

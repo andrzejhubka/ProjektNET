@@ -17,7 +17,7 @@ public class ServiceOrderController : Controller
     private readonly ICustomerService _customerService;
     private readonly IVehicleService _vehicleService;
     private readonly ServiceOrderMapper _mapper;
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly UserManager<ApplicationUser> _userManager;
     private readonly IPartService _partService;
 
     public ServiceOrderController(
@@ -25,7 +25,7 @@ public class ServiceOrderController : Controller
         ICustomerService customerService,
         IVehicleService vehicleService,
         ServiceOrderMapper mapper,
-        UserManager<IdentityUser> userManager,
+        UserManager<ApplicationUser> userManager,
         IPartService partService
     )
     {

@@ -35,6 +35,6 @@ namespace ProjektZaliczeniowyNET.Models
         public virtual ServiceOrder ServiceOrder { get; set; } = null!;
 
         [ForeignKey("AuthorId")]
-        public virtual IdentityUser Author { get; set; } = null!;
+        public virtual ApplicationUser Author { get; set; } = null!;
     }
 }

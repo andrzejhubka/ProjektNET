@@ -23,7 +23,7 @@ namespace ProjektZaliczeniowyNET.Models
   
         public Vehicle? Vehicle { get; set; }
         public Customer? Customer { get; set; }
-        public IdentityUser? Mechanic { get; set; }
+        public ApplicationUser? Mechanic { get; set; }
         
         public required ServiceOrderStatus  Status { get; set; }  
         

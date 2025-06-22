@@ -4,16 +4,25 @@ namespace ProjektZaliczeniowyNET.ViewModels
 {
     public class RegisterViewModel
     {
-        [Required] [EmailAddress] 
+        [Required(ErrorMessage = "Email jest wymagany")]
+        [EmailAddress(ErrorMessage = "Niepoprawny format email")]
         public string Email { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Hasło jest wymagane")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Potwierdź hasło")]
-        [Compare("Password", ErrorMessage = "Hasła nie są takie same.")]
+        [Compare("Password", ErrorMessage = "Hasła muszą się zgadzać")]
         public string ConfirmPassword { get; set; }
+
+        [Required(ErrorMessage = "Imię jest wymagane")]
+        public string FirstName { get; set; }
+
+        [Required(ErrorMessage = "Nazwisko jest wymagane")]
+        public string LastName { get; set; }
+
+        [Phone(ErrorMessage = "Niepoprawny numer telefonu")]
+        public string PhoneNumber { get; set; }
     }
 }

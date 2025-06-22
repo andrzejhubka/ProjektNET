@@ -1,19 +1,49 @@
 @model ProjektZaliczeniowyNET.ViewModels.RegisterViewModel
 
-<h2>Rejestracja</h2>
-<form asp-action="Register" method="post">
-    <div asp-validation-summary="All"></div>
-    <div>
-        <label asp-for="Email"></label>
-        <input asp-for="Email" />
-    </div>
-    <div>
-        <label asp-for="Password"></label>
-        <input asp-for="Password" type="password" />
-    </div>
-    <div>
-        <label asp-for="ConfirmPassword"></label>
-        <input asp-for="ConfirmPassword" type="password" />
-    </div>
-    <button type="submit">Zarejestruj</button>
-</form>
+<div class="mx-auto" style="max-width: 400px;">
+    <h2 class="mb-4 text-center">Rejestracja</h2>
+
+    <form asp-action="Register" method="post">
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div asp-validation-summary="All" class="alert alert-danger"></div>
+        }
+
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label">Email</label>
+            <input asp-for="Email" class="form-control" placeholder="Wpisz email" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Password" class="form-label">Hasło</label>
+            <input asp-for="Password" type="password" class="form-control" placeholder="Wpisz hasło" />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="ConfirmPassword" class="form-label">Potwierdź hasło</label>
+            <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Powtórz hasło" />
+            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="FirstName" class="form-label">Imię</label>
+            <input asp-for="FirstName" class="form-control" placeholder="Wpisz imię" />
+            <span asp-validation-for="FirstName" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="LastName" class="form-label">Nazwisko</label>
+            <input asp-for="LastName" class="form-control" placeholder="Wpisz nazwisko" />
+            <span asp-validation-for="LastName" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="PhoneNumber" class="form-label">Numer telefonu</label>
+            <input asp-for="PhoneNumber" class="form-control" placeholder="Wpisz numer telefonu" />
+            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Zarejestruj</button>
+    </form>
+</div>

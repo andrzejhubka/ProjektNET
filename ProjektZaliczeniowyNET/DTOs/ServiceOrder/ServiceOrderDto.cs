@@ -19,6 +19,7 @@ namespace ProjektZaliczeniowyNET.DTOs.ServiceOrder
         public VehicleServiceOrderDetailsDto Vehicle { get; set; }
         
         public List<ServiceTaskCreateDto> ServiceTasks { get; set; } = new();
+        
         public Models.ServiceOrderStatus Status { get; set; } = Models.ServiceOrderStatus.Pending;
     }
 }

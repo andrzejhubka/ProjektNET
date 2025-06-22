@@ -68,4 +68,86 @@
             </div>
         </div>
     </div>
+    
+    <!-- Zadania serwisowe -->
+    <div class="form-group">
+        <h4>Zadania serwisowe</h4>
+        <div id="service-tasks-container">
+        </div>
+    </div>
 </div>
+
+<script>
+    // Przekazanie danych części z cenami do JS
+    var partsData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.PartsData));
+    var existingTasks = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.ServiceTasks));
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const container = document.getElementById('service-tasks-container');
+        container.innerHTML = ''; // Wyczyść, jeśli coś tam jest
+
+        if (existingTasks && existingTasks.length > 0) {
+            existingTasks.forEach((task, taskIndex) => {
+                // Budujemy HTML tylko do wyświetlania
+                let taskHtml = `
+                <div class="service-task-item border p-3 mb-3">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Opis zadania</label>
+                            <input type="text" class="form-control" value="${task.Description || ''}" disabled />
+                        </div>
+                        <div class="col-md-4">
+                            <label>Koszt robocizny (PLN)</label>
+                            <input type="number" class="form-control" value="${task.LaborCost || 0}" disabled />
+                        </div>
+                        <div class="col-md-2">
+                            <!-- Usunięto przycisk usuwania -->
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <h6>Użyte części</h6>
+                        <div class="parts-container">
+                `;
+
+                // części
+                if (task.UsedParts && task.UsedParts.length > 0) {
+                    task.UsedParts.forEach(part => {
+                        const partData = partsData.find(p => p.Id === part.Id) || {};
+                        taskHtml += `
+                        <div class="part-item row mb-2 p-2 border rounded">
+                            <div class="col-md-4">
+                                <label class="form-label">Część</label>
+                                <input type="text" class="form-control" value="${partData.Name || 'Nieznana część'}" readonly />
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Ilość</label>
+                                <input type="number" class="form-control" value="${part.Quantity || 1}" readonly />
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Cena (PLN)</label>
+                                <input type="number" class="form-control" value="${part.Price || 0}" readonly />
+                            </div>
+                            <div class="col-md-2">
+                                <!-- Usunięto przycisk usuwania -->
+                            </div>
+                        </div>`;
+                    });
+                } else {
+                    taskHtml += `<p>Brak użytych części</p>`;
+                }
+
+                taskHtml += `
+                        </div>
+                    </div>
+                </div>
+                `;
+
+                container.insertAdjacentHTML('beforeend', taskHtml);
+            });
+        } else {
+            container.innerHTML = '<p>Brak zadań do wyświetlenia.</p>';
+        }
+    });
+</script>

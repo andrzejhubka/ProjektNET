@@ -56,7 +56,7 @@ public class ServiceOrderController : Controller
         ViewBag.VehicleFilter = vehicle;
         ViewBag.DateFrom = dateFrom?.ToString("yyyy-MM-dd");
         ViewBag.DateTo = dateTo?.ToString("yyyy-MM-dd");
-        ViewBag.Mechanics = new SelectList(await _userManager.Users.ToListAsync(), "Id", "UserName");
+        ViewBag.Mechanics = new SelectList( await _userManager.GetUsersInRoleAsync("Mechanik"), "Id", "UserName");
         ViewBag.Customers = new SelectList(await _customerService.GetAllCustomersAsync(), "Id", "FullName");
         ViewBag.Vehicles = new SelectList(await _vehicleService.GetAllAsync(), "Id", "DisplayName");
         return View(orders);
@@ -71,7 +71,7 @@ public class ServiceOrderController : Controller
         ViewBag.Vehicles = new SelectList(await _vehicleService.GetAllAsync(), "Id", "DisplayName");
         ViewBag.Parts = new SelectList(parts, "Id", "Name");
         ViewBag.PartsData = parts.Select(p => new { p.Id, p.Name, p.UnitPrice }).ToList(); // pełne dane do JS
-        ViewBag.Mechanics = new SelectList(await _userManager.Users.ToListAsync(), "Id", "UserName");
+        ViewBag.Mechanics = new SelectList( await _userManager.GetUsersInRoleAsync("Mechanik"), "Id", "UserName");
         return View(new ServiceOrderCreateDto());
     }
     
@@ -86,7 +86,7 @@ public class ServiceOrderController : Controller
             ViewBag.Vehicles = new SelectList(await _vehicleService.GetAllAsync(), "Id", "DisplayName");
             ViewBag.Parts = new SelectList(parts, "Id", "Name");
             ViewBag.PartsData = parts.Select(p => new { p.Id, p.Name, p.UnitPrice }).ToList();
-            ViewBag.Mechanics = new SelectList(await _userManager.Users.ToListAsync(), "Id", "UserName");
+            ViewBag.Mechanics = new SelectList( await _userManager.GetUsersInRoleAsync("Mechanik"), "Id", "UserName");
 
             return View(dto);
         }
@@ -156,7 +156,7 @@ public class ServiceOrderController : Controller
         ViewBag.Vehicles = new SelectList(await _vehicleService.GetAllAsync(), "Id", "DisplayName");
         ViewBag.Parts = new SelectList(parts, "Id", "Name");
         ViewBag.PartsData = parts.Select(p => new { p.Id, p.Name, p.UnitPrice }).ToList();
-        ViewBag.Mechanics = new SelectList(await _userManager.Users.ToListAsync(), "Id", "UserName");
+        ViewBag.Mechanics = new SelectList( await _userManager.GetUsersInRoleAsync("Mechanik"), "Id", "UserName");
 
         return View(orderUpdate);
     }
@@ -169,7 +169,7 @@ public class ServiceOrderController : Controller
         {
             ViewBag.Customers = new SelectList(await _customerService.GetAllCustomersAsync(), "Id", "FullName");
             ViewBag.Vehicles = new SelectList(await _vehicleService.GetAllAsync(), "Id", "DisplayName");
-            ViewBag.Mechanics = new SelectList(await _userManager.Users.ToListAsync(), "Id", "UserName");
+            ViewBag.Mechanics = new SelectList( await _userManager.GetUsersInRoleAsync("Mechanik"), "Id", "UserName");
             ViewBag.Parts = new SelectList(await _partService.GetAllAsync(), "Id", "Name");
             return View(dto);
         }

@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -38,7 +39,7 @@ public class ServiceOrderController : Controller
         _userManager = userManager;
         _partService = partService;
     }
-
+    [Authorize(Roles = "Admin,Recepcjonista")]
     public async Task<IActionResult> Index(
         int? status,
         string customer,
@@ -63,6 +64,7 @@ public class ServiceOrderController : Controller
     }
     
     [HttpGet]
+    [Authorize(Roles = "Admin,Recepcjonista")]
     public async Task<IActionResult> Create()
     {
         var parts = await _partService.GetAllAsync();
@@ -76,6 +78,7 @@ public class ServiceOrderController : Controller
     }
     
     [HttpPost]
+    [Authorize(Roles = "Admin,Recepcjonista")]
     public async Task<IActionResult> Create(ServiceOrderCreateDto dto)
     {
         if (!ModelState.IsValid)
@@ -95,6 +98,7 @@ public class ServiceOrderController : Controller
         return RedirectToAction(nameof(Index));
     }
     
+    [Authorize(Roles = "Admin,Recepcjonista")]
     public class UpdateStatusDto
     {
         public int Status { get; set; } // Zmienione na int zamiast ServiceOrderStatus
@@ -102,6 +106,7 @@ public class ServiceOrderController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin,Recepcjonista")]
     public async Task<IActionResult> UpdateStatus(int id, [FromBody] UpdateStatusDto dto)
     {
         try
@@ -129,6 +134,7 @@ public class ServiceOrderController : Controller
     }
     
     [HttpGet]
+    [Authorize(Roles = "Admin,Recepcjonista")]
     public async Task<IActionResult> Edit(int id)
     {
         var order = await _serviceOrderService.GetByIdAsync(id);
@@ -162,6 +168,7 @@ public class ServiceOrderController : Controller
     }
     
     [HttpPost]
+    [Authorize(Roles = "Admin,Recepcjonista")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, ServiceOrderUpdateDto dto)
     {
@@ -205,10 +212,38 @@ public class ServiceOrderController : Controller
         return View(order);
     }
     
-  
+    [Authorize(Roles = "Admin,Recepcjonista")]
     public async Task<IActionResult> Delete(int id)
     {
         await _serviceOrderService.DeleteAsync(id);
         return RedirectToAction("Index");
     }
+    
+    public async Task<IActionResult> MyOrders(
+        int? status,
+        string customer,
+        string vehicle,
+        DateTime? dateFrom,
+        DateTime? dateTo,
+        string mechanicId)
+    {
+        // ✅ Pobierz ID aktualnie zalogowanego mechanika
+        var currentMechanicId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    
+        // ✅ Wymuś filtrowanie tylko po tym mechaniku
+        var orders = await _serviceOrderService.GetFilteredAsync(
+            status, null, null, dateFrom, dateTo, currentMechanicId);
+
+        // Przekaż filtry do ViewBag (bez mechanika - nie potrzebny)
+        ViewBag.SelectedStatus = status;
+        ViewBag.DateFrom = dateFrom?.ToString("yyyy-MM-dd");
+        ViewBag.DateTo = dateTo?.ToString("yyyy-MM-dd");
+    
+        // ✅ Nie przekazuj listy mechaników - mechanik widzi tylko swoje zlecenia
+        // ViewBag.Mechanics = ... // Usuń to
+    
+        ViewData["Title"] = "Moje zlecenia";
+        return View("Index", orders); // Używa tego samego widoku co Index
+    }
+    
 }

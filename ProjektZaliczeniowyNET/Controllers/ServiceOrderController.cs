@@ -6,10 +6,12 @@ using ProjektZaliczeniowyNET.Services;
 using ProjektZaliczeniowyNET.DTOs.ServiceOrder;
 using ProjektZaliczeniowyNET.Mappers;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using ProjektZaliczeniowyNET.Models;
 
 namespace ProjektZaliczeniowyNET.Controllers;
 
+[Authorize(Roles = "Admin,Recepcjonista,Mechanik")]
 [Controller]
 public class ServiceOrderController : Controller
 {

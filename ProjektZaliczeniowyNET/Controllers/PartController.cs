@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProjektZaliczeniowyNET.Controllers
 {
+    [Authorize(Roles = "Admin,Manager,Recepcjonista")]
     public class PartController : Controller
     {
         private readonly IPartService _partService;

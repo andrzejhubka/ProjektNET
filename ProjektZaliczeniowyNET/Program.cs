@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using ProjektZaliczeniowyNET.Data;
 using ProjektZaliczeniowyNET.Interfaces;
 using ProjektZaliczeniowyNET.Models;
@@ -61,6 +62,8 @@ builder.Services.AddScoped<CommentMapper>();
 
 builder.Services.AddScoped<IPartService, PartService>();
 builder.Services.AddScoped<PartMapper>();  
+
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

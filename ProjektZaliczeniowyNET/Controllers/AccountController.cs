@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using ProjektZaliczeniowyNET.ViewModels;
 using ProjektZaliczeniowyNET.Models;
+using ProjektZaliczeniowyNET.Services;
 
 namespace ProjektZaliczeniowyNET.Controllers
 {
@@ -10,11 +12,13 @@ namespace ProjektZaliczeniowyNET.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IEmailSender _emailSender;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,  IEmailSender emailSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _emailSender = emailSender;
         }
 
         // GET: /Account/Register
@@ -39,8 +43,19 @@ namespace ProjektZaliczeniowyNET.Controllers
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Index", "Home");
+                    // Generowanie tokenu potwierdzającego email
+                    var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            
+                    // Tworzenie linku potwierdzającego
+                    var confirmationLink = Url.Action("ConfirmEmail", "Account",
+                        new { userId = user.Id, token = token }, Request.Scheme);
+            
+                    // Wysyłanie emaila z linkiem potwierdzającym
+                    await _emailSender.SendEmailAsync(model.Email, "Potwierdź swój email",
+                        $"Kliknij <a href='{confirmationLink}'>tutaj</a> aby potwierdzić swój email.");
+                    
+                    // Przekieruj do strony informującej o wysłaniu emaila
+                    return View("EmailConfirmationSent");
                 }
 
                 foreach (var error in result.Errors)
@@ -61,6 +76,18 @@ namespace ProjektZaliczeniowyNET.Controllers
         {
             if (ModelState.IsValid)
             {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                
+                if (user != null)
+                {
+                    if (!await _userManager.IsEmailConfirmedAsync(user))
+                    {
+                        ModelState.AddModelError(string.Empty, 
+                            "Musisz potwierdzić swój adres email przed zalogowaniem. Sprawdź swoją skrzynkę pocztową.");
+                        return View(model);
+                    }
+                }
+                
                 var result = await _signInManager.PasswordSignInAsync(
                     model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
 
@@ -87,6 +114,29 @@ namespace ProjektZaliczeniowyNET.Controllers
                 return Redirect(returnUrl);
             else
                 return RedirectToAction("Index", "Home");
+        }
+        
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            if (userId == null || token == null)
+            {
+                return View("Error");
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return View("Error");
+            }
+
+            var result = await _userManager.ConfirmEmailAsync(user, token);
+    
+            if (result.Succeeded)
+            {
+                return View("EmailConfirmed");
+            }
+    
+            return View("Error");
         }
     }
 }

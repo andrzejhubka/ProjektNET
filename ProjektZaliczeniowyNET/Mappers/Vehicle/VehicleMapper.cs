@@ -1,6 +1,7 @@
 using Riok.Mapperly.Abstractions;
 using ProjektZaliczeniowyNET.DTOs.Vehicle;
 using ProjektZaliczeniowyNET.Models;
+using System.Collections.Generic;
 
 namespace ProjektZaliczeniowyNET.Mappers
 {

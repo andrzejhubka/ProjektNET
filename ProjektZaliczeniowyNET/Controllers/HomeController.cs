@@ -5,6 +5,7 @@ using ProjektZaliczeniowyNET.ViewModels;
 
 namespace ProjektZaliczeniowyNET.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly IServiceOrderService _serviceOrderService;

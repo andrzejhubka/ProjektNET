@@ -19,7 +19,7 @@ namespace ProjektZaliczeniowyNET.Models
         public int Id { get; set; }
         public int VehicleId { get; set; }
         public int CustomerId { get; set; }
-        public string AssignedMechanicId { get; set; }
+        public string? AssignedMechanicId { get; set; }
   
         public Vehicle? Vehicle { get; set; }
         public Customer? Customer { get; set; }

@@ -59,8 +59,11 @@ namespace ProjektZaliczeniowyNET.Services
             }
             catch (Exception ex)
             {
-                // Loguj błąd i wypisz w konsoli dla testów
                 Console.WriteLine($"Błąd wysyłania emaila: {ex.Message}");
+                if (ex.InnerException != null)
+                    Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+    
                 Console.WriteLine($"EMAIL MIAŁ BYĆ WYSŁANY DO: {email}");
                 Console.WriteLine($"TEMAT: {subject}");
             }

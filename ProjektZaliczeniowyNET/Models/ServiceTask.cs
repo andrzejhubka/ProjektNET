@@ -9,7 +9,7 @@ namespace ProjektZaliczeniowyNET.Models
         public int ServiceOrderId { get; set; }
         public string Description { get; set; }
         public decimal LaborCost { get; set; }
-        public List<Part> UsedParts { get; set; } = new();
         public bool IsCompleted { get; set; }
+        public virtual ICollection<Part> Parts { get; set; } = new List<Part>();
     }
 }

@@ -21,4 +21,6 @@ public class Part
     [Required]
     [Range(0, int.MaxValue)]
     public int QuantityInStock { get; set; }
+    
+    public virtual ICollection<ServiceTask> ServiceTasks { get; set; } = new List<ServiceTask>();
 }

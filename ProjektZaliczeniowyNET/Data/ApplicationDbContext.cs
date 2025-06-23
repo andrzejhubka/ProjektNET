@@ -17,8 +17,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<ServiceTask> ServiceTasks { get; set; }
     public DbSet<Comment> Comments { get; set; }
     public DbSet<Part> Parts { get; set; }
-    public DbSet<ServiceOrderPart> ServiceOrderParts { get; set; }
-
+   
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -110,15 +109,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             // Ignoruj właściwość obliczaną
             entity.Ignore(e => e.IsEdited);
         });
-
-        // Konfiguracja dla ServiceOrderPart
-        modelBuilder.Entity<ServiceOrderPart>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.Cost).HasColumnType("decimal(10,2)");
-            entity.Property(e => e.Quantity).IsRequired();
-        });
-
+        
         // Relacje
         modelBuilder.Entity<Vehicle>()
             .HasOne(v => v.Customer)
@@ -143,7 +134,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .WithMany()
             .HasForeignKey(so => so.AssignedMechanicId)
             .OnDelete(DeleteBehavior.SetNull);
-
         
         modelBuilder.Entity<Comment>()
             .HasOne(c => c.ServiceOrder)
@@ -151,12 +141,12 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasForeignKey(c => c.ServiceOrderId)
             .OnDelete(DeleteBehavior.Cascade);
         
-        modelBuilder.Entity<ServiceOrderPart>()
-            .HasOne(sop => sop.Part)
-            .WithMany()
-            .HasForeignKey(sop => sop.PartId)
-            .OnDelete(DeleteBehavior.Restrict);
-
+        modelBuilder.Entity<ServiceTask>()
+            .HasMany(st => st.Parts)
+            .WithMany(p => p.ServiceTasks)
+            .UsingEntity(j => j.ToTable("ServiceTaskParts"));
+        
+        
         modelBuilder.Entity<ServiceTask>()
             .HasIndex(st => st.IsCompleted)
             .HasDatabaseName("IX_ServiceTasks_IsCompleted");
@@ -172,13 +162,5 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         modelBuilder.Entity<ServiceOrder>()
             .HasIndex(so => so.VehicleId)
             .HasDatabaseName("IX_ServiceOrders_VehicleId");
-
-        modelBuilder.Entity<ServiceOrderPart>()
-            .HasIndex(sop => sop.ServiceOrderId)
-            .HasDatabaseName("IX_ServiceOrderParts_ServiceOrderId");
-
-        modelBuilder.Entity<ServiceOrderPart>()
-            .HasIndex(sop => sop.PartId)
-            .HasDatabaseName("IX_ServiceOrderParts_PartId");
     }
 }

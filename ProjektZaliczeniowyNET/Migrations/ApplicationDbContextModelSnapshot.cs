@@ -155,6 +155,21 @@ namespace ProjektZaliczeniowyNET.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("PartServiceTask", b =>
+                {
+                    b.Property<int>("PartsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ServiceTasksId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PartsId", "ServiceTasksId");
+
+                    b.HasIndex("ServiceTasksId");
+
+                    b.ToTable("ServiceTaskParts", (string)null);
+                });
+
             modelBuilder.Entity("ProjektZaliczeniowyNET.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -348,15 +363,10 @@ namespace ProjektZaliczeniowyNET.Migrations
                     b.Property<int>("QuantityInStock")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ServiceTaskId")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("UnitPrice")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ServiceTaskId");
 
                     b.ToTable("Parts");
                 });
@@ -370,7 +380,6 @@ namespace ProjektZaliczeniowyNET.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AssignedMechanicId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedAt")
@@ -401,37 +410,6 @@ namespace ProjektZaliczeniowyNET.Migrations
                         .HasDatabaseName("IX_ServiceOrders_VehicleId");
 
                     b.ToTable("ServiceOrders");
-                });
-
-            modelBuilder.Entity("ProjektZaliczeniowyNET.Models.ServiceOrderPart", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Cost")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<int>("PartId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ServiceOrderId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PartId")
-                        .HasDatabaseName("IX_ServiceOrderParts_PartId");
-
-                    b.HasIndex("ServiceOrderId")
-                        .HasDatabaseName("IX_ServiceOrderParts_ServiceOrderId");
-
-                    b.ToTable("ServiceOrderParts");
                 });
 
             modelBuilder.Entity("ProjektZaliczeniowyNET.Models.ServiceTask", b =>
@@ -593,6 +571,21 @@ namespace ProjektZaliczeniowyNET.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("PartServiceTask", b =>
+                {
+                    b.HasOne("ProjektZaliczeniowyNET.Models.Part", null)
+                        .WithMany()
+                        .HasForeignKey("PartsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjektZaliczeniowyNET.Models.ServiceTask", null)
+                        .WithMany()
+                        .HasForeignKey("ServiceTasksId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("ProjektZaliczeniowyNET.Models.Comment", b =>
                 {
                     b.HasOne("ProjektZaliczeniowyNET.Models.ApplicationUser", "Author")
@@ -612,20 +605,12 @@ namespace ProjektZaliczeniowyNET.Migrations
                     b.Navigation("ServiceOrder");
                 });
 
-            modelBuilder.Entity("ProjektZaliczeniowyNET.Models.Part", b =>
-                {
-                    b.HasOne("ProjektZaliczeniowyNET.Models.ServiceTask", null)
-                        .WithMany("UsedParts")
-                        .HasForeignKey("ServiceTaskId");
-                });
-
             modelBuilder.Entity("ProjektZaliczeniowyNET.Models.ServiceOrder", b =>
                 {
                     b.HasOne("ProjektZaliczeniowyNET.Models.ApplicationUser", "Mechanic")
                         .WithMany()
                         .HasForeignKey("AssignedMechanicId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("ProjektZaliczeniowyNET.Models.Customer", "Customer")
                         .WithMany("ServiceOrders")
@@ -644,25 +629,6 @@ namespace ProjektZaliczeniowyNET.Migrations
                     b.Navigation("Mechanic");
 
                     b.Navigation("Vehicle");
-                });
-
-            modelBuilder.Entity("ProjektZaliczeniowyNET.Models.ServiceOrderPart", b =>
-                {
-                    b.HasOne("ProjektZaliczeniowyNET.Models.Part", "Part")
-                        .WithMany()
-                        .HasForeignKey("PartId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("ProjektZaliczeniowyNET.Models.ServiceOrder", "ServiceOrder")
-                        .WithMany()
-                        .HasForeignKey("ServiceOrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Part");
-
-                    b.Navigation("ServiceOrder");
                 });
 
             modelBuilder.Entity("ProjektZaliczeniowyNET.Models.ServiceTask", b =>
@@ -697,11 +663,6 @@ namespace ProjektZaliczeniowyNET.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("ServiceTasks");
-                });
-
-            modelBuilder.Entity("ProjektZaliczeniowyNET.Models.ServiceTask", b =>
-                {
-                    b.Navigation("UsedParts");
                 });
 
             modelBuilder.Entity("ProjektZaliczeniowyNET.Models.Vehicle", b =>

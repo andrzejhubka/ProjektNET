@@ -48,9 +48,6 @@ builder.Services.AddScoped<VehicleMapper>();
 builder.Services.AddScoped<IServiceOrderService, ServiceOrderService>();
 builder.Services.AddScoped<ServiceOrderMapper>();
 
-builder.Services.AddScoped<IServiceOrderPartService, ServiceOrderPartService>();
-builder.Services.AddScoped<ServiceOrderPartMapper>();
-
 builder.Services.AddScoped<IServiceTaskService, ServiceTaskService>();
 builder.Services.AddScoped<ServiceTaskMapper>();
 

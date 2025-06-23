@@ -37,10 +37,27 @@ public class ServiceOrderController : Controller
         _partService = partService;
     }
 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(
+        int? status,
+        string customer,
+        string vehicle,
+        DateTime? dateFrom,
+        DateTime? dateTo,
+        string mechanicId)
     {
-        var serviceOrders = await _serviceOrderService.GetAllAsync();
-        return View(serviceOrders);
+        var orders = await _serviceOrderService.GetFilteredAsync(
+            status, customer, vehicle, dateFrom, dateTo, mechanicId);
+
+        // Przekaż filtry do ViewBag
+        ViewBag.SelectedStatus = status;
+        ViewBag.CustomerFilter = customer;
+        ViewBag.VehicleFilter = vehicle;
+        ViewBag.DateFrom = dateFrom?.ToString("yyyy-MM-dd");
+        ViewBag.DateTo = dateTo?.ToString("yyyy-MM-dd");
+        ViewBag.Mechanics = new SelectList(await _userManager.Users.ToListAsync(), "Id", "UserName");
+        ViewBag.Customers = new SelectList(await _customerService.GetAllCustomersAsync(), "Id", "FullName");
+        ViewBag.Vehicles = new SelectList(await _vehicleService.GetAllAsync(), "Id", "DisplayName");
+        return View(orders);
     }
     
     [HttpGet]
@@ -53,7 +70,6 @@ public class ServiceOrderController : Controller
         ViewBag.Parts = new SelectList(parts, "Id", "Name");
         ViewBag.PartsData = parts.Select(p => new { p.Id, p.Name, p.UnitPrice }).ToList(); // pełne dane do JS
         ViewBag.Mechanics = new SelectList(await _userManager.Users.ToListAsync(), "Id", "UserName");
-        
         return View(new ServiceOrderCreateDto());
     }
     
@@ -76,8 +92,7 @@ public class ServiceOrderController : Controller
         await _serviceOrderService.CreateAsync(dto);
         return RedirectToAction(nameof(Index));
     }
-
-    // DTO dla UpdateStatus - przeniesione poza kontroler
+    
     public class UpdateStatusDto
     {
         public int Status { get; set; } // Zmienione na int zamiast ServiceOrderStatus
@@ -115,16 +130,30 @@ public class ServiceOrderController : Controller
     public async Task<IActionResult> Edit(int id)
     {
         var order = await _serviceOrderService.GetByIdAsync(id);
-        if (order == null)
+        if (order != null)
         {
+            Console.WriteLine($"Order ID: {order.Id}"); 
+            foreach (var task in order.ServiceTasks)
+            {
+                Console.WriteLine($"Task : {task.Parts?.Count ?? 0} parts");
+            }
+            
+        }
+        else
+        {
+            Console.WriteLine("ORDER IS NULL - returning NotFound");
             return NotFound();
         }
         
         var orderUpdate = _mapper.ToUpdateDto(order);
      
         // Załaduj listy dropdown
+        var parts = await _partService.GetAllAsync();
+
         ViewBag.Customers = new SelectList(await _customerService.GetAllCustomersAsync(), "Id", "FullName");
         ViewBag.Vehicles = new SelectList(await _vehicleService.GetAllAsync(), "Id", "DisplayName");
+        ViewBag.Parts = new SelectList(parts, "Id", "Name");
+        ViewBag.PartsData = parts.Select(p => new { p.Id, p.Name, p.UnitPrice }).ToList();
         ViewBag.Mechanics = new SelectList(await _userManager.Users.ToListAsync(), "Id", "UserName");
 
         return View(orderUpdate);
@@ -139,11 +168,12 @@ public class ServiceOrderController : Controller
             ViewBag.Customers = new SelectList(await _customerService.GetAllCustomersAsync(), "Id", "FullName");
             ViewBag.Vehicles = new SelectList(await _vehicleService.GetAllAsync(), "Id", "DisplayName");
             ViewBag.Mechanics = new SelectList(await _userManager.Users.ToListAsync(), "Id", "UserName");
-        
+            ViewBag.Parts = new SelectList(await _partService.GetAllAsync(), "Id", "Name");
             return View(dto);
         }
-
+        
         var result = await _serviceOrderService.UpdateAsync(id, dto);
+        
         if (result)
         {
             return RedirectToAction(nameof(Index));
@@ -156,11 +186,14 @@ public class ServiceOrderController : Controller
     public async Task<IActionResult> Details(int id)
     {
         var order = await _serviceOrderService.GetByIdAsync(id);
-        
         if (order != null)
         {
-            Console.WriteLine($"Order ID: {order.Id}"); // DEBUG
-            Console.WriteLine($"Customer is null: {order.Customer == null}");
+            Console.WriteLine($"Order ID: {order.Id}"); 
+            foreach (var task in order.ServiceTasks)
+            {
+                Console.WriteLine($"Task : {task.Parts?.Count ?? 0} parts");
+            }
+            
         }
         else
         {

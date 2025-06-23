@@ -7,6 +7,94 @@ ViewData["Title"] = "Lista zleceń serwisowych";
 
 <h1 class="mb-4">@ViewData["Title"]</h1>
 
+!-- FORMULARZ FILTROWANIA -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">Filtry</h5>
+    </div>
+    <div class="card-body">
+        <form method="get" asp-action="Index">
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select">
+                        <option value="">-- Wszystkie statusy --</option>
+                        @foreach (var status in Enum.GetValues(typeof(ProjektZaliczeniowyNET.Models.ServiceOrderStatus)).Cast<ProjektZaliczeniowyNET.Models.ServiceOrderStatus>())
+                        {
+                            <option value="@((int)status)" selected="@(ViewBag.SelectedStatus?.ToString() == ((int)status).ToString())">
+                                @status
+                            </option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Klient</label>
+                    <select name="CustomerId" class="form-select">
+                        <option value="">-- Wszyscy klienci --</option>
+                        @if (ViewBag.Customers != null)
+                        {
+                            @foreach (var customer in (SelectList)ViewBag.Customers)
+                            {
+                                <option value="@customer.Value" selected="@customer.Selected">
+                                    @customer.Text
+                                </option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Pojazd</label>
+                    <select name="vehicleId" class="form-select">
+                        <option value="">-- Wszystkie pojazdy --</option>
+                        @if (ViewBag.Vehicles != null)
+                        {
+                            @foreach (var vehicle in (SelectList)ViewBag.Vehicles)
+                            {
+                                <option value="@vehicle.Value" selected="@vehicle.Selected">
+                                    @vehicle.Text
+                                </option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Data od</label>
+                    <input type="date" name="dateFrom" class="form-control" value="@ViewBag.DateFrom" />
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-3">
+                    <label class="form-label">Data do</label>
+                    <input type="date" name="dateTo" class="form-control" value="@ViewBag.DateTo" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Mechanik</label>
+                    <select name="mechanicId" class="form-select">
+                        <option value="">-- Wszyscy mechanicy --</option>
+                        @if (ViewBag.Mechanics != null)
+                        {
+                            @foreach (var mechanic in (SelectList)ViewBag.Mechanics)
+                            {
+                                <option value="@mechanic.Value" selected="@mechanic.Selected">
+                                    @mechanic.Text
+                                </option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-6 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary me-2">
+                        <i class="bi bi-search"></i> Filtruj
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-x-circle"></i> Wyczyść
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
 <table class="table table-hover table-bordered align-middle shadow-sm">
     <thead class="table-light">
     <tr>

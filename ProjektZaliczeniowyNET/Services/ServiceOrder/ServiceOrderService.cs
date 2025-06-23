@@ -26,7 +26,7 @@ namespace ProjektZaliczeniowyNET.Services
                 .Include(o => o.Customer)
                 .Include(o => o.Vehicle)
                 .Include(o => o.Mechanic)
-                .Include(o => o.ServiceTasks)
+                .Include(o => o.ServiceTasks).ThenInclude(s => s.Parts)
                 .Include(o => o.Comments)
                 .ThenInclude(c => c.Author)
                 .FirstOrDefaultAsync(o => o.Id == id);
@@ -43,7 +43,68 @@ namespace ProjektZaliczeniowyNET.Services
                 .Include(o => o.Customer)
                 .Include(o => o.Vehicle)
                 .Include(o => o.Mechanic)
-                .Include(o => o.ServiceTasks)
+                .Include(o => o.ServiceTasks).ThenInclude(s => s.Parts)
+                .ToListAsync();
+
+            return orders.Select(o => _mapper.ToListDto(o));
+        }
+        
+        public async Task<IEnumerable<ServiceOrderListDto>> GetFilteredAsync(
+            int? status,
+            string customer,
+            string vehicle,
+            DateTime? dateFrom,
+            DateTime? dateTo,
+            string mechanicId)
+        {
+            var query = _context.ServiceOrders
+                .Include(so => so.Customer)
+                .Include(so => so.Vehicle)
+                .Include(so => so.Mechanic)
+                .AsQueryable();
+
+            // Filtr statusu
+            if (status.HasValue)
+            {
+                query = query.Where(so => (int)so.Status == status.Value);
+            }
+
+            // Filtr klienta
+            if (!string.IsNullOrEmpty(customer))
+            {
+                query = query.Where(so => 
+                    so.Customer.FirstName.Contains(customer) || 
+                    so.Customer.LastName.Contains(customer));
+            }
+
+            // Filtr pojazdu
+            if (!string.IsNullOrEmpty(vehicle))
+            {
+                query = query.Where(so => 
+                    so.Vehicle.Make.Contains(vehicle) || 
+                    so.Vehicle.Model.Contains(vehicle));
+            }
+
+            // Filtr daty od
+            if (dateFrom.HasValue)
+            {
+                query = query.Where(so => so.CreatedAt >= dateFrom.Value);
+            }
+
+            // Filtr daty do
+            if (dateTo.HasValue)
+            {
+                query = query.Where(so => so.CreatedAt <= dateTo.Value.AddDays(1));
+            }
+
+            // Filtr mechanika
+            if (!string.IsNullOrEmpty(mechanicId))
+            {
+                query = query.Where(so => so.AssignedMechanicId == mechanicId);
+            }
+
+            var orders = await query
+                .OrderByDescending(so => so.CreatedAt)
                 .ToListAsync();
 
             return orders.Select(o => _mapper.ToListDto(o));
@@ -53,7 +114,10 @@ namespace ProjektZaliczeniowyNET.Services
         {
             var order = _mapper.ToEntity(dto);
             _context.ServiceOrders.Add(order);
+
             await _context.SaveChangesAsync();
+            
+            
             return _mapper.ToDto(order);
         }
 

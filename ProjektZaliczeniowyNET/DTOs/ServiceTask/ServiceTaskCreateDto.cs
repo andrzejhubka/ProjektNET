@@ -9,8 +9,7 @@ namespace ProjektZaliczeniowyNET.DTOs.ServiceTask
 
         public decimal LaborCost { get; set; }
 
-        public List<PartCreateDto> UsedParts { get; set; } = new List<PartCreateDto>();
-        
+        public List<PartCreateDto> Parts { get; set; } = new List<PartCreateDto>();
         public bool IsCompleted { get; set; } =  false;
     }
 }

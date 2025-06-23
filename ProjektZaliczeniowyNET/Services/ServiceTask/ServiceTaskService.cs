@@ -26,17 +26,38 @@ namespace ProjektZaliczeniowyNET.Services
         public async Task<IEnumerable<ServiceTaskListDto>> GetAllAsync()
         {
             var serviceTasks = await _context.ServiceTasks
+                .Include(st => st.Parts) 
                 .OrderBy(st => st.Id)
                 .ToListAsync();
 
+            // DODAJ LOGI:
+            Console.WriteLine($"Pobrano {serviceTasks.Count} zadań");
+            foreach (var task in serviceTasks)
+            {
+                Console.WriteLine($"Zadanie {task.Id}: {task.Description}");
+                Console.WriteLine($"  - Liczba części: {task.Parts?.Count ?? 0}");
+        
+                if (task.Parts?.Any() == true)
+                {
+                    foreach (var part in task.Parts)
+                    {
+                        Console.WriteLine($"    * {part.Name} (ID: {part.Id})");
+                    }
+                }
+            }
+            
             return _mapper.ToListDtoList(serviceTasks);
         }
         
         public async Task<ServiceTaskDto?> GetByIdAsync(int id)
         {
             var serviceTask = await _context.ServiceTasks
+                .Include(st => st.Parts) 
                 .FirstOrDefaultAsync(st => st.Id == id);
 
+            Console.WriteLine($"ServiceTask ID: {serviceTask?.Id}");
+            Console.WriteLine($"Liczba części: {serviceTask?.Parts?.Count ?? 0}");
+            
             return serviceTask == null ? null : _mapper.ToDto(serviceTask);
         }
 

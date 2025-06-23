@@ -1,124 +1,81 @@
 @model ProjektZaliczeniowyNET.DTOs.ServiceOrder.ServiceOrderUpdateDto
 
-@if (!ViewData.ModelState.IsValid)
-{
-    <div class="alert alert-danger">
-        Formularz zawiera błędy:
-        <ul>
-            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-            {
-                <li>@error.ErrorMessage</li>
-            }
-        </ul>
-    </div>
-}
-
 @{
-    ViewData["Title"] = "Edycja zlecenia serwisowego";
+ViewData["Title"] = "Edycja zlecenia serwisowego";
 }
 
-<h2>@ViewData["Title"]</h2>
+<h2>Edycja zlecenia serwisowego</h2>
 
 @using (Html.BeginForm())
 {
-    @Html.AntiForgeryToken()
+@Html.AntiForgeryToken()
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.VehicleId, "Pojazd")
-        <div class="input-group">
-            @Html.DropDownListFor(
-                m => m.VehicleId,
-                ViewBag.Vehicles as SelectList,
-                "-- Wybierz pojazd --",
-                new { @class = "form-control" })
-            <div class="input-group-append">
-                <a href="/Vehicle/Create?returnUrl=/ServiceOrder/Index" class="btn btn-outline-secondary">
-                    <i class="fas fa-plus"></i> Dodaj pojazd
-                </a>
-            </div>
-        </div>
-        @Html.ValidationMessageFor(m => m.VehicleId)
-    </div>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.CustomerId, "Klient")
-        <div class="input-group">
-            @Html.DropDownListFor(
-                m => m.CustomerId,
-                ViewBag.Customers as SelectList,
-                "-- Wybierz klienta --",
-                new { @class = "form-control" })
-            <div class="input-group-append">
-                <a href="/Customer/Create?returnUrl=/ServiceOrder/Index" class="btn btn-outline-secondary">
-                    <i class="fas fa-plus"></i> Dodaj klienta
-                </a>
-            </div>
-        </div>
-        @Html.ValidationMessageFor(m => m.CustomerId)
-    </div>
+<div class="form-group mb-3">
+    @Html.LabelFor(m => m.VehicleId, "Pojazd", new { @class = "form-label" })
+    @Html.DropDownListFor(m => m.VehicleId, ViewBag.Vehicles as SelectList, "-- Wybierz pojazd --", new { @class = "form-control" })
+    @Html.ValidationMessageFor(m => m.VehicleId, "", new { @class = "text-danger" })
+</div>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.AssignedMechanicId, "Mechanik")
-        @Html.DropDownListFor(
-            m => m.AssignedMechanicId,
-            ViewBag.Mechanics as SelectList,
-            "-- Wybierz mechanika --",
-            new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.AssignedMechanicId)
-    </div>
+<div class="form-group mb-3">
+    @Html.LabelFor(m => m.CustomerId, "Klient", new { @class = "form-label" })
+    @Html.DropDownListFor(m => m.CustomerId, ViewBag.Customers as SelectList, "-- Wybierz klienta --", new { @class = "form-control" })
+    @Html.ValidationMessageFor(m => m.CustomerId, "", new { @class = "text-danger" })
+</div>
 
-    <div class="form-group">
-        <h4>Zadania serwisowe</h4>
-        <div id="service-tasks-container">
-        </div>
-        <button type="button" id="add-task-btn" class="btn btn-success">Dodaj zadanie</button>
-    </div>
+<div class="form-group mb-3">
+    @Html.LabelFor(m => m.AssignedMechanicId, "Przypisany mechanik", new { @class = "form-label" })
+    @Html.DropDownListFor(m => m.AssignedMechanicId, ViewBag.Mechanics as SelectList, "-- Wybierz mechanika --", new { @class = "form-control" })
+    @Html.ValidationMessageFor(m => m.AssignedMechanicId, "", new { @class = "text-danger" })
+</div>
 
-    <button type="submit" class="btn btn-primary">Zapisz</button>
+<div class="form-group mb-3">
+    <label class="form-label">Zadania serwisowe</label>
+    <div id="service-tasks-container"></div>
+    <button type="button" class="btn btn-secondary" onclick="addServiceTask()">Dodaj zadanie</button>
+</div>
+
+<div class="form-group">
+    <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
     <a asp-action="Index" class="btn btn-secondary">Anuluj</a>
+</div>
 }
-
-<script>
-    // Przekazanie danych części z cenami do JS
-    var partsData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.PartsData));
-    console.log('Dane części:', partsData); // Debug
-
-    var existingTasks = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.ServiceTasks));
-    
-</script>
 
 <script>
     let taskIndex = 0;
     let partIndex = 0;
 
-    document.getElementById('add-task-btn').addEventListener('click', function() {
-        addServiceTask();
-    });
+    // Dane części z serwera
+    var partsData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Parts));
 
-    // ZMIEŃ TĘ FUNKCJĘ - dodaj obsługę istniejących zadań
-    function addServiceTask(existingTask = null, existingIndex = null) {
+    // Istniejące zadania
+    var existingTasks = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.ServiceTasks));
+
+    console.log('Existing tasks:', existingTasks);
+
+    function addServiceTask(existingTask = null, existingTaskIndex = null) {
         const container = document.getElementById('service-tasks-container');
-        const currentIndex = existingIndex !== null ? existingIndex : taskIndex;
-        
+        const currentIndex = existingTaskIndex !== null ? existingTaskIndex : taskIndex;
+
         const taskHtml = `
         <div class="service-task-item border p-3 mb-3">
+            ${existingTask ? `<input type="hidden" name="ServiceTasks[${currentIndex}].Id" value="${existingTask.Id}" />` : ''}
             <div class="row">
                 <div class="col-md-6">
-                    <label>Opis zadania</label>
+                    <label class="form-label">Opis zadania</label>
                     <input type="text" name="ServiceTasks[${currentIndex}].Description" 
-                           class="form-control" 
-                           value="${existingTask ? (existingTask.Description || '') : ''}" 
-                           required />
+                           class="form-control" required 
+                           value="${existingTask ? existingTask.Description : ''}" />
                 </div>
                 <div class="col-md-4">
-                    <label>Koszt robocizny (PLN)</label>
+                    <label class="form-label">Koszt robocizny (PLN)</label>
                     <input type="number" step="0.01" name="ServiceTasks[${currentIndex}].LaborCost" 
                            class="form-control" min="0" 
-                           value="${existingTask ? (existingTask.LaborCost || 0) : 0}" />
+                           value="${existingTask ? existingTask.LaborCost : 0}" />
                 </div>
                 <div class="col-md-2">
-                    <label>&nbsp;</label>
-                    <button type="button" class="btn btn-danger form-control" onclick="removeTask(this)">Usuń zadanie</button>
+                    <label class="form-label">&nbsp;</label>
+                    <button type="button" class="btn btn-danger form-control" onclick="removeServiceTask(this)">Usuń zadanie</button>
                 </div>
             </div>
             
@@ -129,22 +86,22 @@
                 <button type="button" class="btn btn-sm btn-outline-primary" onclick="addPart(${currentIndex})">Dodaj część</button>
             </div>
         </div>
-    `;
+        `;
+
         container.insertAdjacentHTML('beforeend', taskHtml);
-        
+
         // Załaduj części dla tego zadania
-        if (existingTask && existingTask.UsedParts) {
-            existingTask.UsedParts.forEach((part, partIdx) => {
+        if (existingTask && existingTask.Parts) {
+            existingTask.Parts.forEach((part, partIdx) => {
                 addPart(currentIndex, part, partIdx);
             });
         }
-        
-        if (existingIndex === null) {
+
+        if (existingTaskIndex === null) {
             taskIndex++;
         }
     }
 
-    // ZMIEŃ FUNKCJĘ addPart - dodaj obsługę istniejących części
     function addPart(taskIdx, existingPart = null, existingPartIndex = null) {
         const partsContainer = document.querySelector(`[data-task-index="${taskIdx}"]`);
         const currentPartIndex = existingPartIndex !== null ? existingPartIndex : partIndex;
@@ -162,36 +119,45 @@
         <div class="part-item row mb-2 p-2 border rounded">
             <div class="col-md-4">
                 <label class="form-label">Część</label>
-                <select name="ServiceTasks[${taskIdx}].UsedParts[${currentPartIndex}].Id" class="form-control part-select">
+                <select name="ServiceTasks[${taskIdx}].Parts[${currentPartIndex}].Id" class="form-control part-select">
                     ${optionsHtml}
                 </select>
             </div>
             <div class="col-md-3">
                 <label class="form-label">Ilość</label>
-                <input type="number" name="ServiceTasks[${taskIdx}].UsedParts[${currentPartIndex}].Quantity" 
+                <input type="number" name="ServiceTasks[${taskIdx}].Parts[${currentPartIndex}].Quantity" 
                        class="form-control" min="1" 
                        value="${existingPart ? (existingPart.Quantity || 1) : 1}" />
             </div>
             <div class="col-md-3">
                 <label class="form-label">Cena (PLN)</label>
-                <input type="number" step="0.01" name="ServiceTasks[${taskIdx}].UsedParts[${currentPartIndex}].Price" 
+                <input type="number" step="0.01" name="ServiceTasks[${taskIdx}].Parts[${currentPartIndex}].Price" 
                        class="form-control part-price" min="0" 
-                       value="${existingPart ? (existingPart.Price || 0) : 0}" readonly />
+                       value="${existingPart ? (existingPart.UnitPrice || existingPart.Price || 0) : 0}" readonly />
             </div>
             <div class="col-md-2">
                 <label class="form-label">&nbsp;</label>
                 <button type="button" class="btn btn-sm btn-danger form-control" onclick="removePart(this)">Usuń</button>
             </div>
         </div>
-    `;
+        `;
+
         partsContainer.insertAdjacentHTML('beforeend', partHtml);
-        
+
         if (existingPartIndex === null) {
             partIndex++;
         }
+
+        // Dodaj event listener dla zmiany ceny
+        const lastPartSelect = partsContainer.querySelector('.part-item:last-child .part-select');
+        if (lastPartSelect) {
+            lastPartSelect.addEventListener('change', function() {
+                updatePartPrice(this);
+            });
+        }
     }
 
-    function removeTask(button) {
+    function removeServiceTask(button) {
         button.closest('.service-task-item').remove();
     }
 
@@ -199,34 +165,27 @@
         button.closest('.part-item').remove();
     }
 
-    // ZMIEŃ TĘ CZĘŚĆ - załaduj istniejące zadania przy starcie
+    function updatePartPrice(selectElement) {
+        const selectedPartId = selectElement.value;
+        const priceInput = selectElement.closest('.part-item').querySelector('.part-price');
+
+        if (selectedPartId && partsData) {
+            const selectedPart = partsData.find(p => p.Id == selectedPartId);
+            if (selectedPart) {
+                priceInput.value = selectedPart.UnitPrice || 0;
+            }
+        } else {
+            priceInput.value = 0;
+        }
+    }
+
+    // Załaduj istniejące zadania przy ładowaniu strony
     document.addEventListener('DOMContentLoaded', function() {
-        // Najpierw załaduj istniejące zadania
         if (existingTasks && existingTasks.length > 0) {
             existingTasks.forEach((task, index) => {
                 addServiceTask(task, index);
             });
-            taskIndex = existingTasks.length; // Ustaw indeks na liczbę istniejących zadań
-        } else {
-            // Jeśli nie ma zadań, dodaj jedno puste
-            addServiceTask();
-        }
-    });
-
-    // Automatyczne ustawianie ceny części po wyborze
-    document.addEventListener('change', function(e) {
-        if (e.target.classList.contains('part-select')) {
-            const select = e.target;
-            const selectedPartId = select.value;
-            const container = select.closest('.part-item');
-            const priceInput = container.querySelector('.part-price');
-
-            const part = partsData.find(p => p.Id.toString() === selectedPartId);
-            if (part) {
-                priceInput.value = part.UnitPrice ?? part.unitPrice ?? 0;
-            } else {
-                priceInput.value = 0;
-            }
+            taskIndex = existingTasks.length;
         }
     });
 </script>

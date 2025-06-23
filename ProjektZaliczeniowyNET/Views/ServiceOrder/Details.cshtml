@@ -1,5 +1,5 @@
 @using ProjektZaliczeniowyNET.DTOs.ServiceOrder
-model ProjektZaliczeniowyNET.DTOs.ServiceOrder.ServiceOrderDto
+@model ProjektZaliczeniowyNET.DTOs.ServiceOrder.ServiceOrderDto
 
 @{
     ViewData["Title"] = $"Szczegóły zlecenia #{Model.Id}";
@@ -110,31 +110,26 @@ model ProjektZaliczeniowyNET.DTOs.ServiceOrder.ServiceOrderDto
                         <h6>Użyte części</h6>
                         <div class="parts-container">
                 `;
-
-                // części
-                if (task.UsedParts && task.UsedParts.length > 0) {
-                    task.UsedParts.forEach(part => {
-                        const partData = partsData.find(p => p.Id === part.Id) || {};
+                if (task.Parts && task.Parts.length > 0) {
+                    task.Parts.forEach(part => {
                         taskHtml += `
-                        <div class="part-item row mb-2 p-2 border rounded">
-                            <div class="col-md-4">
-                                <label class="form-label">Część</label>
-                                <input type="text" class="form-control" value="${partData.Name || 'Nieznana część'}" readonly />
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label">Ilość</label>
-                                <input type="number" class="form-control" value="${part.Quantity || 1}" readonly />
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label">Cena (PLN)</label>
-                                <input type="number" class="form-control" value="${part.Price || 0}" readonly />
-                            </div>
-                            <div class="col-md-2">
-                            </div>
-                        </div>`;
+        <div class="part-item row mb-2 p-2 border rounded">
+            <div class="col-md-4">
+                <label class="form-label">Część</label>
+                <input type="text" class="form-control" value="${part.Name || 'Nieznana część'}" readonly />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Ilość</label>
+                <input type="number" class="form-control" value="${part.Quantity || 1}" readonly />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Cena (PLN)</label>
+                <input type="number" class="form-control" value="${part.UnitPrice || 0}" readonly />
+            </div>
+        </div>`;
                     });
                 } else {
-                    taskHtml += `<p>Brak użytych części</p>`;
+                    taskHtml += `<p class="text-muted">Brak użytych części</p>`;
                 }
 
                 taskHtml += `

@@ -1,0 +1,10 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=fee75570_002Df952_002D4949_002D9fd0_002D09ab87546897/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="CommentServiceTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::78BB8FAC-F6D1-4845-AEB4-929D19FD09A5::net9.0::ProjektZaliczeniowyNET.Tests.Services.CommentServiceTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::78BB8FAC-F6D1-4845-AEB4-929D19FD09A5::net9.0::ProjektZaliczeniowyNET.Tests.Services.CustomerServiceTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::78BB8FAC-F6D1-4845-AEB4-929D19FD09A5::net9.0::ProjektZaliczeniowyNET.Tests.Services.PartServiceTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::78BB8FAC-F6D1-4845-AEB4-929D19FD09A5::net9.0::ProjektZaliczeniowyNET.Tests.Services.ServiceTaskServiceTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::78BB8FAC-F6D1-4845-AEB4-929D19FD09A5::net9.0::ProjektZaliczeniowyNET.Tests.Services.VehicleServiceTests&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

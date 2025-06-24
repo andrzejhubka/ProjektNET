@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjektZaliczeniowyNET", "ProjektZaliczeniowyNET\ProjektZaliczeniowyNET.csproj", "{2F38E156-7353-42A5-95F3-97B28463F81E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjektZaliczeniowyNET.Tests", "ProjektZaliczeniowyNET.Tests\ProjektZaliczeniowyNET.Tests.csproj", "{78BB8FAC-F6D1-4845-AEB4-929D19FD09A5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{2F38E156-7353-42A5-95F3-97B28463F81E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F38E156-7353-42A5-95F3-97B28463F81E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F38E156-7353-42A5-95F3-97B28463F81E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78BB8FAC-F6D1-4845-AEB4-929D19FD09A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78BB8FAC-F6D1-4845-AEB4-929D19FD09A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78BB8FAC-F6D1-4845-AEB4-929D19FD09A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78BB8FAC-F6D1-4845-AEB4-929D19FD09A5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

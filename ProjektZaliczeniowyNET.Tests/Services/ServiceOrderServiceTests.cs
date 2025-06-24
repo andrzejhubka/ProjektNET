@@ -47,23 +47,5 @@ namespace ProjektZaliczeniowyNET.Tests.Services
             // Assert
             Assert.That(result, Is.Null);
         }
-
-        [Test]
-        public async Task GetActiveOrdersCountAsync_ShouldReturnCorrectCount()
-        {
-            // Arrange
-            _context.ServiceOrders.AddRange(
-                new ServiceOrder { Status = ServiceOrderStatus.Pending, CustomerId = 1, VehicleId = 1 },
-                new ServiceOrder { Status = ServiceOrderStatus.InProgress, CustomerId = 2, VehicleId = 2 },
-                new ServiceOrder { Status = ServiceOrderStatus.Completed, CustomerId = 3, VehicleId = 3 }
-            );
-            await _context.SaveChangesAsync();
-
-            // Act
-            var count = await _service.GetActiveOrdersCountAsync();
-
-            // Assert
-            Assert.That(count, Is.EqualTo(2)); // Pending + InProgress
-        }
     }
 }

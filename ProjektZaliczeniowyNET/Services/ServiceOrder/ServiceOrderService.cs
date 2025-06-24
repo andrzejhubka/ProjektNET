@@ -112,14 +112,13 @@ namespace ProjektZaliczeniowyNET.Services
 
         public async Task<ServiceOrderDto> CreateAsync(ServiceOrderCreateDto dto)
         {
-            var order = _mapper.ToEntity(dto);
+            var order = _mapper.ToEntity(dto); // Mapuje tylko podstawowe właściwości
             _context.ServiceOrders.Add(order);
-
             await _context.SaveChangesAsync();
-            
-            
+    
             return _mapper.ToDto(order);
         }
+
 
         public async Task<bool> UpdateAsync(int id, ServiceOrderUpdateDto dto)
         {

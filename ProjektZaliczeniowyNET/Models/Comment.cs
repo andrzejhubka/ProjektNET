@@ -7,7 +7,6 @@ namespace ProjektZaliczeniowyNET.Models
     public enum CommentType
     {
         Internal = 0,       // Komentarz wewnętrzny
-        CustomerVisible = 1 // Widoczny dla klienta
     }
 
     public class Comment

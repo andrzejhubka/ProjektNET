@@ -2,14 +2,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProjektZaliczeniowyNET.DTOs.Comment;
 using ProjektZaliczeniowyNET.Services;
-
+using System.Security.Claims;
 
 namespace ProjektZaliczeniowyNET.Controllers
 {
-    
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Admin,Recepcjonista")] // zabezpieczenie: tylko zalogowani mogą komentować
+    [Authorize(Roles = "Admin,Recepcjonista,Mechanik")]
     public class CommentController : ControllerBase
     {
         private readonly ICommentService _commentService;
@@ -42,8 +41,8 @@ namespace ProjektZaliczeniowyNET.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            // Zakładamy, że identyfikator autora pochodzi z tokena JWT
-            var authorId = User.Identity?.Name;
+            // Pobierz ID aktualnie zalogowanego użytkownika
+            var authorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(authorId))
                 return Unauthorized();
 

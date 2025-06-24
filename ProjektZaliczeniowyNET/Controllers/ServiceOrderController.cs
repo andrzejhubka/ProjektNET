@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProjektZaliczeniowyNET.Services;
 using ProjektZaliczeniowyNET.DTOs.ServiceOrder;
+using ProjektZaliczeniowyNET.DTOs.Comment;
 using ProjektZaliczeniowyNET.Mappers;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -22,6 +23,7 @@ public class ServiceOrderController : Controller
     private readonly ServiceOrderMapper _mapper;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IPartService _partService;
+    private readonly ICommentService _commentService;
 
     public ServiceOrderController(
         IServiceOrderService serviceOrderService,
@@ -29,7 +31,8 @@ public class ServiceOrderController : Controller
         IVehicleService vehicleService,
         ServiceOrderMapper mapper,
         UserManager<ApplicationUser> userManager,
-        IPartService partService
+        IPartService partService,
+        ICommentService commentService
     )
     {
         _serviceOrderService = serviceOrderService;
@@ -38,7 +41,9 @@ public class ServiceOrderController : Controller
         _mapper = mapper;  
         _userManager = userManager;
         _partService = partService;
+        _commentService = commentService;
     }
+
     [Authorize(Roles = "Admin,Recepcjonista")]
     public async Task<IActionResult> Index(
         int? status,
@@ -74,12 +79,17 @@ public class ServiceOrderController : Controller
         ViewBag.Parts = new SelectList(parts, "Id", "Name");
         ViewBag.PartsData = parts.Select(p => new { p.Id, p.Name, p.UnitPrice }).ToList(); // pełne dane do JS
         ViewBag.Mechanics = new SelectList( await _userManager.GetUsersInRoleAsync("Mechanik"), "Id", "UserName");
+        
+        // Dodanie opcji komentarzy dla widoku Create
+        ViewBag.CommentTypes = new SelectList(Enum.GetValues(typeof(CommentType)).Cast<CommentType>()
+            .Select(e => new { Value = (int)e, Text = e.ToString() }), "Value", "Text");
+        
         return View(new ServiceOrderCreateDto());
     }
     
     [HttpPost]
     [Authorize(Roles = "Admin,Recepcjonista")]
-    public async Task<IActionResult> Create(ServiceOrderCreateDto dto)
+    public async Task<IActionResult> Create(ServiceOrderCreateDto dto, string? initialComment, CommentType? commentType)
     {
         if (!ModelState.IsValid)
         {
@@ -90,11 +100,28 @@ public class ServiceOrderController : Controller
             ViewBag.Parts = new SelectList(parts, "Id", "Name");
             ViewBag.PartsData = parts.Select(p => new { p.Id, p.Name, p.UnitPrice }).ToList();
             ViewBag.Mechanics = new SelectList( await _userManager.GetUsersInRoleAsync("Mechanik"), "Id", "UserName");
+            ViewBag.CommentTypes = new SelectList(Enum.GetValues(typeof(CommentType)).Cast<CommentType>()
+                .Select(e => new { Value = (int)e, Text = e.ToString() }), "Value", "Text");
 
             return View(dto);
         }
     
-        await _serviceOrderService.CreateAsync(dto);
+        var serviceOrder = await _serviceOrderService.CreateAsync(dto);
+        
+        // Dodaj komentarz początkowy jeśli został podany
+        if (!string.IsNullOrWhiteSpace(initialComment) && commentType.HasValue)
+        {
+            var commentDto = new CommentCreateDto
+            {
+                Content = initialComment,
+                Type = commentType.Value,
+                ServiceOrderId = serviceOrder.Id
+            };
+            
+            var authorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await _commentService.CreateCommentAsync(commentDto, authorId);
+        }
+        
         return RedirectToAction(nameof(Index));
     }
     
@@ -209,7 +236,34 @@ public class ServiceOrderController : Controller
             Console.WriteLine("ORDER IS NULL - returning NotFound");
             return NotFound();
         }
+        
+        // Pobierz komentarze dla tego zlecenia
+        var comments = await _commentService.GetCommentsByServiceOrderIdAsync(id);
+        ViewBag.Comments = comments;
+        ViewBag.CommentTypes = new SelectList(Enum.GetValues(typeof(CommentType)).Cast<CommentType>()
+            .Select(e => new { Value = (int)e, Text = e.ToString() }), "Value", "Text");
+        
         return View(order);
+    }
+    
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AddComment(int serviceOrderId, string content, CommentType type)
+    {
+        if (!string.IsNullOrWhiteSpace(content))
+        {
+            var commentDto = new CommentCreateDto
+            {
+                Content = content,
+                Type = type,
+                ServiceOrderId = serviceOrderId
+            };
+            
+            var authorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await _commentService.CreateCommentAsync(commentDto, authorId);
+        }
+        
+        return RedirectToAction("Details", new { id = serviceOrderId });
     }
     
     [Authorize(Roles = "Admin,Recepcjonista")]
@@ -245,5 +299,4 @@ public class ServiceOrderController : Controller
         ViewData["Title"] = "Moje zlecenia";
         return View("Index", orders); // Używa tego samego widoku co Index
     }
-    
 }

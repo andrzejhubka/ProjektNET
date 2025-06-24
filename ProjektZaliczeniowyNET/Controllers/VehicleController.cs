@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ProjektZaliczeniowyNET.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin,Mechanik,Recepcjonista")]
     public class VehicleController : Controller
     {
         private readonly IVehicleService _vehicleService;

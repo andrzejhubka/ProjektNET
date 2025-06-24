@@ -7,7 +7,7 @@ namespace ProjektZaliczeniowyNET.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize] // zabezpieczenie: tylko zalogowani mogą komentować
+    [Authorize(Roles = "Admin,Recepcjonista")] // zabezpieczenie: tylko zalogowani mogą komentować
     public class CommentController : ControllerBase
     {
         private readonly ICommentService _commentService;

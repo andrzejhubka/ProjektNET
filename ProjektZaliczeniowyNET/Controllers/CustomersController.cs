@@ -5,7 +5,7 @@ using ProjektZaliczeniowyNET.Services;
 
 namespace ProjektZaliczeniowyNET.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin,Mechanik,Recepcjonista")]
     public class CustomerController : Controller
     {
         private readonly ICustomerService _customerService;

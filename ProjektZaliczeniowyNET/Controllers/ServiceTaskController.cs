@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProjektZaliczeniowyNET.DTOs.ServiceTask;
 using ProjektZaliczeniowyNET.Interfaces;
 
 namespace ProjektZaliczeniowyNET.Controllers;
 
+[Authorize(Roles = "Admin,Manager,Recepcjonista")]
 [ApiController]
 [Route("api/[controller]")]
 public class ServiceTaskController : ControllerBase

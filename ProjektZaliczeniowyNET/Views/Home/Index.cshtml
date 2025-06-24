@@ -49,14 +49,27 @@
                     <h5>Szybkie akcje</h5>
                 </div>
                 <div class="card-body">
-                    <a href="/ServiceOrder/Create" class="btn btn-primary">Nowe zlecenie</a>
-                    <a href="/Customer/Index" class="btn btn-secondary">Lista klientów</a>
-                    <a href="/Vehicle/Index" class="btn btn-info">Lista pojazdów</a>
-                    <a href="/ServiceOrder/Index" class="btn btn-success">Wszystkie zlecenia</a>
-                    <a href="/Part/Index" class="btn btn-warning">Katalog części</a> <!-- Dodany przycisk -->
-                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                    <!--  Przycisk tylko dla mechaników -->
+                    @if (User.IsInRole("Mechanik"))
                     {
-                        <a href="/Admin/UsersRoles" class="btn btn-primary">Panel Admina</a>
+                        <a href="/ServiceOrder/MyOrders" class="btn btn-primary me-2">
+                            <i class="bi bi-person-gear"></i> Moje zlecenia
+                        </a>
+                    }
+                    
+                    <!-- Pozostałe przyciski dla innych ról -->
+                    @if (User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("Recepcjonista"))
+                    {
+                        <a href="/ServiceOrder/Create" class="btn btn-primary me-2">Nowe zlecenie</a>
+                        <a href="/Customer/Index" class="btn btn-secondary me-2">Lista klientów</a>
+                        <a href="/Vehicle/Index" class="btn btn-info me-2">Lista pojazdów</a>
+                        <a href="/ServiceOrder/Index" class="btn btn-success me-2">Wszystkie zlecenia</a>
+                        <a href="/Part/Index" class="btn btn-warning me-2">Katalog części</a>
+                    }
+                    
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a href="/Admin/UsersRoles" class="btn btn-danger">Panel Admina</a>
                     }
                 </div>
             </div>

@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using ProjektZaliczeniowyNET.DTOs.Comment;
 using ProjektZaliczeniowyNET.Services;
 
+
 namespace ProjektZaliczeniowyNET.Controllers
 {
+    
     [ApiController]
     [Route("api/[controller]")]
     [Authorize(Roles = "Admin,Recepcjonista")] // zabezpieczenie: tylko zalogowani mogą komentować

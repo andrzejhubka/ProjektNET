@@ -1,0 +1,197 @@
+@model IEnumerable<ProjektZaliczeniowyNET.DTOs.ServiceOrder.ServiceOrderListDto>
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
+@{
+ViewData["Title"] = User.IsInRole("Mechanik") ? "Moje zlecenia" : "Lista zleceń serwisowych";
+}
+
+<h1 class="mb-4">@ViewData["Title"]</h1>
+
+<!-- FORMULARZ FILTROWANIA - ukryty dla mechaników -->
+@if (!User.IsInRole("Mechanik"))
+{
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">Filtry</h5>
+    </div>
+    <div class="card-body">
+        <form method="get" asp-action="Index">
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select">
+                        <option value="">-- Wszystkie statusy --</option>
+                        @foreach (var status in Enum.GetValues(typeof(ProjektZaliczeniowyNET.Models.ServiceOrderStatus)).Cast<ProjektZaliczeniowyNET.Models.ServiceOrderStatus>())
+                        {
+                        <option value="@((int)status)" selected="@(ViewBag.SelectedStatus?.ToString() == ((int)status).ToString())">
+                            @status
+                        </option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Klient</label>
+                    <select name="CustomerId" class="form-select">
+                        <option value="">-- Wszyscy klienci --</option>
+                        @if (ViewBag.Customers != null)
+                        {
+                        @foreach (var customer in (SelectList)ViewBag.Customers)
+                        {
+                        <option value="@customer.Value" selected="@customer.Selected">
+                            @customer.Text
+                        </option>
+                        }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Pojazd</label>
+                    <select name="vehicleId" class="form-select">
+                        <option value="">-- Wszystkie pojazdy --</option>
+                        @if (ViewBag.Vehicles != null)
+                        {
+                        @foreach (var vehicle in (SelectList)ViewBag.Vehicles)
+                        {
+                        <option value="@vehicle.Value" selected="@vehicle.Selected">
+                            @vehicle.Text
+                        </option>
+                        }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Data od</label>
+                    <input type="date" name="dateFrom" class="form-control" value="@ViewBag.DateFrom" />
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-3">
+                    <label class="form-label">Data do</label>
+                    <input type="date" name="dateTo" class="form-control" value="@ViewBag.DateTo" />
+                </div>
+                <div class="col-md-6 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary me-2">
+                        <i class="bi bi-search"></i> Filtruj
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-x-circle"></i> Wyczyść
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+}
+
+<table class="table table-hover table-bordered align-middle shadow-sm">
+    <thead class="table-light">
+    <tr>
+        <th>Numer</th>
+        <th>Klient</th>
+        <th>Pojazd</th>
+        @if (!User.IsInRole("Mechanik"))
+        {
+        <th>Mechanik</th>
+        }
+        <th>Status</th>
+        <th>Utworzono</th>
+        <th class="text-center">Akcje</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var order in Model)
+    {
+    <tr data-order-id="@order.Id">
+        <td class="fw-bold">#@order.Id</td>
+        <td>@order.CustomerFullName</td>
+        <td>@order.VehicleDisplayName</td>
+        @if (!User.IsInRole("Mechanik"))
+        {
+        <td>@order.Mechanic.Email</td>
+        }
+        <td>
+            @if (User.IsInRole("Mechanik"))
+            {
+            <!-- Mechanik może zmieniać status -->
+            <select class="form-select form-select-sm status-select" data-order-id="@order.Id">
+                @foreach (var status in Enum.GetValues(typeof(ProjektZaliczeniowyNET.Models.ServiceOrderStatus)).Cast<ProjektZaliczeniowyNET.Models.ServiceOrderStatus>())
+                {
+                <option value="@((int)status)" selected="@(status == order.Status)">
+                    @status
+                </option>
+                }
+            </select>
+            }
+            else
+            {
+            <!-- Inne role - tylko odczyt -->
+            <select class="form-select form-select-sm status-select" data-order-id="@order.Id">
+                @foreach (var status in Enum.GetValues(typeof(ProjektZaliczeniowyNET.Models.ServiceOrderStatus)).Cast<ProjektZaliczeniowyNET.Models.ServiceOrderStatus>())
+                {
+                <option value="@((int)status)" selected="@(status == order.Status)">
+                    @status
+                </option>
+                }
+            </select>
+            }
+        </td>
+        <td>@order.CreatedAt.ToString("yyyy-MM-dd")</td>
+        <td class="text-center">
+            @if (User.IsInRole("Mechanik"))
+            {
+            <!-- Mechanik - tylko szczegóły -->
+            <a asp-controller="ServiceOrder" asp-action="Details" asp-route-id="@order.Id" class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-eye"></i> Szczegóły
+            </a>
+            }
+            else
+            {
+            <!-- Inne role - pełne opcje -->
+            <div class="btn-group btn-group-sm" role="group">
+                <a asp-controller="ServiceOrder" asp-action="Details" asp-route-id="@order.Id" class="btn btn-outline-primary">
+                    <i class="bi bi-eye"></i> Szczegóły
+                </a>
+            </div>
+            }
+        </td>
+    </tr>
+    }
+    </tbody>
+</table>
+
+<!-- CSRF Token -->
+@Html.AntiForgeryToken()
+
+@section Scripts {
+<script>
+    document.querySelectorAll('.status-select').forEach(select => {
+        select.addEventListener('change', async function () {
+            const orderId = this.dataset.orderId;
+            const newStatus = parseInt(this.value);
+            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+            try {
+                const response = await fetch(`/ServiceOrder/UpdateStatus/${orderId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': token
+                    },
+                    body: JSON.stringify({ status: newStatus })
+                });
+
+                if (response.ok) {
+                    alert('Status został zaktualizowany.');
+                } else {
+                    const errorText = await response.text();
+                    console.error('Błąd:', errorText);
+                    alert(`Błąd przy aktualizacji statusu: ${response.status}`);
+                }
+            } catch (e) {
+                console.error('Błąd sieci:', e);
+                alert('Wystąpił błąd sieci.');
+            }
+        });
+    });
+</script>
+}
